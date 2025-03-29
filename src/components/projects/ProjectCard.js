@@ -2,6 +2,7 @@ import InfoPart from "./InfoPart";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
+import { motion } from "framer-motion";
 import app from '../../firebase'
 import Loading from "../Loading";
 
@@ -47,7 +48,11 @@ export default function ProjectCard() {
         </div>
 
         {finishLoad ? (
-          <div className='flex flex-row justify-center flex-wrap gap-x-12 gap-y-10'>
+          <motion.div className='flex flex-row justify-center flex-wrap gap-x-12 gap-y-10'
+            initial={{ opacity: 0, y: -5 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 2, delay: 0.1, type: "spring", stiffness: 80 }}
+          >
             {dataProject.filter((project) => selectedTag === 'All' || project.tag === selectedTag)
               .map((project, index) => (
                 <InfoPart
@@ -59,10 +64,9 @@ export default function ProjectCard() {
                   info={project.about}
                   object={project.object}
                   link={project.link}
-                  index={index}
                 />
               ))}
-          </div>
+          </motion.div>
         ) : (
           <div className="flex flex-row justify-center items-center flex-wrap">
             <Loading typeLoad={'balls'} />
