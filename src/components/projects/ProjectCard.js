@@ -35,7 +35,7 @@ export default function ProjectCard() {
       <div className='flex flex-col gap-y-9 text-center'>
         <h1 className="text-5xl font-bold">Projects I worked on</h1>
 
-        <div className="flex gap-4 justify-center mb-4">
+        <div className="flex flex-wrap gap-4 justify-center mb-4">
           {tags.map((tag) => (
             <button
               key={tag}
