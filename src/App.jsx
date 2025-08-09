@@ -1,15 +1,15 @@
 //import logo from './logo.svg';
-import NavBar from './components/NavBar';
-import AboutCard from './components/About/AboutCard';
-import Skills from './components/Skills/Skills'
+import NavBar from './components/NavBar.jsx';
+import AboutCard from './components/About/AboutCard.jsx';
+import Skills from './components/Skills/Skills.jsx'
 import me from './data/me.json'
 import Logo from './assets/aboutPics/HiEmoji.png'
 import LogoGif from './assets/aboutPics/HiEmojiGif.gif'
-import ProjectCard from './components/projects/ProjectCard';
+import ProjectCard from './components/projects/ProjectCard.jsx';
 import { createBrowserRouter, Route, createRoutesFromElements, RouterProvider } from 'react-router-dom'
-import Error404 from './components/Error'
-import Footer from './components/Footer';
-import ContactForm from './components/ContactMe/ContactForm';
+import Error404 from './components/Error.jsx'
+import Footer from './components/Footer.jsx';
+import ContactForm from './components/ContactMe/ContactForm.jsx';
 
 
 const router = createBrowserRouter(
@@ -28,7 +28,7 @@ function App() {
 
 function HolderElement() {
   return (
-    <div className="App font-Reddit flex flex-col items-center min-h-screen text-white bg-mainBackground">
+  <div className="App font-Reddit flex flex-col items-center min-h-screen text-app">
 
 
       <NavBar />

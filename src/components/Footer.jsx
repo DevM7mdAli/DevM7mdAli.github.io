@@ -3,10 +3,12 @@ import { MdEmail } from "react-icons/md";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { motion } from 'framer-motion'
 import DMA from '../assets/DMA.png'
+import { useTranslation } from 'react-i18next';
 
 export default function Footer({ linkedLink, GitHubLink, XLink, Email }) {
+  const { t } = useTranslation();
   return (
-    <motion.footer className="w-full bg-mainBackground p-8 mt-20"
+    <motion.footer className="w-full p-8 mt-20 bg-app-surface"
       initial={{ opacity: 0, y: -10 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 0.1, type: "spring", stiffness: 80 }}
@@ -14,7 +16,7 @@ export default function Footer({ linkedLink, GitHubLink, XLink, Email }) {
     >
       <div className="flex flex-row flex-wrap items-center justify-center gap-y-6 gap-x-12  text-center md:justify-between">
         <a href="/" alt="logo" className="flex justify-center items-center md:w-24 w-16" >
-          <img src={DMA} alt="logo" />
+          <img src={DMA} alt="logo" className="logo-themable" />
         </a>
         <div className="flex flex-wrap items-center gap-y-2 gap-x-8">
           <a href={XLink} target="_blank" rel="noopener noreferrer">
@@ -32,8 +34,8 @@ export default function Footer({ linkedLink, GitHubLink, XLink, Email }) {
         </div>
       </div>
       <hr className="my-8 border-white-50" />
-      <p className="text-white text-center font-normal">
-        &copy; 2024 Mohammed Alajmi
+  <p className="text-app text-center font-normal">
+        {t('footer.copyright', { year: new Date().getFullYear() })}
       </p>
     </motion.footer>
   );

@@ -4,9 +4,11 @@ import { MdEmail } from "react-icons/md";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { motion } from "framer-motion"
 import { TypeAnimation } from "react-type-animation";
+import { useTranslation } from 'react-i18next';
 
 export default function AboutCard({ imgLogo, about, imgGif, resumeLink, linkedLink, GitHubLink, XLink, Email }) {
   const [inMouse, setInMouse] = useState(false)
+  const { t } = useTranslation();
   return (
     <motion.section className="flex flex-col items-center"
       id="AboutMe"
@@ -18,19 +20,14 @@ export default function AboutCard({ imgLogo, about, imgGif, resumeLink, linkedLi
     >
 
       <TypeAnimation
-        sequence={[
-          'About me', 2500,
-          'Web developer', 2000,
-          'App developer', 2000,
-          'Cyber security', 2000,
-        ]}
+        sequence={t('about.titleCycle', { returnObjects: true }).flatMap((s, i) => [s, i === 0 ? 2500 : 2000])}
         wrapper="div"
         cursor={true}
         repeat={Infinity}
         className="text-3xl mb-9"
       />
 
-      <div className="flex flex-col lg:flex-row p-9 gap-x-12 max-w-7xl h-auto border-blue-200 bg-gradient-to-tr from-bgFromGrad to-black rounded-lg transition-all scale-95 hover:scale-100">
+  <div className="flex flex-col lg:flex-row p-9 gap-x-12 max-w-7xl h-auto border-blue-200 gradient-card rounded-lg transition-all scale-95 hover:scale-100">
         <div className="flex justify-center items-center">
           {!inMouse ?
             <img
@@ -65,7 +62,7 @@ export default function AboutCard({ imgLogo, about, imgGif, resumeLink, linkedLi
             <motion.div className="flex"
               whileHover={{ scale: 1.1 }}
             >
-              <a href={resumeLink} target="_blank" rel="noopener noreferrer" className=" rounded-xl bg-btnBgColor px-2 py-1 text-lg font-bold">Download my resume</a>
+              <a href={resumeLink} target="_blank" rel="noopener noreferrer" className="rounded-xl btn-primary px-3 py-2 text-lg font-bold">{t('about.download')}</a>
             </motion.div>
             <div className="flex gap-x-8">
               <a href={XLink} target="_blank" rel="noopener noreferrer">

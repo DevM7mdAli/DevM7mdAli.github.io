@@ -1,0 +1,36 @@
+{
+  "nav": {
+    "about": "About me",
+    "skills": "Skills",
+    "projects": "Projects",
+    "contact": "Contact me"
+  },
+  "about": {
+    "titleCycle": ["About me", "Web developer", "App developer", "Cyber security"],
+    "download": "Download my resume"
+  },
+  "skills": {
+    "title": "My skills",
+    "groups": {
+      "Languages": "Languages",
+      "Front End": "Front End",
+      "Back End": "Back End",
+      "DataBase": "Database"
+    }
+  },
+  "projects": {
+    "title": "Projects I worked on",
+    "view": "View project",
+    "all": "All"
+  },
+  "contact": {
+    "title": "Contact me",
+    "email": "Email Address",
+    "message": "Your message",
+    "submit": "Submit",
+    "received": "Your email has been received"
+  },
+  "footer": {
+    "copyright": "© {{year}} Mohammed Alajmi"
+  }
+}

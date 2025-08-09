@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react'
 import app from '../../firebase'
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import Loading from "../Loading";
+import { useTranslation } from 'react-i18next';
 
 
 export default function InfoPart({ tag, img, name, info, object, link, stacks }) {
   const [image, setImage] = useState('')
   const [imgFinishLoad, setImgFinishLoad] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const storage = getStorage(app);
@@ -23,7 +25,7 @@ export default function InfoPart({ tag, img, name, info, object, link, stacks })
   }, [img]);
 
   return (
-    <div className='flex flex-col max-w-80 shadow-2xl rounded shadow-bgFromGrad transition-all scale-95 hover:scale-100 gap-y-2'>
+    <div className='flex flex-col max-w-80 shadow-2xl rounded transition-all scale-95 hover:scale-100 gap-y-2 bg-app-surface'>
       <div>
         <h1 className='mt-1 ml-1 absolute text-black p-2 bg-opacity-40 bg-white rounded-lg'>
           {tag}
@@ -48,10 +50,10 @@ export default function InfoPart({ tag, img, name, info, object, link, stacks })
       </div>
 
       <div className="flex flex-col justify-end items-end h-full gap-y-6 px-5 pb-2 pt-1">
-        <a className="flex items-center rounded-xl bg-btnBgColor px-2 py-1 text-lg font-bold hover:underline hover:scale-105 transition-transform" href={link} target="_blank" rel="noopener noreferrer"
+  <a className="flex items-center rounded-xl btn-primary px-3 py-2 text-lg font-bold hover:underline hover:scale-105 transition-transform" href={link} target="_blank" rel="noopener noreferrer"
           whileHover={{ scale: 1.1 }}
         >
-          View project {<CiLink />}
+          {t('projects.view')} {<CiLink />}
         </a>
         <div className="flex justify-start w-full flex-wrap gap-3">
           {

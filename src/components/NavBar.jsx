@@ -1,20 +1,16 @@
-import {
-  Navbar,
-  Collapse,
-  Typography,
-  IconButton,
-} from "@material-tailwind/react";
-
+import { Navbar, Collapse, Typography, IconButton, Switch } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 import DMA from '../assets/DMA.png'
-
-
-
-
-
+import { useTranslation } from 'react-i18next';
+import { useUIStore } from '../stores/uiStore';
 
 export default function NavBar() {
   const [openNav, setOpenNav] = useState(false);
+  const { t, i18n } = useTranslation();
+  const theme = useUIStore((s) => s.theme);
+  const toggleTheme = useUIStore((s) => s.toggleTheme);
+  const lang = useUIStore((s) => s.lang);
+  const setLang = useUIStore((s) => s.setLang);
 
   useEffect(() => {
     window.addEventListener(
@@ -24,52 +20,68 @@ export default function NavBar() {
   }, []);
 
   const navList = (
-    <ul className="mt-6 mb-1 flex flex-col gap-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+    <ul className="mt-6 mb-1 flex flex-col gap-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6 text-app">
       <Typography
         as="li"
-        color="white"
-        className="p-1"
+        className="p-1 text-app"
       >
-        <a href="#AboutMe" className="flex items-center">
-          About me
+        <a href="#AboutMe" className="flex items-center text-app hover:opacity-80">
+          {t('nav.about')}
         </a>
       </Typography>
       <Typography
         as="li"
-        color="white"
-        className="p-1"
+        className="p-1 text-app"
       >
-        <a href="#Skills" className="flex items-center">
-          Skills
+        <a href="#Skills" className="flex items-center text-app hover:opacity-80">
+          {t('nav.skills')}
         </a>
       </Typography>
       <Typography
         as="li"
-        color="white"
-        className="p-1"
+        className="p-1 text-app"
       >
-        <a href="#projects" className="flex items-center">
-          Projects
+        <a href="#projects" className="flex items-center text-app hover:opacity-80">
+          {t('nav.projects')}
         </a>
       </Typography>
       <Typography
         as="li"
-        color="white"
-        className="p-1"
+        className="p-1 text-app"
       >
-        <a href="#contact" className="flex items-center">
-          Contact me
+        <a href="#contact" className="flex items-center text-app hover:opacity-80">
+          {t('nav.contact')}
         </a>
       </Typography>
+      <div className="flex items-center gap-3 px-2">
+        <span className="text-sm">{theme === 'dark' ? '🌙' : '☀️'}</span>
+        <Switch
+          id="theme-switch"
+          color="blue"
+          checked={theme === 'dark'}
+          onChange={() => toggleTheme()}
+        />
+        <button
+          className="text-sm border px-2 py-1 rounded"
+          onClick={() => {
+            const next = lang === 'en' ? 'ar' : 'en';
+            setLang(next);
+            i18n.changeLanguage(next);
+            document.dir = next === 'ar' ? 'rtl' : 'ltr';
+          }}
+        >
+          {lang.toUpperCase()}
+        </button>
+      </div>
     </ul>
   );
 
   return (
-    <div className="sticky top-0 max-h-[768px] w-full z-30 text-white">
-      <Navbar className="h-max max-w-full rounded-none border-none px-4 py-2 lg:px-8 lg:py-4 bg-mainBackground">
+    <div className="sticky top-0 max-h-[768px] w-full z-30 text-app">
+      <Navbar className="h-max max-w-full rounded-none border-none px-4 py-2 lg:px-8 lg:py-4 bg-app-surface text-app">
         <div className="flex items-center justify-between">
           <a className="sm:w-24 w-16 flex justify-center items-center" href="/">
-            <img src={DMA} alt="Logo" />
+            <img src={DMA} alt="Logo" className="logo-themable" />
           </a>
           <div className="flex items-center gap-4">
             <div className="mr-4 hidden lg:block">{navList}</div>

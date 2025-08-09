@@ -1,7 +1,9 @@
-import ListOfSkills from "./ListOfSkills"
+import ListOfSkills from "./ListOfSkills.jsx"
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next';
 
 export default function Skills() {
+  const { t } = useTranslation();
 
   return (
     <motion.section className='flex flex-col gap-y-9 text-center' id='Skills'
@@ -11,7 +13,7 @@ export default function Skills() {
 
     >
       <h1 className='text-5xl font-bold'>
-        My skills
+        {t('skills.title')}
       </h1>
       <ListOfSkills />
     </motion.section>

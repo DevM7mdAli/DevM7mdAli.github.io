@@ -1,16 +1,18 @@
 import { useForm, ValidationError } from "@formspree/react"
 import { motion } from "framer-motion";
+import { useTranslation } from 'react-i18next';
 
 
 export default function ContactForm() {
   const [state, handleSubmit] = useForm('mnnavlzy')
+  const { t } = useTranslation();
 
   if (state.succeeded) {
     return <motion.p className="text-lg sm:text-4xl font-bold text-center"
       initial={{ y: 40, opacity: 0 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 0.1, type: "spring", stiffness: 80 }}
-    >Your email has been received</motion.p>;
+    >{t('contact.received')}</motion.p>;
   }
 
   return (
@@ -22,11 +24,11 @@ export default function ContactForm() {
       transition={{ duration: 1, delay: 0.1, type: "spring", stiffness: 80 }}
     >
 
-      <h2 className="text-5xl font-bold">Contact me</h2>
+      <h2 className="text-5xl font-bold">{t('contact.title')}</h2>
       <form onSubmit={handleSubmit} className="flex flex-col justify-center gap-8">
         <div>
           <label htmlFor="email" className="text-xl">
-            Email Address
+            {t('contact.email')}
           </label>
           <input
             id="email"
@@ -44,7 +46,7 @@ export default function ContactForm() {
 
         <div>
           <label htmlFor="message" className="text-xl">
-            Your message
+            {t('contact.message')}
           </label>
           <textarea
             id="message"
@@ -59,8 +61,8 @@ export default function ContactForm() {
           />
         </div>
 
-        <button type="submit" disabled={state.submitting} className="flex items-center justify-center rounded-lg bg-btnBgColor px-2 py-1 text-xl font-bold">
-          Submit
+  <button type="submit" disabled={state.submitting} className="flex items-center justify-center rounded-lg btn-primary px-3 py-2 text-xl font-bold">
+          {t('contact.submit')}
         </button>
       </form>
     </motion.div>

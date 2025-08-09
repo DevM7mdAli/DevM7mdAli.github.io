@@ -7,3 +7,73 @@ html {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Global theming helpers */
+:root {
+  color-scheme: light dark;
+  /* Light palette */
+  --color-bg: #f7fafc; /* slate-50ish */
+  --color-surface: #ffffff; /* white */
+  --color-text: #0b1220; /* near-black */
+  --color-muted: #6b7280; /* gray-500 */
+  --color-primary: #3b82f6; /* blue-500 */
+  --color-gradient-from: #e6f0ff; /* soft blue */
+  --color-gradient-to: #c7d2fe; /* indigo-200 */
+}
+
+.dark {
+  /* Dark palette */
+  --color-bg: #0b1220;
+  --color-surface: #111927;
+  --color-text: #e5e7eb; /* gray-200 */
+  --color-muted: #94a3b8; /* slate-400 */
+  --color-primary: #3b82f6; /* blue-500 */
+  --color-gradient-from: #09203f;
+  --color-gradient-to: #000000;
+}
+
+/* Base usage of variables */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Utility helpers for elements to consume palette consistently */
+.bg-app-surface {
+  background-color: var(--color-surface);
+}
+.text-app {
+  color: var(--color-text);
+}
+.text-muted {
+  color: var(--color-muted);
+}
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+.gradient-card {
+  background-image: linear-gradient(
+    to top right,
+    var(--color-gradient-from),
+    var(--color-gradient-to)
+  );
+}
+
+/* Theme-aware logo filter: white logo becomes dark in light mode, unchanged in dark mode */
+.logo-themable {
+  filter: var(--logo-filter);
+  transition: filter 150ms ease;
+}
+:root {
+  --logo-filter: invert(1);
+}
+.dark {
+  --logo-filter: invert(0);
+}

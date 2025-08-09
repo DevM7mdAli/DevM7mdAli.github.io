@@ -1,39 +1,34 @@
-import InfoPart from "./InfoPart";
-import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
+import InfoPart from "./InfoPart.jsx";
+import { useState } from "react";
+import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { motion } from "framer-motion";
 import app from '../../firebase'
 import Loading from "../Loading";
+import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
 export default function ProjectCard() {
-  const [dataProject, setDataProject] = useState([]);
-  const [finishLoad, setFinishLoad] = useState(false);
   const [selectedTag, setSelectedTag] = useState('All');
+  const { t } = useTranslation();
 
-  const fetchData = async () => {
-    const db = getFirestore(app);
-    const querySnapshot = await getDocs(collection(db, "Projects"));
-    const projects = []
-    querySnapshot.forEach((doc) => {
-      projects.push(doc.data());
-    });
-    setDataProject(projects);
-    setFinishLoad(true)
-  };
+  const { data: dataProject = [], isLoading } = useQuery({
+    queryKey: ['projects'],
+    queryFn: async () => {
+      const db = getFirestore(app);
+      const querySnapshot = await getDocs(collection(db, 'Projects'));
+      const projects = [];
+      querySnapshot.forEach((d) => projects.push(d.data()));
+      return projects;
+    },
+  });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-
-  const tags = ['All', ...new Set(dataProject.map((p) => p.tag))];
+  const tags = [t('projects.all'), ...new Set(dataProject.map((p) => p.tag))];
 
 
   return (
     <section id="projects">
       <div className='flex flex-col gap-y-9 text-center'>
-        <h1 className="text-5xl font-bold">Projects I worked on</h1>
+        <h1 className="text-5xl font-bold">{t('projects.title')}</h1>
 
         <div className="flex flex-wrap gap-4 justify-center mb-4">
           {tags.map((tag) => (
@@ -47,13 +42,13 @@ export default function ProjectCard() {
           ))}
         </div>
 
-        {finishLoad ? (
+        {!isLoading ? (
           <motion.div className='flex flex-row justify-center flex-wrap gap-x-12 gap-y-10'
             initial={{ opacity: 0, y: -5 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 2, delay: 0.1, type: "spring", stiffness: 80 }}
           >
-            {dataProject.filter((project) => selectedTag === 'All' || project.tag === selectedTag)
+            {dataProject.filter((project) => selectedTag === t('projects.all') || project.tag === selectedTag)
               .map((project, index) => (
                 <InfoPart
                   key={index}

@@ -4,9 +4,10 @@ import { FaReact, FaPhp } from "react-icons/fa";
 import { RiFlutterFill } from "react-icons/ri";
 import { IoLogoFirebase, IoLogoJavascript } from "react-icons/io5";
 import { motion } from 'framer-motion'
-
+import { useTranslation } from 'react-i18next';
 
 export default function ListOfSkills() {
+  const { t } = useTranslation();
 
   const listOfSkills = [
     {
@@ -36,8 +37,8 @@ export default function ListOfSkills() {
     >
       {
         listOfSkills.map(({ title, allSkill }) => (
-          <div className='flex flex-col gap-y-9 p-4 bg-gradient-to-tr from-bgFromGrad to-black rounded-lg transition-all scale-95 hover:scale-100' key={title} >
-            <h1>{title}</h1>
+          <div className='flex flex-col gap-y-9 p-4 gradient-card rounded-lg transition-all scale-95 hover:scale-100' key={title} >
+            <h1>{t(`skills.groups.${title}`)}</h1>
             {allSkill.map((skill, index) => {
               return (
                 <div key={index}>
