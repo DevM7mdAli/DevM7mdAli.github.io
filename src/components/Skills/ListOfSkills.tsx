@@ -3,7 +3,7 @@ import { TbBrandReactNative } from "react-icons/tb";
 import { FaReact, FaPhp } from "react-icons/fa";
 import { RiFlutterFill } from "react-icons/ri";
 import { IoLogoFirebase, IoLogoJavascript } from "react-icons/io5";
-import { motion } from 'framer-motion'
+import { MotionDiv } from '../../utils/motion'
 import { useTranslation } from 'react-i18next';
 
 export default function ListOfSkills() {
@@ -30,7 +30,7 @@ export default function ListOfSkills() {
 
 
   return (
-    <motion.div className='grid grid-cols-2 md:grid md:grid-cols-4  justify-center flex-wrap gap-x-12 text-center'
+    <MotionDiv className='grid grid-cols-2 md:grid md:grid-cols-4  justify-center flex-wrap gap-x-12 text-center'
       initial={{ x: -100 }}
       animate={{ x: 0 }}
       transition={{ duration: 1 }}
@@ -52,6 +52,6 @@ export default function ListOfSkills() {
           </div>
         ))
       }
-    </motion.div>
+  </MotionDiv>
   )
 }

@@ -1,4 +1,4 @@
-import { Navbar, Collapse, Typography, IconButton, Switch } from "@material-tailwind/react";
+import { Navbar, Collapse, IconButton, Switch } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 import DMA from '../assets/DMA.png'
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,12 @@ export default function NavBar() {
   const lang = useUIStore((s) => s.lang);
   const setLang = useUIStore((s) => s.setLang);
 
+  // Relax types for library components
+  const MTNavbar = Navbar as any;
+  const MTCollapse = Collapse as any;
+  const MTIconButton = IconButton as any;
+  const MTSwitch = Switch as any;
+
   useEffect(() => {
     window.addEventListener(
       "resize",
@@ -21,41 +27,29 @@ export default function NavBar() {
 
   const navList = (
     <ul className="mt-6 mb-1 flex flex-col gap-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6 text-app">
-      <Typography
-        as="li"
-        className="p-1 text-app"
-      >
+      <li className="p-1 text-app">
         <a href="#AboutMe" className="flex items-center text-app hover:opacity-80">
           {t('nav.about')}
         </a>
-      </Typography>
-      <Typography
-        as="li"
-        className="p-1 text-app"
-      >
+      </li>
+      <li className="p-1 text-app">
         <a href="#Skills" className="flex items-center text-app hover:opacity-80">
           {t('nav.skills')}
         </a>
-      </Typography>
-      <Typography
-        as="li"
-        className="p-1 text-app"
-      >
+      </li>
+      <li className="p-1 text-app">
         <a href="#projects" className="flex items-center text-app hover:opacity-80">
           {t('nav.projects')}
         </a>
-      </Typography>
-      <Typography
-        as="li"
-        className="p-1 text-app"
-      >
+      </li>
+      <li className="p-1 text-app">
         <a href="#contact" className="flex items-center text-app hover:opacity-80">
           {t('nav.contact')}
         </a>
-      </Typography>
+      </li>
       <div className="flex items-center gap-3 px-2">
         <span className="text-sm">{theme === 'dark' ? '🌙' : '☀️'}</span>
-        <Switch
+        <MTSwitch
           id="theme-switch"
           color="blue"
           checked={theme === 'dark'}
@@ -78,7 +72,7 @@ export default function NavBar() {
 
   return (
     <div className="sticky top-0 max-h-[768px] w-full z-30 text-app">
-      <Navbar className="h-max max-w-full rounded-none border-none px-4 py-2 lg:px-8 lg:py-4 bg-app-surface text-app">
+  <MTNavbar className="h-max max-w-full rounded-none border-none px-4 py-2 lg:px-8 lg:py-4 bg-app-surface text-app">
         <div className="flex items-center justify-between">
           <a className="sm:w-24 w-16 flex justify-center items-center" href="/">
             <img src={DMA} alt="Logo" className="logo-themable" />
@@ -86,7 +80,7 @@ export default function NavBar() {
           <div className="flex items-center gap-4">
             <div className="mr-4 hidden lg:block">{navList}</div>
 
-            <IconButton
+            <MTIconButton
               variant="text"
               className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
               ripple={false}
@@ -122,13 +116,13 @@ export default function NavBar() {
                   />
                 </svg>
               )}
-            </IconButton>
+            </MTIconButton>
           </div>
         </div>
-        <Collapse open={openNav}>
+        <MTCollapse open={openNav}>
           {navList}
-        </Collapse>
-      </Navbar>
+        </MTCollapse>
+      </MTNavbar>
     </div>
   );
 }

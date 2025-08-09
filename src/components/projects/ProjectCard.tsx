@@ -1,28 +1,38 @@
-import InfoPart from "./InfoPart.jsx";
+import InfoPart from "./InfoPart";
 import { useState } from "react";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
-import { motion } from "framer-motion";
+import { MotionDiv } from "../../utils/motion";
 import app from '../../firebase'
 import Loading from "../Loading";
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
+type Project = {
+  img: string;
+  tag: string;
+  name: string;
+  stacks: string[];
+  about: string;
+  object?: boolean;
+  link: string;
+};
+
 export default function ProjectCard() {
-  const [selectedTag, setSelectedTag] = useState('All');
+  const [selectedTag, setSelectedTag] = useState<string>('All');
   const { t } = useTranslation();
 
-  const { data: dataProject = [], isLoading } = useQuery({
+  const { data: dataProject = [], isLoading } = useQuery<Project[]>({
     queryKey: ['projects'],
     queryFn: async () => {
       const db = getFirestore(app);
       const querySnapshot = await getDocs(collection(db, 'Projects'));
-      const projects = [];
-      querySnapshot.forEach((d) => projects.push(d.data()));
+      const projects: Project[] = [];
+      querySnapshot.forEach((d) => projects.push(d.data() as Project));
       return projects;
     },
   });
 
-  const tags = [t('projects.all'), ...new Set(dataProject.map((p) => p.tag))];
+  const tags: string[] = [t('projects.all'), ...Array.from(new Set(dataProject.map((p) => p.tag)))];
 
 
   return (
@@ -43,7 +53,7 @@ export default function ProjectCard() {
         </div>
 
         {!isLoading ? (
-          <motion.div className='flex flex-row justify-center flex-wrap gap-x-12 gap-y-10'
+          <MotionDiv className='flex flex-row justify-center flex-wrap gap-x-12 gap-y-10'
             initial={{ opacity: 0, y: -5 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 2, delay: 0.1, type: "spring", stiffness: 80 }}
@@ -61,7 +71,7 @@ export default function ProjectCard() {
                   link={project.link}
                 />
               ))}
-          </motion.div>
+          </MotionDiv>
         ) : (
           <div className="flex flex-row justify-center items-center flex-wrap">
             <Loading typeLoad={'balls'} />

@@ -1,12 +1,12 @@
-import ListOfSkills from "./ListOfSkills.jsx"
-import { motion } from 'framer-motion'
+import ListOfSkills from "./ListOfSkills"
+import { MotionSection } from '../../utils/motion'
 import { useTranslation } from 'react-i18next';
 
 export default function Skills() {
   const { t } = useTranslation();
 
   return (
-    <motion.section className='flex flex-col gap-y-9 text-center' id='Skills'
+    <MotionSection className='flex flex-col gap-y-9 text-center' id='Skills'
       initial={{ opacity: 0, y: -50 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 0.1, type: "spring", stiffness: 80 }}
@@ -16,6 +16,6 @@ export default function Skills() {
         {t('skills.title')}
       </h1>
       <ListOfSkills />
-    </motion.section>
+    </MotionSection>
   )
 }

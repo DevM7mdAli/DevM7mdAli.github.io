@@ -2,15 +2,28 @@ import { useState } from "react"
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { FaSquareXTwitter } from "react-icons/fa6";
-import { motion } from "framer-motion"
+import { MotionDiv, MotionSection } from "../../utils/motion"
 import { TypeAnimation } from "react-type-animation";
 import { useTranslation } from 'react-i18next';
 
-export default function AboutCard({ imgLogo, about, imgGif, resumeLink, linkedLink, GitHubLink, XLink, Email }) {
+type AboutCardProps = {
+  imgLogo: string;
+  about: string;
+  imgGif: string;
+  resumeLink: string;
+  linkedLink: string;
+  GitHubLink: string;
+  XLink: string;
+  Email: string;
+}
+
+export default function AboutCard({ imgLogo, about, imgGif, resumeLink, linkedLink, GitHubLink, XLink, Email }: AboutCardProps) {
   const [inMouse, setInMouse] = useState(false)
   const { t } = useTranslation();
+  const titles = t('about.titleCycle', { returnObjects: true }) as string[];
+  const sequence = titles.flatMap((s, i) => [s, i === 0 ? 2500 : 2000]);
   return (
-    <motion.section className="flex flex-col items-center"
+    <MotionSection className="flex flex-col items-center"
       id="AboutMe"
       initial={{ opacity: 0, y: -20 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -20,7 +33,7 @@ export default function AboutCard({ imgLogo, about, imgGif, resumeLink, linkedLi
     >
 
       <TypeAnimation
-        sequence={t('about.titleCycle', { returnObjects: true }).flatMap((s, i) => [s, i === 0 ? 2500 : 2000])}
+        sequence={sequence}
         wrapper="div"
         cursor={true}
         repeat={Infinity}
@@ -59,11 +72,11 @@ export default function AboutCard({ imgLogo, about, imgGif, resumeLink, linkedLi
           <hr />
 
           <div className="flex flex-col items-center gap-y-8 sm:flex-row gap-x-8">
-            <motion.div className="flex"
+            <MotionDiv className="flex"
               whileHover={{ scale: 1.1 }}
             >
               <a href={resumeLink} target="_blank" rel="noopener noreferrer" className="rounded-xl btn-primary px-3 py-2 text-lg font-bold">{t('about.download')}</a>
-            </motion.div>
+            </MotionDiv>
             <div className="flex gap-x-8">
               <a href={XLink} target="_blank" rel="noopener noreferrer">
                 <FaSquareXTwitter size={32} />
@@ -82,6 +95,6 @@ export default function AboutCard({ imgLogo, about, imgGif, resumeLink, linkedLi
         </div>
 
       </div>
-    </motion.section>
+  </MotionSection>
   )
 }

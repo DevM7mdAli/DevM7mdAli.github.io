@@ -4,20 +4,30 @@ import app from '../../firebase'
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import Loading from "../Loading";
 import { useTranslation } from 'react-i18next';
+import { MotionA } from '../../utils/motion';
 
 
-export default function InfoPart({ tag, img, name, info, object, link, stacks }) {
+type InfoPartProps = {
+  tag: string;
+  img: string;
+  name: string;
+  info: string;
+  object?: boolean;
+  link: string;
+  stacks: string[];
+}
+
+export default function InfoPart({ tag, img, name, info, object, link, stacks }: InfoPartProps) {
   const [image, setImage] = useState('')
   const [imgFinishLoad, setImgFinishLoad] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
     const storage = getStorage(app);
-    getDownloadURL(ref(storage, img))
+  getDownloadURL(ref(storage, img))
       .then((url) => {
-        setImage(url,
-          setImgFinishLoad(true)
-        );
+    setImage(url);
+    setImgFinishLoad(true);
       })
       .catch((error) => {
         console.error(error);
@@ -50,14 +60,12 @@ export default function InfoPart({ tag, img, name, info, object, link, stacks })
       </div>
 
       <div className="flex flex-col justify-end items-end h-full gap-y-6 px-5 pb-2 pt-1">
-  <a className="flex items-center rounded-xl btn-primary px-3 py-2 text-lg font-bold hover:underline hover:scale-105 transition-transform" href={link} target="_blank" rel="noopener noreferrer"
-          whileHover={{ scale: 1.1 }}
-        >
+        <MotionA className="flex items-center rounded-xl btn-primary px-3 py-2 text-lg font-bold hover:underline hover:scale-105 transition-transform" href={link} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.1 }}>
           {t('projects.view')} {<CiLink />}
-        </a>
+        </MotionA>
         <div className="flex justify-start w-full flex-wrap gap-3">
           {
-            stacks.map((value, index) => (
+            stacks.map((value: string, index: number) => (
               <div
                 key={index}
                 className="p-2 bg-white/30 rounded-full"

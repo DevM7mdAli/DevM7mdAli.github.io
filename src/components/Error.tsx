@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { MdErrorOutline } from "react-icons/md";
-import { motion } from "framer-motion";
+import { MotionDiv } from "../utils/motion";
 
 
 const showingAnimation = {
@@ -23,7 +23,7 @@ export default function Error() {
   return (
   <div className="flex flex-col items-center justify-center text-center font-Reddit gap-y-4 h-screen text-app px-4"
     >
-      <motion.div
+  <MotionDiv
         className="flex flex-col items-center gap-y-2"
         variants={showingAnimation}
         initial="hidden"
@@ -38,14 +38,14 @@ export default function Error() {
         <p className="md:text-lg">
           The page you are looking for does not exist.
         </p>
-        <motion.div
+        <MotionDiv
           whileHover={{ scale: 1.1 }}
         >
           <Link to={"/"} className="flex items-center rounded-xl bg-btnBgColor px-2 py-1 text-lg font-bold">
             Go Back to Main Page
           </Link>
-        </motion.div>
-      </motion.div>
+        </MotionDiv>
+      </MotionDiv>
     </div>
   )
 }

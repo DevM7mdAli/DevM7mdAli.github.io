@@ -2,9 +2,9 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from '@material-tailwind/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import App from './App.jsx';
+import App from './App';
 import './index.css';
-import i18n from './i18n';
+import i18n from './i18n/index';
 import { useUIStore } from './stores/uiStore';
 
 const queryClient = new QueryClient();
@@ -34,7 +34,7 @@ function RootProviders() {
   );
 }
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <RootProviders />
   </React.StrictMode>
