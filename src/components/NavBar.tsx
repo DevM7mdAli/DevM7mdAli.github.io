@@ -46,7 +46,7 @@ export default function NavBar() {
           {t('nav.contact')}
         </a>
       </li>
-      <div className="flex items-center justify-between gap-3 sm:gap-8 px-2 pt-2">
+      <div className="flex items-center justify-between gap-3 sm:gap-8 px-2 pt-2 sm:pt-0">
         <div>
           <button onClick={() => toggleTheme()} className="text-lg">{theme === 'dark' ? '🌙' : '☀️'}</button>
         </div>
