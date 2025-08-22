@@ -1,8 +1,17 @@
 import ReactLoading from 'react-loading';
 
-export default function Loading({ typeLoad }) {
+type LoadingType = 
+    "balls" |
+    "bars" |
+    "bubbles" |
+    "cubes" |
+    "cylon" |
+    "spin" |
+    "spinningBubbles" |
+    "spokes"
+
+export default function Loading({ typeLoad }: {typeLoad: LoadingType}) {
   return (
     <ReactLoading type={typeLoad} />
   )
-
 }

@@ -1,6 +1,7 @@
 import { useForm, ValidationError } from "@formspree/react"
 import { motion, type MotionProps } from "framer-motion";
 import { useTranslation } from 'react-i18next';
+import Loading from "../Loading";
 
 type ContactFormData = {
   email: string;
@@ -71,7 +72,9 @@ export default function ContactForm() {
         </div>
 
         <button type="submit" disabled={state.submitting} className="flex items-center justify-center rounded-lg btn-primary px-3 py-2 text-xl font-bold">
-          {t('contact.submit')}
+          {
+            state.submitting ? (<Loading typeLoad={'spinningBubbles'} />) : t('contact.submit')
+          }
         </button>
       </form>
   </motion.div>
