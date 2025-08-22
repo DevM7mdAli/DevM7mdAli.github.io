@@ -7,30 +7,29 @@ type ContactFormData = {
   message: string;
 };
 
-type MotionPProps = MotionProps & React.HTMLAttributes<HTMLParagraphElement>;
-const MotionP: React.FC<MotionPProps> = (props) => <motion.p {...props} />;
-type MotionDivProps = MotionProps & React.HTMLAttributes<HTMLDivElement>;
-const MotionDiv: React.FC<MotionDivProps> = (props) => <motion.div {...props} />;
-
-
 export default function ContactForm() {
   const [state, handleSubmit] = useForm<ContactFormData>('mnnavlzy')
   const { t } = useTranslation();
 
   if (state.succeeded) {
-    return <MotionP className="text-lg sm:text-4xl font-bold text-center"
-      initial={{ y: 40, opacity: 0 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1, delay: 0.1, type: "spring", stiffness: 80 }}
-    >{t('contact.received')}</MotionP>;
+    return (
+      <motion.p
+        className="text-lg sm:text-4xl font-bold text-center"
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.1, type: "spring", stiffness: 80 }}
+      >
+        {t('contact.received')}
+      </motion.p>
+    );
   }
 
   return (
-    <MotionDiv
+    <motion.div
       id="contact"
       className="flex flex-col items-center gap-y-8"
       initial={{ y: 40, opacity: 0 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 0.1, type: "spring", stiffness: 80 }}
     >
 
@@ -44,7 +43,7 @@ export default function ContactForm() {
             id="email"
             type="email"
             name="email"
-            className="text-black w-full rounded-sm text-lg"
+            className="w-full rounded-sm text-lg text-white"
           />
           <ValidationError
             prefix="Email"
@@ -61,7 +60,7 @@ export default function ContactForm() {
           <textarea
             id="message"
             name="message"
-            className="text-black w-full rounded-sm text-lg"
+            className="w-full rounded-sm text-lg text-white"
           />
           <ValidationError
             prefix="Message"
@@ -71,10 +70,10 @@ export default function ContactForm() {
           />
         </div>
 
-  <button type="submit" disabled={state.submitting} className="flex items-center justify-center rounded-lg btn-primary px-3 py-2 text-xl font-bold">
+        <button type="submit" disabled={state.submitting} className="flex items-center justify-center rounded-lg btn-primary px-3 py-2 text-xl font-bold">
           {t('contact.submit')}
         </button>
       </form>
-  </MotionDiv>
+  </motion.div>
   )
 }
