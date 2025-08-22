@@ -1,5 +1,5 @@
 import InfoPart from "./InfoPart";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { MotionDiv } from "../../utils/motion";
 import app from '../../firebase'
@@ -10,16 +10,25 @@ import { useTranslation } from 'react-i18next';
 type Project = {
   img: string;
   tag: string;
+  arTag: string;
   name: string;
+  arName:string;
   stacks: string[];
+  arStack: string[];
   about: string;
+  arAbout: string;
   object?: boolean;
   link: string;
 };
 
 export default function ProjectCard() {
-  const [selectedTag, setSelectedTag] = useState<string>('All');
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [selectedTag, setSelectedTag] = useState<string>(t('projects.all'));
+
+  //! to insure that language will go back to select to all after changing lang
+  useEffect(() => {
+    setSelectedTag(t('projects.all'))
+  },[i18n.language])
 
   const { data: dataProject = [], isLoading } = useQuery<Project[]>({
     queryKey: ['projects'],
@@ -32,8 +41,7 @@ export default function ProjectCard() {
     },
   });
 
-  const tags: string[] = [t('projects.all'), ...Array.from(new Set(dataProject.map((p) => p.tag)))];
-
+  const tags: string[] = [t('projects.all'), ...Array.from(new Set(dataProject.map((p) => i18n.language === 'en' ? p.tag : p.arTag )))];
 
   return (
     <section id="projects">
@@ -58,15 +66,15 @@ export default function ProjectCard() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 2, delay: 0.1, type: "spring", stiffness: 80 }}
           >
-            {dataProject.filter((project) => selectedTag === t('projects.all') || project.tag === selectedTag)
+            {dataProject.filter((project) => selectedTag === t('projects.all') || (i18n.language === 'en' ? (project.tag === selectedTag) : (project.arTag === selectedTag)))
               .map((project, index) => (
                 <InfoPart
                   key={index}
                   img={project.img}
-                  tag={project.tag}
-                  name={project.name}
-                  stacks={project.stacks}
-                  info={project.about}
+                  tag={i18n.language === 'en' ? project.tag : project.arTag}
+                  name={i18n.language === 'en' ? project.name : project.arName}
+                  stacks={i18n.language === 'en' ? project.stacks : project.arStack}
+                  info={i18n.language === 'en' ? project.about : project.about}
                   object={project.object}
                   link={project.link}
                 />
