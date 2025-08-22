@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 type AboutCardProps = {
   imgLogo: string;
-  about: string;
+  about: string; //? translation key
   imgGif: string;
   resumeLink: string;
   linkedLink: string;
@@ -19,7 +19,7 @@ type AboutCardProps = {
 
 export default function AboutCard({ imgLogo, about, imgGif, resumeLink, linkedLink, GitHubLink, XLink, Email }: AboutCardProps) {
   const [inMouse, setInMouse] = useState(false)
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const titles = t('about.titleCycle', { returnObjects: true }) as string[];
   const sequence = titles.flatMap((s, i) => [s, i === 0 ? 2500 : 2000]);
   return (
@@ -33,6 +33,7 @@ export default function AboutCard({ imgLogo, about, imgGif, resumeLink, linkedLi
     >
 
       <TypeAnimation
+        key={i18n.language}
         sequence={sequence}
         wrapper="div"
         cursor={true}
@@ -66,7 +67,7 @@ export default function AboutCard({ imgLogo, about, imgGif, resumeLink, linkedLi
 
         <div className="flex flex-col justify-center gap-y-7">
           <div className="text-sm xl:text-lg">
-            {about}
+            {t(about)}
           </div>
 
           <hr />
