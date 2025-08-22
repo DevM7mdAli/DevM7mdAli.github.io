@@ -1,4 +1,4 @@
-import { Navbar, Collapse, IconButton, Switch } from "@material-tailwind/react";
+import { Navbar, Collapse, IconButton } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 import DMA from '../assets/DMA.png'
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,6 @@ export default function NavBar() {
   const MTNavbar = Navbar as any;
   const MTCollapse = Collapse as any;
   const MTIconButton = IconButton as any;
-  const MTSwitch = Switch as any;
 
   useEffect(() => {
     window.addEventListener(
@@ -47,25 +46,23 @@ export default function NavBar() {
           {t('nav.contact')}
         </a>
       </li>
-      <div className="flex items-center gap-3 px-2">
-        <span className="text-sm">{theme === 'dark' ? '🌙' : '☀️'}</span>
-        <MTSwitch
-          id="theme-switch"
-          color="blue"
-          checked={theme === 'dark'}
-          onChange={() => toggleTheme()}
-        />
-        <button
-          className="text-sm border px-2 py-1 rounded"
-          onClick={() => {
-            const next = lang === 'en' ? 'ar' : 'en';
-            setLang(next);
-            i18n.changeLanguage(next);
-            document.dir = next === 'ar' ? 'rtl' : 'ltr';
-          }}
-        >
-          {lang.toUpperCase()}
-        </button>
+      <div className="flex items-center justify-between gap-3 sm:gap-8 px-2 pt-2">
+        <div>
+          <button onClick={() => toggleTheme()} className="text-lg">{theme === 'dark' ? '🌙' : '☀️'}</button>
+        </div>
+        <div>
+          <button
+            className="text-sm border px-2 py-1 rounded"
+            onClick={() => {
+              const next = lang === 'en' ? 'ar' : 'en';
+              setLang(next);
+              i18n.changeLanguage(next);
+              document.dir = next === 'ar' ? 'rtl' : 'ltr';
+            }}
+          >
+            {lang.toUpperCase()}
+          </button>
+        </div>
       </div>
     </ul>
   );
