@@ -65,7 +65,7 @@ export default function InfoPart({
         <h2 className="text-start text-sm">{info}</h2>
       </div>
 
-      <div className="flex flex-col justify-end items-end h-full gap-y-6 px-5 pb-2 pt-1">
+      <div className="flex flex-col justify-end items-start h-full gap-y-6 px-5 pb-2 pt-1">
         <MotionA
           className="flex items-center rounded-xl btn-primary px-3 py-2 text-lg font-bold hover:underline hover:scale-105 transition-transform"
           href={link}
