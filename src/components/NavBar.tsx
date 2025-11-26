@@ -1,8 +1,8 @@
 import { Navbar, Collapse, IconButton } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
-import DMA from '../assets/DMA.png'
-import { useTranslation } from 'react-i18next';
-import { useUIStore } from '../stores/uiStore';
+import DMA from "../assets/DMA.png";
+import { useTranslation } from "react-i18next";
+import { useUIStore } from "../stores/uiStore";
 
 export default function NavBar() {
   const [openNav, setOpenNav] = useState(false);
@@ -27,37 +27,51 @@ export default function NavBar() {
   const navList = (
     <ul className="mt-6 mb-1 flex flex-col gap-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6 text-app">
       <li className="p-1 text-app">
-        <a href="#AboutMe" className="flex items-center text-app hover:opacity-80">
-          {t('nav.about')}
+        <a
+          href="#AboutMe"
+          className="flex items-center text-app hover:opacity-80"
+        >
+          {t("nav.about")}
         </a>
       </li>
       <li className="p-1 text-app">
-        <a href="#Skills" className="flex items-center text-app hover:opacity-80">
-          {t('nav.skills')}
+        <a
+          href="#Skills"
+          className="flex items-center text-app hover:opacity-80"
+        >
+          {t("nav.skills")}
         </a>
       </li>
       <li className="p-1 text-app">
-        <a href="#projects" className="flex items-center text-app hover:opacity-80">
-          {t('nav.projects')}
+        <a
+          href="#projects"
+          className="flex items-center text-app hover:opacity-80"
+        >
+          {t("nav.projects")}
         </a>
       </li>
       <li className="p-1 text-app">
-        <a href="#contact" className="flex items-center text-app hover:opacity-80">
-          {t('nav.contact')}
+        <a
+          href="#contact"
+          className="flex items-center text-app hover:opacity-80"
+        >
+          {t("nav.contact")}
         </a>
       </li>
       <div className="flex items-center justify-between gap-3 sm:gap-8 px-2 pt-2 sm:pt-0">
         <div>
-          <button onClick={() => toggleTheme()} className="text-lg">{theme === 'dark' ? '🌙' : '☀️'}</button>
+          <button onClick={() => toggleTheme()} className="text-lg">
+            {theme === "dark" ? "🌙" : "☀️"}
+          </button>
         </div>
         <div>
           <button
             className="text-sm border px-2 py-1 rounded"
             onClick={() => {
-              const next = lang === 'en' ? 'ar' : 'en';
+              const next = lang === "en" ? "ar" : "en";
               setLang(next);
               i18n.changeLanguage(next);
-              document.dir = next === 'ar' ? 'rtl' : 'ltr';
+              document.dir = next === "ar" ? "rtl" : "ltr";
             }}
           >
             {lang.toUpperCase()}
@@ -69,7 +83,7 @@ export default function NavBar() {
 
   return (
     <div className="sticky top-0 max-h-[768px] w-full z-30 text-app">
-  <MTNavbar className="h-max max-w-full rounded-none border-none px-4 py-2 lg:px-8 lg:py-4 bg-app-surface text-app">
+      <MTNavbar className="h-max max-w-full rounded-none border-none px-4 py-2 lg:px-8 lg:py-4 bg-app-surface text-app">
         <div className="flex items-center justify-between">
           <a className="sm:w-24 w-16 flex justify-center items-center" href="/">
             <img src={DMA} alt="Logo" className="logo-themable" />
@@ -116,9 +130,7 @@ export default function NavBar() {
             </MTIconButton>
           </div>
         </div>
-        <MTCollapse open={openNav}>
-          {navList}
-        </MTCollapse>
+        <MTCollapse open={openNav}>{navList}</MTCollapse>
       </MTNavbar>
     </div>
   );

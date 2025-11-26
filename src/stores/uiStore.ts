@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
-type Theme = 'light' | 'dark';
-type Lang = 'en' | 'ar';
+type Theme = "light" | "dark";
+type Lang = "en" | "ar";
 
 interface UIState {
   theme: Theme;
@@ -16,16 +16,17 @@ interface UIState {
 export const useUIStore = create<UIState>()(
   persist(
     (set, get) => ({
-      theme: 'dark',
-      lang: 'en',
+      theme: "dark",
+      lang: "en",
       setTheme: (theme: Theme) => set({ theme }),
-      toggleTheme: () => set((s) => ({ theme: s.theme === 'dark' ? 'light' : 'dark' })),
+      toggleTheme: () =>
+        set((s) => ({ theme: s.theme === "dark" ? "light" : "dark" })),
       setLang: (lang: Lang) => set({ lang }),
     }),
     {
-      name: 'ui-preferences',
+      name: "ui-preferences",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ theme: state.theme, lang: state.lang }),
-    }
-  )
+    },
+  ),
 );

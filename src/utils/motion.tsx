@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
 // Cast motion elements to broadly-typed React components to avoid TS friction
 export const MotionDiv = motion.div as unknown as React.FC<any>;

@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 const withMT = require("@material-tailwind/react/utils/withMT");
 module.exports = withMT({
-  darkMode: 'class',
+  darkMode: "class",
   content: [
     "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}",
@@ -11,18 +11,17 @@ module.exports = withMT({
   theme: {
     extend: {
       screens: {
-        'xs': '200px',
+        xs: "200px",
       },
       fontFamily: {
-        'Reddit': ["Reddit Mono", "monospace"]
+        Reddit: ["Reddit Mono", "monospace"],
       },
       colors: {
-        "mainBackground": "#0b1220",
-        "btnBgColor": "#3b82f6",
-        "bgFromGrad": "#09203f"
-      }
+        mainBackground: "#0b1220",
+        btnBgColor: "#3b82f6",
+        bgFromGrad: "#09203f",
+      },
     },
   },
   plugins: [],
 });
-

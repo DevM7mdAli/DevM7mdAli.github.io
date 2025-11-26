@@ -1,6 +1,6 @@
-import { useForm, ValidationError } from "@formspree/react"
+import { useForm, ValidationError } from "@formspree/react";
 import { motion, type MotionProps } from "framer-motion";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import Loading from "../Loading";
 
 type ContactFormData = {
@@ -9,7 +9,7 @@ type ContactFormData = {
 };
 
 export default function ContactForm() {
-  const [state, handleSubmit] = useForm<ContactFormData>('mnnavlzy')
+  const [state, handleSubmit] = useForm<ContactFormData>("mnnavlzy");
   const { t } = useTranslation();
 
   if (state.succeeded) {
@@ -20,7 +20,7 @@ export default function ContactForm() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.1, type: "spring", stiffness: 80 }}
       >
-        {t('contact.received')}
+        {t("contact.received")}
       </motion.p>
     );
   }
@@ -33,12 +33,14 @@ export default function ContactForm() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 0.1, type: "spring", stiffness: 80 }}
     >
-
-      <h2 className="text-5xl font-bold">{t('contact.title')}</h2>
-      <form onSubmit={handleSubmit} className="flex flex-col justify-center gap-8">
+      <h2 className="text-5xl font-bold">{t("contact.title")}</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col justify-center gap-8"
+      >
         <div>
           <label htmlFor="email" className="text-xl">
-            {t('contact.email')}
+            {t("contact.email")}
           </label>
           <input
             id="email"
@@ -56,7 +58,7 @@ export default function ContactForm() {
 
         <div>
           <label htmlFor="message" className="text-xl">
-            {t('contact.message')}
+            {t("contact.message")}
           </label>
           <textarea
             id="message"
@@ -71,12 +73,18 @@ export default function ContactForm() {
           />
         </div>
 
-        <button type="submit" disabled={state.submitting} className="flex items-center justify-center rounded-lg btn-primary px-3 py-2 text-xl font-bold">
-          {
-            state.submitting ? (<Loading typeLoad={'spinningBubbles'} />) : t('contact.submit')
-          }
+        <button
+          type="submit"
+          disabled={state.submitting}
+          className="flex items-center justify-center rounded-lg btn-primary px-3 py-2 text-xl font-bold"
+        >
+          {state.submitting ? (
+            <Loading typeLoad={"spinningBubbles"} />
+          ) : (
+            t("contact.submit")
+          )}
         </button>
       </form>
-  </motion.div>
-  )
+    </motion.div>
+  );
 }

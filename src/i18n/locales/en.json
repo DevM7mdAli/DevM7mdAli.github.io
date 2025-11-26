@@ -6,9 +6,14 @@
     "contact": "Contact me"
   },
   "about": {
-    "titleCycle": ["About me", "Web developer", "App developer", "Cyber security"],
-  "download": "Download my resume",
-  "body": "Mohammed Alajmi a software programmer with a deep passion for programming, particularly in application, web development, and cybersecurity. I find great excitement in learning about new technologies and exploring various frameworks to create websites and applications that serve and assist people through their daily lives."
+    "titleCycle": [
+      "About me",
+      "Web developer",
+      "App developer",
+      "Cyber security"
+    ],
+    "download": "Download my resume",
+    "body": "Mohammed Alajmi a software programmer with a deep passion for programming, particularly in application, web development, and cybersecurity. I find great excitement in learning about new technologies and exploring various frameworks to create websites and applications that serve and assist people through their daily lives."
   },
   "skills": {
     "title": "My skills",
