@@ -1,6 +1,5 @@
 import { Navbar, Collapse, IconButton } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
-import DMA from "../assets/DMA.png";
 import { useTranslation } from "react-i18next";
 import { useUIStore } from "../stores/uiStore";
 
@@ -86,7 +85,7 @@ export default function NavBar() {
       <MTNavbar className="h-max max-w-full rounded-none border-none px-4 py-2 lg:px-8 lg:py-4 bg-app-surface text-app">
         <div className="flex items-center justify-between">
           <a className="sm:w-24 w-16 flex justify-center items-center" href="/">
-            <img src={DMA} alt="Logo" className="logo-themable" />
+            <img src={'/DMA.png'} alt="Logo" className="logo-themable" />
           </a>
           <div className="flex items-center gap-4">
             <div className="mr-4 hidden lg:block">{navList}</div>

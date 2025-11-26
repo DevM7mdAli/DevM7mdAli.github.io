@@ -3,8 +3,6 @@ import NavBar from "./components/NavBar";
 import AboutCard from "./components/About/AboutCard";
 import Skills from "./components/Skills/Skills";
 import me from "./data/me.json";
-import Logo from "./assets/aboutPics/HiEmoji.png";
-import LogoGif from "./assets/aboutPics/HiEmojiGif.gif";
 import ProjectCard from "./components/projects/ProjectCard";
 import {
   createBrowserRouter,
@@ -36,8 +34,6 @@ function HolderElement() {
       <div>
         <div className="flex flex-col gap-y-64 justify-center items-center w-full px-8 lg:px-24 mt-20">
           <AboutCard
-            imgLogo={Logo}
-            imgGif={LogoGif}
             resumeLink={me.resumeLink}
             linkedLink={me.linkedLink}
             GitHubLink={me.GitHubLink}

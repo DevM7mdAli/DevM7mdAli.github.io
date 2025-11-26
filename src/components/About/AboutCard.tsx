@@ -1,15 +1,14 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { MotionDiv, MotionSection } from "../../utils/motion";
+import { AnimatePresence, motion, useInView } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
 import { useTranslation } from "react-i18next";
 
 type AboutCardProps = {
-  imgLogo: string;
   about: string; //? translation key
-  imgGif: string;
   resumeLink: string;
   linkedLink: string;
   GitHubLink: string;
@@ -18,19 +17,31 @@ type AboutCardProps = {
 };
 
 export default function AboutCard({
-  imgLogo,
   about,
-  imgGif,
   resumeLink,
   linkedLink,
   GitHubLink,
   XLink,
   Email,
 }: AboutCardProps) {
-  const [inMouse, setInMouse] = useState(false);
+  const viewRef = useRef<HTMLDivElement>(null)
+  const inView = useInView(viewRef, { margin: "-10% 0px" })
+  const images = ['/1.png', '/2.png', '/3.png', '/4.png', '/5.png']
+  const [image, setImage] = useState(images[0])
   const { t, i18n } = useTranslation();
   const titles = t("about.titleCycle", { returnObjects: true }) as string[];
   const sequence = titles.flatMap((s, i) => [s, i === 0 ? 2500 : 2000]);
+
+  useEffect(() => {
+    if (!inView) return;
+
+    const interval = setInterval(() => {
+      setImage(images[Math.floor(Math.random() * images.length)])
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [inView])
+
   return (
     <MotionSection
       className="flex flex-col items-center"
@@ -50,32 +61,24 @@ export default function AboutCard({
       />
 
       <div className="flex flex-col lg:flex-row p-9 gap-x-12 max-w-7xl h-auto border-blue-200 gradient-card rounded-lg transition-all scale-95 hover:scale-100">
-        <div className="flex justify-center items-center">
-          {!inMouse ? (
-            <img
-              onMouseEnter={() => {
-                setInMouse(true);
+        <div ref={viewRef} className="flex justify-center items-center bg-opacity-5 bg-white w-full min-h-[370px] lg:min-h-[200px] lg:w-1/6 flex-shrink-0 rounded-lg">
+          <AnimatePresence mode="wait">
+            <motion.img
+              initial={{ opacity: 0, scale: 0, rotate: -15, y: -10 }}
+              animate={{ opacity: 1, scale: 1.1, rotate: 0, y: 0 }}
+              exit={{ opacity: 0, scale: 0, rotate: 15, y: 10 }}
+              transition={{
+                type: "spring",
+                stiffness: 400,
+                damping: 50,
+                duration: 1,
               }}
-              onMouseLeave={() => {
-                setInMouse(false);
-              }}
-              src={!inMouse ? `${imgLogo}` : `${imgGif}`}
-              className={`w-auto h-auto bg-opacity-5 bg-white rounded-lg scale-95 ${!inMouse ? "transition-transform " : "transition-transform scale-100"}`}
-              alt="Logo Part"
+              src={image}
+              key={image}
+              className={`w-auto h-auto  rounded-lg transition-transform scale-100`}
+              alt="Random picture"
             />
-          ) : (
-            <img
-              onMouseEnter={() => {
-                setInMouse(true);
-              }}
-              onMouseLeave={() => {
-                setInMouse(false);
-              }}
-              src={!inMouse ? `${imgLogo}` : `${imgGif}`}
-              className={`w-auto h-auto bg-opacity-5 bg-white rounded-lg scale-95 ${!inMouse ? "transition-transform " : "transition-transform scale-100"}`}
-              alt="Logo Part"
-            />
-          )}
+          </AnimatePresence>
         </div>
 
         <div className="flex flex-col justify-center gap-y-7">

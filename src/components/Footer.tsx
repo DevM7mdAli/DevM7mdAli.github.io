@@ -2,7 +2,6 @@ import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { MotionFooter } from "../utils/motion";
-import DMA from "../assets/DMA.png";
 import { useTranslation } from "react-i18next";
 
 type FooterProps = {
@@ -28,7 +27,7 @@ export default function Footer({
     >
       <div className="flex flex-row flex-wrap items-center justify-center gap-y-6 gap-x-12  text-center md:justify-between">
         <a href="/" className="flex justify-center items-center md:w-24 w-16">
-          <img src={DMA} alt="logo" className="logo-themable" />
+          <img src={'/DMA.png'} alt="logo" className="logo-themable" />
         </a>
         <div className="flex flex-wrap items-center gap-y-2 gap-x-8">
           <a href={XLink} target="_blank" rel="noopener noreferrer">
