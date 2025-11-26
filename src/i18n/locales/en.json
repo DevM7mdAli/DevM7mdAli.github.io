@@ -8,12 +8,13 @@
   "about": {
     "titleCycle": [
       "About me",
+      "Package development",
       "Web developer",
       "App developer",
       "Cyber security"
     ],
     "download": "Download my resume",
-    "body": "Mohammed Alajmi a software programmer with a deep passion for programming, particularly in application, web development, and cybersecurity. I find great excitement in learning about new technologies and exploring various frameworks to create websites and applications that serve and assist people through their daily lives."
+    "body": "Mohammed Alajmi a software programmer with a deep passion for programming, particularly in package development, application development, web development, and cybersecurity. I find great excitement in learning about new technologies and exploring various frameworks to create websites and applications that serve and assist people through their daily lives."
   },
   "skills": {
     "title": "My skills",
