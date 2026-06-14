@@ -1,57 +1,34 @@
-import { useEffect, useState } from "react";
-import app from "../../firebase";
-import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { FaExternalLinkAlt } from "react-icons/fa";
+import { FaExternalLinkAlt, FaGithub } from "react-icons/fa";
 import { MdImageNotSupported } from "react-icons/md";
 
 type InfoPartProps = {
-  tag: string;
-  img: string;
-  name: string;
-  info: string;
-  object?: boolean;
-  link: string;
-  stacks: string[];
+  title: string;
+  description: string;
+  image_url: string | null;
+  github_url: string | null;
+  live_url: string | null;
+  categoryName: string;
+  tags: string[];
 };
 
 type ImgState = "loading" | "loaded" | "error";
 
 export default function InfoPart({
-  tag,
-  img,
-  name,
-  info,
-  object,
-  link,
-  stacks,
+  title,
+  description,
+  image_url,
+  github_url,
+  live_url,
+  categoryName,
+  tags,
 }: InfoPartProps) {
-  const [imageUrl, setImageUrl] = useState("");
-  const [imgState, setImgState] = useState<ImgState>("loading");
+  const [imgState, setImgState] = useState<ImgState>(
+    image_url ? "loading" : "error",
+  );
   const { t } = useTranslation();
-
-  useEffect(() => {
-    let cancelled = false;
-    setImgState("loading");
-    setImageUrl("");
-
-    const storage = getStorage(app);
-    getDownloadURL(ref(storage, img))
-      .then((url) => {
-        if (!cancelled) {
-          setImageUrl(url);
-          setImgState("loaded");
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setImgState("error");
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [img]);
 
   return (
     <motion.div
@@ -68,23 +45,25 @@ export default function InfoPart({
         className="relative overflow-hidden"
         style={{ height: "180px", background: "var(--color-surface-2)" }}
       >
-        {/* Tag badge */}
-        <span
-          className="absolute top-3 left-3 z-10 text-xs font-semibold px-2.5 py-1 rounded-full"
-          style={{
-            background: "rgba(255,255,255,0.08)",
-            color: "var(--color-accent)",
-            border: "1px solid var(--color-border)",
-            fontFamily: "'JetBrains Mono', monospace",
-            letterSpacing: "0.05em",
-          }}
-        >
-          {tag}
-        </span>
+        {/* Category badge */}
+        {categoryName && (
+          <span
+            className="absolute top-3 left-3 z-10 text-xs font-semibold px-2.5 py-1 rounded-full"
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              color: "var(--color-accent)",
+              border: "1px solid var(--color-border)",
+              fontFamily: "'JetBrains Mono', monospace",
+              letterSpacing: "0.05em",
+            }}
+          >
+            {categoryName}
+          </span>
+        )}
 
-        {/* Loading */}
+        {/* Loading skeleton */}
         {imgState === "loading" && (
-          <div className="w-full h-full flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center">
             <div
               className="w-7 h-7 rounded-full border-2 border-t-transparent animate-spin"
               style={{ borderColor: "var(--color-muted)" }}
@@ -92,34 +71,37 @@ export default function InfoPart({
           </div>
         )}
 
-        {/* Loaded */}
-        {imgState === "loaded" && (
+        {/* Image */}
+        {image_url && (
           <img
-            src={imageUrl}
-            alt={name}
-            className={`w-full h-full transition-transform duration-500 hover:scale-105 ${
-              object ? "object-contain p-4" : "object-cover"
+            src={image_url}
+            alt={title}
+            className={`w-full h-full object-cover transition-transform duration-500 hover:scale-105 ${
+              imgState === "loaded" ? "opacity-100" : "opacity-0"
             }`}
+            style={{ transition: "opacity 0.3s ease, transform 0.5s ease" }}
+            onLoad={() => setImgState("loaded")}
+            onError={() => setImgState("error")}
           />
         )}
 
-        {/* Error */}
+        {/* Error / no image */}
         {imgState === "error" && (
-          <div className="w-full h-full flex flex-col items-center justify-center gap-2.5">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5">
             <MdImageNotSupported
               size={36}
-              style={{ color: "var(--color-muted)", opacity: 0.4 }}
+              style={{ color: "var(--color-muted)", opacity: 0.35 }}
             />
             <span
               style={{
                 fontFamily: "'JetBrains Mono', monospace",
-                fontSize: "0.65rem",
-                letterSpacing: "0.1em",
+                fontSize: "0.62rem",
+                letterSpacing: "0.12em",
                 color: "var(--color-muted)",
-                opacity: 0.5,
+                opacity: 0.45,
               }}
             >
-              IMAGE UNAVAILABLE
+              {image_url ? "IMAGE UNAVAILABLE" : "NO PREVIEW"}
             </span>
           </div>
         )}
@@ -131,43 +113,90 @@ export default function InfoPart({
           className="text-base font-semibold leading-snug"
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
-          {name}
+          {title}
         </h3>
+
         <p
           className="text-sm leading-relaxed line-clamp-3 flex-1"
           style={{ color: "var(--color-muted)" }}
         >
-          {info}
+          {description}
         </p>
 
-        {/* Stack pills */}
-        <div className="flex flex-wrap gap-1.5 pt-1">
-          {stacks.map((s, i) => (
-            <span
-              key={i}
-              className="text-xs px-2 py-0.5 rounded-full"
+        {/* Tag pills */}
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {tags.map((tag, i) => (
+              <span
+                key={i}
+                className="text-xs px-2 py-0.5 rounded-full"
+                style={{
+                  background: "var(--color-surface-2)",
+                  border: "1px solid var(--color-border)",
+                  color: "var(--color-muted)",
+                  fontFamily: "'JetBrains Mono', monospace",
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* CTAs */}
+        <div className="flex gap-2 mt-2">
+          {live_url && (
+            <a
+              href={live_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
+            >
+              {t("projects.view")}
+              <FaExternalLinkAlt size={11} />
+            </a>
+          )}
+          {github_url && (
+            <a
+              href={github_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="flex items-center justify-center px-3 py-2.5 rounded-xl text-sm transition-all"
               style={{
-                background: "var(--color-surface-2)",
                 border: "1px solid var(--color-border)",
                 color: "var(--color-muted)",
+                background: "var(--color-surface-2)",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.borderColor =
+                  "var(--color-primary)";
+                (e.currentTarget as HTMLElement).style.color =
+                  "var(--color-text)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.borderColor =
+                  "var(--color-border)";
+                (e.currentTarget as HTMLElement).style.color =
+                  "var(--color-muted)";
+              }}
+            >
+              <FaGithub size={16} />
+            </a>
+          )}
+          {!live_url && !github_url && (
+            <span
+              className="text-xs px-4 py-2.5 rounded-xl"
+              style={{
+                color: "var(--color-muted)",
+                border: "1px solid var(--color-border)",
                 fontFamily: "'JetBrains Mono', monospace",
               }}
             >
-              {s}
+              Private
             </span>
-          ))}
+          )}
         </div>
-
-        {/* CTA */}
-        <a
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-primary mt-2 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
-        >
-          {t("projects.view")}
-          <FaExternalLinkAlt size={11} />
-        </a>
       </div>
     </motion.div>
   );

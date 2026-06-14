@@ -2,6 +2,7 @@
   "nav": {
     "about": "About me",
     "skills": "Skills",
+    "experience": "Experience",
     "projects": "Projects",
     "contact": "Contact me"
   },
@@ -26,9 +27,20 @@
     }
   },
   "projects": {
+    "label": "Selected Work",
     "title": "Projects I worked on",
+    "subtitle": "Selected work from the past few years.",
     "view": "View project",
-    "all": "All"
+    "all": "All",
+    "loadMore": "Load more"
+  },
+  "experience": {
+    "label": "Career",
+    "title": "Work Experience",
+    "subtitle": "Companies and roles that shaped my craft.",
+    "current": "CURRENT",
+    "present": "Present",
+    "empty": "No experience entries yet"
   },
   "contact": {
     "title": "Contact me",

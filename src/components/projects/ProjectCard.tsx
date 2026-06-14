@@ -1,68 +1,54 @@
 import InfoPart from "./InfoPart";
 import { useEffect, useState } from "react";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
-import app from "../../firebase";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { FaChevronDown } from "react-icons/fa";
-
-type Project = {
-  img: string;
-  tag: string;
-  arTag: string;
-  name: string;
-  arName: string;
-  stacks: string[];
-  arStack: string[];
-  about: string;
-  arAbout: string;
-  object?: boolean;
-  link: string;
-};
+import { fetchProjects, type Locale, type Project } from "../../lib/supabase";
 
 const PAGE_SIZE = 6;
 const LOAD_STEP = 3;
 
 export default function ProjectCard() {
   const { t, i18n } = useTranslation();
+  const locale = (i18n.language === "ar" ? "ar" : "en") as Locale;
+
   const [selectedTag, setSelectedTag] = useState<string>(t("projects.all"));
   const [visible, setVisible] = useState(PAGE_SIZE);
 
-  // Reset pagination when filter or language changes
+  // Reset filter label when language changes
   useEffect(() => {
     setSelectedTag(t("projects.all"));
   }, [i18n.language]);
 
+  // Reset pagination when filter changes
   useEffect(() => {
     setVisible(PAGE_SIZE);
   }, [selectedTag]);
 
-  const { data: dataProject = [], isLoading } = useQuery<Project[]>({
-    queryKey: ["projects"],
-    queryFn: async () => {
-      const db = getFirestore(app);
-      const snap = await getDocs(collection(db, "Projects"));
-      const projects: Project[] = [];
-      snap.forEach((d) => projects.push(d.data() as Project));
-      return projects;
-    },
+  const { data: projects = [], isLoading } = useQuery<Project[]>({
+    queryKey: ["projects", locale],
+    queryFn: () => fetchProjects(locale),
+    staleTime: 1000 * 60 * 5,
   });
 
+  const ALL_LABEL = t("projects.all");
+
   const tags: string[] = [
-    t("projects.all"),
+    ALL_LABEL,
     ...Array.from(
       new Set(
-        dataProject.map((p) => (i18n.language === "en" ? p.tag : p.arTag)),
+        projects
+          .map((p) => p.category?.name ?? "")
+          .filter(Boolean),
       ),
     ),
   ];
 
-  const allFiltered = dataProject.filter(
-    (p) =>
-      selectedTag === t("projects.all") ||
-      (i18n.language === "en" ? p.tag === selectedTag : p.arTag === selectedTag),
-  );
+  const allFiltered =
+    selectedTag === ALL_LABEL
+      ? projects
+      : projects.filter((p) => p.category?.name === selectedTag);
 
   const shown = allFiltered.slice(0, visible);
   const remaining = Math.max(0, allFiltered.length - visible);
@@ -79,7 +65,7 @@ export default function ProjectCard() {
     >
       {/* Header */}
       <div className="text-center flex flex-col gap-3">
-        <span className="section-label block">{t("projects.title")}</span>
+        <span className="section-label block">{t("projects.label")}</span>
         <h2
           className="text-4xl sm:text-5xl font-bold"
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
@@ -90,7 +76,7 @@ export default function ProjectCard() {
           className="text-base max-w-md mx-auto mt-1"
           style={{ color: "var(--color-muted)" }}
         >
-          Selected work from the past few years.
+          {t("projects.subtitle")}
         </p>
       </div>
 
@@ -137,37 +123,33 @@ export default function ProjectCard() {
             <AnimatePresence mode="popLayout">
               {shown.map((project, i) => (
                 <motion.div
-                  key={`${project.name}-${i}`}
+                  key={project.id}
                   initial={{ opacity: 0, scale: 0.96, y: 12 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.3, delay: i >= visible - LOAD_STEP ? (i - (visible - LOAD_STEP)) * 0.08 : 0 }}
+                  transition={{
+                    duration: 0.3,
+                    delay:
+                      i >= visible - LOAD_STEP
+                        ? (i - (visible - LOAD_STEP)) * 0.08
+                        : 0,
+                  }}
                 >
                   <InfoPart
-                    img={project.img}
-                    tag={
-                      i18n.language === "en" ? project.tag : project.arTag
-                    }
-                    name={
-                      i18n.language === "en" ? project.name : project.arName
-                    }
-                    stacks={
-                      i18n.language === "en"
-                        ? project.stacks
-                        : project.arStack
-                    }
-                    info={
-                      i18n.language === "en" ? project.about : project.arAbout
-                    }
-                    object={project.object}
-                    link={project.link}
+                    title={project.title}
+                    description={project.description}
+                    image_url={project.image_url}
+                    github_url={project.github_url}
+                    live_url={project.live_url}
+                    categoryName={project.category?.name ?? ""}
+                    tags={project.tags.map((t) => t.tag.name)}
                   />
                 </motion.div>
               ))}
             </AnimatePresence>
           </motion.div>
 
-          {/* Pagination — Load More */}
+          {/* Load More */}
           <AnimatePresence>
             {hasMore && (
               <motion.div
@@ -208,19 +190,26 @@ export default function ProjectCard() {
                       "var(--color-surface)";
                   }}
                 >
-                  Load more
+                  {t("projects.loadMore")}
                   <motion.span
                     animate={{ y: [0, 3, 0] }}
-                    transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                    transition={{
+                      duration: 1.4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                   >
-                    <FaChevronDown size={12} style={{ color: "var(--color-muted)" }} />
+                    <FaChevronDown
+                      size={12}
+                      style={{ color: "var(--color-muted)" }}
+                    />
                   </motion.span>
                 </button>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* All loaded state */}
+          {/* All loaded */}
           {!hasMore && allFiltered.length > PAGE_SIZE && (
             <motion.p
               className="text-center text-xs"

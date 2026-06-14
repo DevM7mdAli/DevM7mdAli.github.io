@@ -1,6 +1,7 @@
 import NavBar from "./components/NavBar";
 import AboutCard from "./components/About/AboutCard";
 import Skills from "./components/Skills/Skills";
+import ExperienceSection from "./components/Experience/ExperienceSection";
 import me from "./data/me.json";
 import ProjectCard from "./components/projects/ProjectCard";
 import {
@@ -45,6 +46,7 @@ function HolderElement() {
 
         <div className="flex flex-col gap-32 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto pb-20">
           <Skills />
+          <ExperienceSection />
           <ProjectCard />
           <ContactForm />
         </div>
