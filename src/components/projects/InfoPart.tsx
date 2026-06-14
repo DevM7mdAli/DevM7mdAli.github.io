@@ -4,6 +4,7 @@ import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { MdImageNotSupported } from "react-icons/md";
 
 type InfoPartProps = {
   tag: string;
@@ -15,6 +16,8 @@ type InfoPartProps = {
   stacks: string[];
 };
 
+type ImgState = "loading" | "loaded" | "error";
+
 export default function InfoPart({
   tag,
   img,
@@ -24,18 +27,30 @@ export default function InfoPart({
   link,
   stacks,
 }: InfoPartProps) {
-  const [image, setImage] = useState("");
-  const [loaded, setLoaded] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imgState, setImgState] = useState<ImgState>("loading");
   const { t } = useTranslation();
 
   useEffect(() => {
+    let cancelled = false;
+    setImgState("loading");
+    setImageUrl("");
+
     const storage = getStorage(app);
     getDownloadURL(ref(storage, img))
       .then((url) => {
-        setImage(url);
-        setLoaded(true);
+        if (!cancelled) {
+          setImageUrl(url);
+          setImgState("loaded");
+        }
       })
-      .catch(console.error);
+      .catch(() => {
+        if (!cancelled) setImgState("error");
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [img]);
 
   return (
@@ -48,11 +63,12 @@ export default function InfoPart({
         border: "1px solid var(--color-border)",
       }}
     >
-      {/* Image */}
+      {/* Image area */}
       <div
         className="relative overflow-hidden"
         style={{ height: "180px", background: "var(--color-surface-2)" }}
       >
+        {/* Tag badge */}
         <span
           className="absolute top-3 left-3 z-10 text-xs font-semibold px-2.5 py-1 rounded-full"
           style={{
@@ -66,20 +82,45 @@ export default function InfoPart({
           {tag}
         </span>
 
-        {loaded ? (
-          <img
-            src={image}
-            alt={name}
-            className={`w-full h-full transition-transform duration-500 hover:scale-105 ${
-              object ? "object-contain p-4" : "object-cover"
-            }`}
-          />
-        ) : (
+        {/* Loading */}
+        {imgState === "loading" && (
           <div className="w-full h-full flex items-center justify-center">
             <div
               className="w-7 h-7 rounded-full border-2 border-t-transparent animate-spin"
               style={{ borderColor: "var(--color-muted)" }}
             />
+          </div>
+        )}
+
+        {/* Loaded */}
+        {imgState === "loaded" && (
+          <img
+            src={imageUrl}
+            alt={name}
+            className={`w-full h-full transition-transform duration-500 hover:scale-105 ${
+              object ? "object-contain p-4" : "object-cover"
+            }`}
+          />
+        )}
+
+        {/* Error */}
+        {imgState === "error" && (
+          <div className="w-full h-full flex flex-col items-center justify-center gap-2.5">
+            <MdImageNotSupported
+              size={36}
+              style={{ color: "var(--color-muted)", opacity: 0.4 }}
+            />
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: "0.65rem",
+                letterSpacing: "0.1em",
+                color: "var(--color-muted)",
+                opacity: 0.5,
+              }}
+            >
+              IMAGE UNAVAILABLE
+            </span>
           </div>
         )}
       </div>
