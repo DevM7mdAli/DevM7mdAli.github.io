@@ -15,11 +15,41 @@ module.exports = withMT({
       },
       fontFamily: {
         Reddit: ["Reddit Mono", "monospace"],
+        display: ["Space Grotesk", "sans-serif"],
+        body: ["Inter", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
       },
       colors: {
-        mainBackground: "#0b1220",
-        btnBgColor: "#3b82f6",
-        bgFromGrad: "#09203f",
+        mainBackground: "#040D21",
+        btnBgColor: "#6366F1",
+        bgFromGrad: "#0A1628",
+      },
+      animation: {
+        "scroll-left": "scrollLeft 40s linear infinite",
+        "scroll-right": "scrollRight 40s linear infinite",
+        float: "float 6s ease-in-out infinite",
+        "float-delayed": "float 6s ease-in-out infinite 1.5s",
+        "glow-pulse": "glowPulse 3s ease-in-out infinite",
+        "spin-slow": "spin 12s linear infinite",
+        "spin-slow-reverse": "spin 9s linear infinite reverse",
+      },
+      keyframes: {
+        scrollLeft: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
+        scrollRight: {
+          from: { transform: "translateX(-50%)" },
+          to: { transform: "translateX(0)" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-18px)" },
+        },
+        glowPulse: {
+          "0%, 100%": { opacity: "0.4" },
+          "50%": { opacity: "0.9" },
+        },
       },
     },
   },

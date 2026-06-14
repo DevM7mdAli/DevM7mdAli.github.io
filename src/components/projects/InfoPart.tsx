@@ -1,10 +1,9 @@
-import { CiLink } from "react-icons/ci";
 import { useEffect, useState } from "react";
 import app from "../../firebase";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import Loading from "../Loading";
 import { useTranslation } from "react-i18next";
-import { MotionA } from "../../utils/motion";
+import { motion } from "framer-motion";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 type InfoPartProps = {
   tag: string;
@@ -26,7 +25,7 @@ export default function InfoPart({
   stacks,
 }: InfoPartProps) {
   const [image, setImage] = useState("");
-  const [imgFinishLoad, setImgFinishLoad] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -34,55 +33,92 @@ export default function InfoPart({
     getDownloadURL(ref(storage, img))
       .then((url) => {
         setImage(url);
-        setImgFinishLoad(true);
+        setLoaded(true);
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch(console.error);
   }, [img]);
 
   return (
-    <div className="flex flex-col max-w-80 shadow-2xl rounded transition-all scale-95 hover:scale-100 gap-y-2 bg-app-surface">
-      <div>
-        <h1 className="mt-1 ml-1 absolute text-black p-2 bg-opacity-40 bg-white rounded-lg">
+    <motion.div
+      whileHover={{ y: -8 }}
+      transition={{ type: "spring", stiffness: 280, damping: 22 }}
+      className="project-card flex flex-col w-72 flex-shrink-0"
+      style={{
+        background: "var(--color-surface)",
+        border: "1px solid var(--color-border)",
+      }}
+    >
+      {/* Image */}
+      <div className="relative overflow-hidden" style={{ height: "180px", background: "var(--color-surface-2)" }}>
+        <span
+          className="absolute top-3 left-3 z-10 text-xs font-semibold px-2.5 py-1 rounded-full"
+          style={{
+            background: "rgba(99,102,241,0.2)",
+            color: "var(--color-primary)",
+            border: "1px solid rgba(99,102,241,0.3)",
+            fontFamily: "'JetBrains Mono', monospace",
+            letterSpacing: "0.05em",
+          }}
+        >
           {tag}
-        </h1>
-        {imgFinishLoad ? (
+        </span>
+
+        {loaded ? (
           <img
             src={image}
-            className={`w-full max-h-48 ${object ? "object-contain" : "object-cover"}`}
             alt={name}
+            className={`w-full h-full transition-transform duration-500 hover:scale-105 ${
+              object ? "object-contain p-4" : "object-cover"
+            }`}
           />
         ) : (
-          <div className="flex justify-center items-center">
-            <Loading typeLoad={"spinningBubbles"} />
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "var(--color-primary)" }} />
           </div>
         )}
       </div>
 
-      <div className="px-5">
-        <h1 className="text-lg mb-2">{name}</h1>
-        <h2 className="text-start text-sm">{info}</h2>
-      </div>
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-5 gap-3">
+        <h3
+          className="text-base font-semibold leading-snug"
+          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+        >
+          {name}
+        </h3>
+        <p className="text-sm leading-relaxed line-clamp-3 flex-1" style={{ color: "var(--color-muted)" }}>
+          {info}
+        </p>
 
-      <div className="flex flex-col justify-end items-start h-full gap-y-6 px-5 pb-2 pt-1">
-        <MotionA
-          className="flex items-center rounded-xl btn-primary px-3 py-2 text-lg font-bold hover:underline hover:scale-105 transition-transform"
+        {/* Stack pills */}
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {stacks.map((s, i) => (
+            <span
+              key={i}
+              className="text-xs px-2 py-0.5 rounded-full"
+              style={{
+                background: "var(--color-surface-2)",
+                border: "1px solid var(--color-border)",
+                color: "var(--color-muted)",
+                fontFamily: "'JetBrains Mono', monospace",
+              }}
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <a
           href={link}
           target="_blank"
           rel="noopener noreferrer"
-          whileHover={{ scale: 1.1 }}
+          className="btn-primary mt-2 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
         >
-          {t("projects.view")} {<CiLink />}
-        </MotionA>
-        <div className="flex justify-start w-full flex-wrap gap-3">
-          {stacks.map((value: string, index: number) => (
-            <div key={index} className="p-2 bg-white/30 rounded-full">
-              {value}
-            </div>
-          ))}
-        </div>
+          {t("projects.view")}
+          <FaExternalLinkAlt size={11} />
+        </a>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -1,4 +1,3 @@
-//import logo from './logo.svg';
 import NavBar from "./components/NavBar";
 import AboutCard from "./components/About/AboutCard";
 import Skills from "./components/Skills/Skills";
@@ -28,27 +27,29 @@ function App() {
 
 function HolderElement() {
   return (
-    <div className="App font-Reddit flex flex-col items-center min-h-screen text-app">
+    <div
+      className="flex flex-col min-h-screen"
+      style={{ fontFamily: "'Inter', sans-serif", background: "var(--color-bg)", color: "var(--color-text)" }}
+    >
       <NavBar />
 
-      <div>
-        <div className="flex flex-col gap-y-64 justify-center items-center w-full px-8 lg:px-24 mt-20">
-          <AboutCard
-            resumeLink={me.resumeLink}
-            linkedLink={me.linkedLink}
-            GitHubLink={me.GitHubLink}
-            XLink={me.XLink}
-            Email={me.Email}
-            about={"about.body"}
-          />
+      <main className="w-full">
+        <AboutCard
+          resumeLink={me.resumeLink}
+          linkedLink={me.linkedLink}
+          GitHubLink={me.GitHubLink}
+          XLink={me.XLink}
+          Email={me.Email}
+          about="about.body"
+        />
 
+        <div className="flex flex-col gap-32 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto pb-20">
           <Skills />
-
           <ProjectCard />
-
           <ContactForm />
         </div>
-      </div>
+      </main>
+
       <Footer
         linkedLink={me.linkedLink}
         GitHubLink={me.GitHubLink}

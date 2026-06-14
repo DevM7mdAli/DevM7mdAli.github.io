@@ -1,9 +1,8 @@
 import InfoPart from "./InfoPart";
 import { useEffect, useState } from "react";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
-import { MotionDiv } from "../../utils/motion";
+import { motion } from "framer-motion";
 import app from "../../firebase";
-import Loading from "../Loading";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
@@ -25,7 +24,6 @@ export default function ProjectCard() {
   const { t, i18n } = useTranslation();
   const [selectedTag, setSelectedTag] = useState<string>(t("projects.all"));
 
-  //! to insure that language will go back to select to all after changing lang
   useEffect(() => {
     setSelectedTag(t("projects.all"));
   }, [i18n.language]);
@@ -34,9 +32,9 @@ export default function ProjectCard() {
     queryKey: ["projects"],
     queryFn: async () => {
       const db = getFirestore(app);
-      const querySnapshot = await getDocs(collection(db, "Projects"));
+      const snap = await getDocs(collection(db, "Projects"));
       const projects: Project[] = [];
-      querySnapshot.forEach((d) => projects.push(d.data() as Project));
+      snap.forEach((d) => projects.push(d.data() as Project));
       return projects;
     },
   });
@@ -50,66 +48,87 @@ export default function ProjectCard() {
     ),
   ];
 
-  return (
-    <section id="projects">
-      <div className="flex flex-col gap-y-9 text-center">
-        <h1 className="text-5xl font-bold">{t("projects.title")}</h1>
+  const filtered = dataProject.filter(
+    (p) =>
+      selectedTag === t("projects.all") ||
+      (i18n.language === "en" ? p.tag === selectedTag : p.arTag === selectedTag),
+  );
 
-        <div className="flex flex-wrap gap-4 justify-center mb-4">
-          {tags.map((tag) => (
+  return (
+    <motion.section
+      id="projects"
+      className="w-full flex flex-col gap-10"
+      initial={{ opacity: 0, y: 48 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.75, type: "spring", stiffness: 75 }}
+      viewport={{ once: true, margin: "-8%" }}
+    >
+      {/* Header */}
+      <div className="text-center flex flex-col gap-3">
+        <span className="section-label block">{t("projects.title")}</span>
+        <h2
+          className="text-4xl sm:text-5xl font-bold"
+          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+        >
+          {t("projects.title")}
+        </h2>
+        <p className="text-base max-w-md mx-auto mt-1" style={{ color: "var(--color-muted)" }}>
+          Selected work from the past few years.
+        </p>
+      </div>
+
+      {/* Filter tabs */}
+      <div className="flex flex-wrap gap-2 justify-center">
+        {tags.map((tag) => {
+          const active = selectedTag === tag;
+          return (
             <button
               key={tag}
               onClick={() => setSelectedTag(tag)}
-              className={`px-4 py-2 border ${selectedTag === tag ? "bg-gray-300 text-black" : ""}`}
+              className="px-4 py-1.5 rounded-full text-sm font-medium transition-all"
+              style={{
+                background: active ? "var(--color-primary)" : "var(--color-surface)",
+                color: active ? "#fff" : "var(--color-muted)",
+                border: `1px solid ${active ? "var(--color-primary)" : "var(--color-border)"}`,
+                boxShadow: active ? "0 4px 16px rgba(99,102,241,0.38)" : "none",
+              }}
             >
               {tag}
             </button>
-          ))}
-        </div>
-
-        {!isLoading ? (
-          <MotionDiv
-            className="flex flex-row justify-center flex-wrap gap-x-12 gap-y-10"
-            initial={{ opacity: 0, y: -5 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 2,
-              delay: 0.1,
-              type: "spring",
-              stiffness: 80,
-            }}
-          >
-            {dataProject
-              .filter(
-                (project) =>
-                  selectedTag === t("projects.all") ||
-                  (i18n.language === "en"
-                    ? project.tag === selectedTag
-                    : project.arTag === selectedTag),
-              )
-              .map((project, index) => (
-                <InfoPart
-                  key={index}
-                  img={project.img}
-                  tag={i18n.language === "en" ? project.tag : project.arTag}
-                  name={i18n.language === "en" ? project.name : project.arName}
-                  stacks={
-                    i18n.language === "en" ? project.stacks : project.arStack
-                  }
-                  info={
-                    i18n.language === "en" ? project.about : project.arAbout
-                  }
-                  object={project.object}
-                  link={project.link}
-                />
-              ))}
-          </MotionDiv>
-        ) : (
-          <div className="flex flex-row justify-center items-center flex-wrap">
-            <Loading typeLoad={"balls"} />
-          </div>
-        )}
+          );
+        })}
       </div>
-    </section>
+
+      {/* Cards */}
+      {isLoading ? (
+        <div className="flex justify-center py-16">
+          <div
+            className="w-10 h-10 rounded-full border-2 border-t-transparent animate-spin"
+            style={{ borderColor: "var(--color-primary)" }}
+          />
+        </div>
+      ) : (
+        <motion.div
+          key={selectedTag}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+          className="flex flex-row flex-wrap justify-center gap-6"
+        >
+          {filtered.map((project, i) => (
+            <InfoPart
+              key={i}
+              img={project.img}
+              tag={i18n.language === "en" ? project.tag : project.arTag}
+              name={i18n.language === "en" ? project.name : project.arName}
+              stacks={i18n.language === "en" ? project.stacks : project.arStack}
+              info={i18n.language === "en" ? project.about : project.arAbout}
+              object={project.object}
+              link={project.link}
+            />
+          ))}
+        </motion.div>
+      )}
+    </motion.section>
   );
 }
