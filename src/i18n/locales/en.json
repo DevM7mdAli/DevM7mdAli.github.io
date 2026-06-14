@@ -15,15 +15,38 @@
       "Cyber security"
     ],
     "download": "Download my resume",
-    "body": "Mohammed Alajmi a software programmer with a deep passion for programming, particularly in package development, application development, web development, and cybersecurity. I find great excitement in learning about new technologies and exploring various frameworks to create websites and applications that serve and assist people through their daily lives."
+    "body": "Mohammed Alajmi a software programmer with a deep passion for programming, particularly in package development, application development, web development, and cybersecurity. I find great excitement in learning about new technologies and exploring various frameworks to create websites and applications that serve and assist people through their daily lives.",
+    "name": "Mohammed Alajmi",
+    "portfolio": "Portfolio",
+    "scroll": "scroll",
+    "tags": {
+      "seniorDev": "Senior Dev",
+      "fullStack": "Full Stack",
+      "available": "Available"
+    }
   },
   "skills": {
     "title": "My skills",
+    "label": "My Arsenal",
+    "title1": "My Skills Have",
+    "title2": "No Limit.",
+    "desc": "From pixel-perfect interfaces to battle-tested APIs — I engineer across the entire stack with zero compromise.",
     "groups": {
       "Languages": "Languages",
       "Front End": "Front End",
       "Back End": "Back End",
       "DataBase": "Database"
+    },
+    "stat": {
+      "languages": "Languages",
+      "frameworks": "Frameworks",
+      "databases": "Databases",
+      "curiosity": "Curiosity"
+    },
+    "row": {
+      "languages": "Languages & Markup",
+      "frameworks": "Frameworks & Mobile",
+      "data": "Tools & Databases"
     }
   },
   "projects": {
@@ -40,16 +63,26 @@
     "subtitle": "Companies and roles that shaped my craft.",
     "current": "CURRENT",
     "present": "Present",
-    "empty": "No experience entries yet"
+    "empty": "No experience entries yet",
+    "loadMore": "Load more"
   },
   "contact": {
     "title": "Contact me",
+    "intro": "Have a project in mind? Let's build something great together.",
+    "directTitle": "Or reach me directly",
+    "backSoon": "I'll get back to you as soon as possible.",
+    "sending": "Sending…",
     "email": "Email Address",
     "message": "Your message",
     "submit": "Submit",
-    "received": "Your email has been received"
+    "received": "Your email has been received",
+    "placeholder": {
+      "email": "your@email.com",
+      "message": "Tell me about your project..."
+    }
   },
   "footer": {
-    "copyright": "© {{year}} Mohammed Alajmi"
+    "copyright": "© {{year}} Mohammed Alajmi",
+    "built": "Built with ❤️"
   }
 }

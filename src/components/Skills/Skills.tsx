@@ -1,14 +1,17 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import SkillsCarousel from "./SkillsCarousel";
 
-const STATS = [
-  { value: "8+", label: "Languages" },
-  { value: "10+", label: "Frameworks" },
-  { value: "5+", label: "Databases" },
-  { value: "∞", label: "Curiosity" },
-];
-
 export default function Skills() {
+  const { t } = useTranslation();
+
+  const STATS = [
+    { value: "8+", labelKey: "skills.stat.languages" },
+    { value: "10+", labelKey: "skills.stat.frameworks" },
+    { value: "5+", labelKey: "skills.stat.databases" },
+    { value: "∞", labelKey: "skills.stat.curiosity" },
+  ];
+
   return (
     <motion.section
       id="Skills"
@@ -22,14 +25,14 @@ export default function Skills() {
       <div className="flex flex-col gap-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <div className="flex flex-col gap-3">
-            <span className="section-label">My Arsenal</span>
+            <span className="section-label">{t("skills.label")}</span>
             <h2
               className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-none tracking-tight"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              My Skills Have
+              {t("skills.title1")}
               <br />
-              <span style={{ color: "var(--color-muted)" }}>No Limit.</span>
+              <span style={{ color: "var(--color-muted)" }}>{t("skills.title2")}</span>
             </h2>
           </div>
 
@@ -41,8 +44,7 @@ export default function Skills() {
             transition={{ delay: 0.3 }}
             viewport={{ once: true }}
           >
-            From pixel-perfect interfaces to battle-tested APIs — I engineer
-            across the entire stack with zero compromise.
+            {t("skills.desc")}
           </motion.p>
         </div>
 
@@ -54,9 +56,9 @@ export default function Skills() {
           }}
         >
           <div className="grid grid-cols-2 sm:grid-cols-4">
-            {STATS.map(({ value, label }, i) => (
+            {STATS.map(({ value, labelKey }, i) => (
               <motion.div
-                key={label}
+                key={labelKey}
                 className="flex flex-col gap-1 py-5 px-6"
                 style={{
                   borderRight:
@@ -82,7 +84,7 @@ export default function Skills() {
                     color: "var(--color-muted)",
                   }}
                 >
-                  {label}
+                  {t(labelKey)}
                 </span>
               </motion.div>
             ))}

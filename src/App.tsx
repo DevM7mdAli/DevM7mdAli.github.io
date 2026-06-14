@@ -14,6 +14,16 @@ import Error404 from "./components/Error";
 import Footer from "./components/Footer";
 import ContactForm from "./components/ContactMe/ContactForm";
 
+function SectionDivider() {
+  return (
+    <div className="flex items-center gap-6 py-16 sm:py-24">
+      <div className="flex-1 h-px" style={{ background: "linear-gradient(to right, transparent, var(--color-border))" }} />
+      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "var(--color-border)" }} />
+      <div className="flex-1 h-px" style={{ background: "linear-gradient(to left, transparent, var(--color-border))" }} />
+    </div>
+  );
+}
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route errorElement={<Error404 />}>
@@ -44,10 +54,14 @@ function HolderElement() {
           about="about.body"
         />
 
-        <div className="flex flex-col gap-32 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto pb-20">
+        <div className="flex flex-col px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto pb-24">
+          <SectionDivider />
           <Skills />
+          <SectionDivider />
           <ExperienceSection />
+          <SectionDivider />
           <ProjectCard />
+          <SectionDivider />
           <ContactForm />
         </div>
       </main>

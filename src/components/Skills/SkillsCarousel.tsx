@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   SiNextdotjs,
   SiFlask,
@@ -83,7 +84,8 @@ function CarouselRow({ skills, direction, speed, label }: RowProps) {
       <div className="px-8 lg:px-16">
         <span className="section-label">{label}</span>
       </div>
-      <div className="carousel-wrap">
+      {/* dir="ltr" forces physical LTR layout so the animation works in RTL locales */}
+      <div className="carousel-wrap" dir="ltr">
         <div
           className={trackClass}
           style={{ animationDuration: `${speed}s`, gap: "1rem" }}
@@ -150,26 +152,13 @@ function Badge({ name, icon: Icon, color }: Skill) {
 }
 
 export default function SkillsCarousel() {
+  const { t } = useTranslation();
+
   return (
     <div className="full-bleed flex flex-col gap-6 py-6 select-none">
-      <CarouselRow
-        skills={rowLanguages}
-        direction="left"
-        speed={42}
-        label="Languages & Markup"
-      />
-      <CarouselRow
-        skills={rowFrameworks}
-        direction="right"
-        speed={65}
-        label="Frameworks & Mobile"
-      />
-      <CarouselRow
-        skills={rowData}
-        direction="left"
-        speed={28}
-        label="Tools & Databases"
-      />
+      <CarouselRow skills={rowLanguages} direction="left" speed={42} label={t("skills.row.languages")} />
+      <CarouselRow skills={rowFrameworks} direction="right" speed={65} label={t("skills.row.frameworks")} />
+      <CarouselRow skills={rowData} direction="left" speed={28} label={t("skills.row.data")} />
     </div>
   );
 }

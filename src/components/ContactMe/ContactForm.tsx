@@ -17,21 +17,9 @@ const CONTACT_LINKS = [
     icon: FaLinkedin,
     label: "LinkedIn",
   },
-  {
-    href: "https://github.com/DevM7mdAli",
-    icon: FaGithub,
-    label: "GitHub",
-  },
-  {
-    href: "https://twitter.com/DevM7mdAli",
-    icon: FaSquareXTwitter,
-    label: "X / Twitter",
-  },
-  {
-    href: "mailto:Mohammed-Alajmi@outlook.sa",
-    icon: MdEmail,
-    label: "Email",
-  },
+  { href: "https://github.com/DevM7mdAli", icon: FaGithub, label: "GitHub" },
+  { href: "https://twitter.com/DevM7mdAli", icon: FaSquareXTwitter, label: "X / Twitter" },
+  { href: "mailto:Mohammed-Alajmi@outlook.sa", icon: MdEmail, label: "Email" },
 ];
 
 export default function ContactForm() {
@@ -53,9 +41,7 @@ export default function ContactForm() {
         >
           {t("contact.received")}
         </p>
-        <p style={{ color: "var(--color-muted)" }}>
-          I'll get back to you as soon as possible.
-        </p>
+        <p style={{ color: "var(--color-muted)" }}>{t("contact.backSoon")}</p>
       </motion.div>
     );
   }
@@ -78,8 +64,11 @@ export default function ContactForm() {
         >
           {t("contact.title")}
         </h2>
-        <p className="text-base max-w-sm mx-auto mt-1" style={{ color: "var(--color-muted)" }}>
-          Have a project in mind? Let's build something great together.
+        <p
+          className="text-base max-w-sm mx-auto mt-1"
+          style={{ color: "var(--color-muted)" }}
+        >
+          {t("contact.intro")}
         </p>
       </div>
 
@@ -90,7 +79,7 @@ export default function ContactForm() {
             className="text-sm font-semibold"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
-            Or reach me directly
+            {t("contact.directTitle")}
           </p>
           {CONTACT_LINKS.map(({ href, icon: Icon, label }) => (
             <a
@@ -98,7 +87,7 @@ export default function ContactForm() {
               href={href}
               target={href.startsWith("mailto") ? undefined : "_blank"}
               rel="noopener noreferrer"
-              className="flex items-center gap-3 group transition-opacity hover:opacity-70"
+              className="flex items-center gap-3 transition-opacity hover:opacity-70"
             >
               <div
                 className="w-10 h-10 flex items-center justify-center rounded-xl"
@@ -109,10 +98,7 @@ export default function ContactForm() {
               >
                 <Icon size={17} style={{ color: "var(--color-text)" }} />
               </div>
-              <span
-                className="text-sm font-medium"
-                style={{ color: "var(--color-muted)" }}
-              >
+              <span className="text-sm font-medium" style={{ color: "var(--color-muted)" }}>
                 {label}
               </span>
             </a>
@@ -120,62 +106,51 @@ export default function ContactForm() {
         </div>
 
         {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-5 w-full max-w-lg"
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full max-w-lg">
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="email"
-              className="text-xs font-medium tracking-widest"
+              className="text-xs font-medium"
               style={{
                 color: "var(--color-muted)",
                 fontFamily: "'JetBrains Mono', monospace",
                 letterSpacing: "0.12em",
+                textTransform: "uppercase",
               }}
             >
-              {t("contact.email").toUpperCase()}
+              {t("contact.email")}
             </label>
             <input
               id="email"
               type="email"
               name="email"
-              placeholder="your@email.com"
+              placeholder={t("contact.placeholder.email")}
               className="form-input"
             />
-            <ValidationError
-              prefix="Email"
-              field="email"
-              errors={state.errors}
-              className="text-red-400 text-sm"
-            />
+            <ValidationError prefix="Email" field="email" errors={state.errors} className="text-red-400 text-sm" />
           </div>
 
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="message"
-              className="text-xs font-medium tracking-widest"
+              className="text-xs font-medium"
               style={{
                 color: "var(--color-muted)",
                 fontFamily: "'JetBrains Mono', monospace",
                 letterSpacing: "0.12em",
+                textTransform: "uppercase",
               }}
             >
-              {t("contact.message").toUpperCase()}
+              {t("contact.message")}
             </label>
             <textarea
               id="message"
               name="message"
               rows={5}
-              placeholder="Tell me about your project..."
+              placeholder={t("contact.placeholder.message")}
               className="form-input resize-none"
             />
-            <ValidationError
-              prefix="Message"
-              field="message"
-              errors={state.errors}
-              className="text-red-400 text-sm"
-            />
+            <ValidationError prefix="Message" field="message" errors={state.errors} className="text-red-400 text-sm" />
           </div>
 
           <button
@@ -189,7 +164,7 @@ export default function ContactForm() {
                   className="w-4 h-4 rounded-full border-2 border-t-transparent animate-spin"
                   style={{ borderColor: "var(--color-bg)" }}
                 />
-                Sending…
+                {t("contact.sending")}
               </>
             ) : (
               <>

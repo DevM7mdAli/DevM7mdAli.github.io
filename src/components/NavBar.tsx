@@ -1,5 +1,5 @@
-import { Collapse, IconButton } from "@material-tailwind/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useUIStore } from "../stores/uiStore";
 
@@ -11,12 +11,10 @@ export default function NavBar() {
   const toggleTheme = useUIStore((s) => s.toggleTheme);
   const lang = useUIStore((s) => s.lang);
   const setLang = useUIStore((s) => s.setLang);
-
-  const MTCollapse = Collapse as any;
-  const MTIconButton = IconButton as any;
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onResize = () => window.innerWidth >= 960 && setOpenNav(false);
+    const onResize = () => { if (window.innerWidth >= 960) setOpenNav(false); };
     const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener("resize", onResize);
     window.addEventListener("scroll", onScroll);
@@ -26,6 +24,18 @@ export default function NavBar() {
     };
   }, []);
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    if (!openNav) return;
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpenNav(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [openNav]);
+
   const navLinks = [
     { href: "#AboutMe", label: t("nav.about") },
     { href: "#Skills", label: t("nav.skills") },
@@ -34,51 +44,43 @@ export default function NavBar() {
     { href: "#contact", label: t("nav.contact") },
   ];
 
+  const handleLangToggle = () => {
+    const next = lang === "en" ? "ar" : "en";
+    setLang(next);
+    i18n.changeLanguage(next);
+    document.dir = next === "ar" ? "rtl" : "ltr";
+  };
+
   const controls = (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       <button
         onClick={toggleTheme}
         aria-label="Toggle theme"
-        className="w-9 h-9 flex items-center justify-center rounded-full border border-app transition-all hover:border-[var(--color-primary)] text-base"
-        style={{ borderColor: "var(--color-border)" }}
+        className="w-9 h-9 flex items-center justify-center rounded-full transition-all text-base"
+        style={{
+          border: "1px solid var(--color-border)",
+          color: "var(--color-muted)",
+        }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)"; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)"; }}
       >
         {theme === "dark" ? "☀️" : "🌙"}
       </button>
       <button
         aria-label="Switch language"
-        className="text-xs font-mono font-bold border px-3 py-1.5 rounded-full transition-all"
+        className="text-xs font-bold px-3 py-1.5 rounded-full transition-all"
         style={{
-          borderColor: "var(--color-border)",
+          border: "1px solid var(--color-border)",
           color: "var(--color-muted)",
+          fontFamily: "'JetBrains Mono', monospace",
         }}
-        onClick={() => {
-          const next = lang === "en" ? "ar" : "en";
-          setLang(next);
-          i18n.changeLanguage(next);
-          document.dir = next === "ar" ? "rtl" : "ltr";
-        }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)"; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)"; }}
+        onClick={handleLangToggle}
       >
         {lang === "en" ? "AR" : "EN"}
       </button>
     </div>
-  );
-
-  const navList = (
-    <ul className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
-      {navLinks.map(({ href, label }) => (
-        <li key={href}>
-          <a href={href} className="nav-link" onClick={() => setOpenNav(false)}>
-            {label}
-          </a>
-        </li>
-      ))}
-      <li
-        className="lg:ml-4 pt-2 lg:pt-0 border-t lg:border-0"
-        style={{ borderColor: "var(--color-border)" }}
-      >
-        {controls}
-      </li>
-    </ul>
   );
 
   return (
@@ -87,70 +89,113 @@ export default function NavBar() {
       style={
         scrolled
           ? {
-              background: "rgba(10, 10, 10, 0.88)",
+              background: "var(--nav-scrolled-bg)",
               backdropFilter: "blur(16px)",
               WebkitBackdropFilter: "blur(16px)",
-              borderBottom: "1px solid rgba(255, 255, 255, 0.07)",
+              borderBottom: "1px solid var(--nav-scrolled-border)",
             }
           : { background: "transparent" }
       }
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-3 lg:py-4">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-3 lg:py-4 relative" ref={menuRef}>
         <div className="flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2.5 flex-shrink-0">
+          {/* Logo */}
+          <a href="/" className="flex items-center flex-shrink-0">
             <img
               src="/DMA.png"
               alt="DMA"
-              className="logo-themable size-12 sm:size-16 object-contain"
+              className="logo-themable size-12 sm:size-14 object-contain"
             />
           </a>
 
-          <div className="hidden lg:flex items-center">{navList}</div>
+          {/* Desktop nav links */}
+          <ul className="hidden lg:flex items-center gap-8">
+            {navLinks.map(({ href, label }) => (
+              <li key={href}>
+                <a href={href} className="nav-link">{label}</a>
+              </li>
+            ))}
+          </ul>
 
-          <div className="lg:hidden flex items-center gap-3">
+          {/* Controls + hamburger */}
+          <div className="flex items-center gap-2">
             {controls}
-            <MTIconButton
-              variant="text"
-              ripple={false}
-              onClick={() => setOpenNav(!openNav)}
-              className="text-app rounded-lg"
-              style={{ color: "var(--color-text)" }}
+            {/* Hamburger — mobile only */}
+            <button
+              className="lg:hidden flex items-center justify-center w-9 h-9 rounded-full transition-all"
+              style={{ border: "1px solid var(--color-border)" }}
+              onClick={() => setOpenNav((v) => !v)}
+              aria-label="Toggle menu"
             >
-              {openNav ? (
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              )}
-            </MTIconButton>
+              <motion.div
+                animate={openNav ? "open" : "closed"}
+                className="w-5 h-4 flex flex-col justify-between"
+              >
+                <motion.span
+                  className="block h-px w-full rounded"
+                  style={{ background: "var(--color-text)" }}
+                  variants={{ open: { rotate: 45, y: 7 }, closed: { rotate: 0, y: 0 } }}
+                  transition={{ duration: 0.22 }}
+                />
+                <motion.span
+                  className="block h-px w-full rounded"
+                  style={{ background: "var(--color-text)" }}
+                  variants={{ open: { opacity: 0 }, closed: { opacity: 1 } }}
+                  transition={{ duration: 0.15 }}
+                />
+                <motion.span
+                  className="block h-px w-full rounded"
+                  style={{ background: "var(--color-text)" }}
+                  variants={{ open: { rotate: -45, y: -7 }, closed: { rotate: 0, y: 0 } }}
+                  transition={{ duration: 0.22 }}
+                />
+              </motion.div>
+            </button>
           </div>
         </div>
 
-        <MTCollapse open={openNav}>
-          <div className="glass mt-3 rounded-xl p-4">{navList}</div>
-        </MTCollapse>
+        {/* Mobile dropdown — absolute popover, no content push */}
+        <AnimatePresence>
+          {openNav && (
+            <motion.div
+              className="lg:hidden absolute left-4 right-4 top-full mt-2 rounded-2xl p-5 z-50"
+              style={{
+                background: theme === "dark" ? "rgba(14,14,14,0.96)" : "rgba(255,255,255,0.96)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                border: "1px solid var(--color-border)",
+                boxShadow: "0 8px 40px rgba(0,0,0,0.18)",
+              }}
+              initial={{ opacity: 0, y: -8, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.97 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+            >
+              <ul className="flex flex-col gap-1">
+                {navLinks.map(({ href, label }) => (
+                  <li key={href}>
+                    <a
+                      href={href}
+                      className="block px-3 py-3 rounded-xl text-sm font-medium transition-all"
+                      style={{ color: "var(--color-muted)" }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.background = "var(--color-surface-2)";
+                        (e.currentTarget as HTMLElement).style.color = "var(--color-text)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.background = "transparent";
+                        (e.currentTarget as HTMLElement).style.color = "var(--color-muted)";
+                      }}
+                      onClick={() => setOpenNav(false)}
+                    >
+                      {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

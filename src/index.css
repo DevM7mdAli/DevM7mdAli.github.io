@@ -19,7 +19,9 @@ html {
   --color-accent: #444444;
   --color-border: rgba(0, 0, 0, 0.1);
   --color-glow: rgba(0, 0, 0, 0.06);
-  --logo-filter: invert(0);
+  --logo-filter: brightness(0);
+  --nav-scrolled-bg: rgba(245, 245, 245, 0.92);
+  --nav-scrolled-border: rgba(0, 0, 0, 0.07);
 }
 
 .dark {
@@ -32,7 +34,9 @@ html {
   --color-accent: #bbbbbb;
   --color-border: rgba(255, 255, 255, 0.1);
   --color-glow: rgba(255, 255, 255, 0.05);
-  --logo-filter: invert(0);
+  --logo-filter: none;
+  --nav-scrolled-bg: rgba(10, 10, 10, 0.92);
+  --nav-scrolled-border: rgba(255, 255, 255, 0.07);
 }
 
 /* ── Base ──────────────────────────────────────────────── */
@@ -57,6 +61,11 @@ body {
   position: relative;
   left: 50%;
   transform: translateX(-50%);
+}
+[dir="rtl"] .full-bleed {
+  left: auto;
+  right: 50%;
+  transform: translateX(50%);
 }
 
 /* ── Utility tokens ────────────────────────────────────── */

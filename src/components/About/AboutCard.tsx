@@ -54,7 +54,8 @@ export default function AboutCard({
     return () => clearInterval(interval);
   }, [inView]);
 
-  const nameStr = "Mohammed Alajmi";
+  const nameStr = t("about.name");
+  const nameWords = nameStr.split(" ");
 
   const socials = [
     { href: XLink, Icon: FaSquareXTwitter, label: "X / Twitter" },
@@ -62,6 +63,9 @@ export default function AboutCard({
     { href: linkedLink, Icon: FaLinkedin, label: "LinkedIn" },
     { href: Email, Icon: MdEmail, label: "Email" },
   ];
+
+  // Build per-letter global index for staggered animation
+  let letterCount = 0;
 
   return (
     <section
@@ -71,20 +75,18 @@ export default function AboutCard({
       {/* Background grid */}
       <div className="absolute inset-0 hero-grid pointer-events-none" />
 
-      {/* Subtle ambient glow orbs */}
+      {/* Ambient glow orbs */}
       <div
         className="absolute top-1/4 -left-40 w-[480px] h-[480px] rounded-full pointer-events-none"
         style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%)",
           filter: "blur(60px)",
         }}
       />
       <div
         className="absolute bottom-1/4 -right-40 w-[480px] h-[480px] rounded-full pointer-events-none"
         style={{
-          background:
-            "radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%)",
           filter: "blur(60px)",
         }}
       />
@@ -98,28 +100,56 @@ export default function AboutCard({
             transition={{ duration: 0.5 }}
           >
             <span className="section-label">
-              Portfolio — {new Date().getFullYear()}
+              {t("about.portfolio")} — {new Date().getFullYear()}
             </span>
           </motion.div>
 
-          {/* Name with letter-blur reveal */}
+          {/* Name animation:
+              - LTR (EN): letter-by-letter blur reveal inside each word
+              - RTL (AR): word-by-word reveal — splitting Arabic into chars
+                          breaks contextual letter shaping */}
           <motion.h1
-            className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight tracking-tight"
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight tracking-tight"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             initial="hidden"
             animate="visible"
           >
-            {nameStr.split("").map((char, i) => (
-              <motion.span
-                key={i}
-                custom={i}
-                variants={letterVariants}
-                className="inline-block"
-                style={{ marginRight: char === " " ? "0.35em" : undefined }}
-              >
-                {char === " " ? " " : char}
-              </motion.span>
-            ))}
+            {i18n.language === "ar" ? (
+              nameWords.map((word, wIdx) => (
+                <motion.span
+                  key={wIdx}
+                  className="inline-block whitespace-nowrap"
+                  style={{ marginInlineEnd: wIdx < nameWords.length - 1 ? "0.3em" : undefined }}
+                  variants={letterVariants}
+                  custom={wIdx * 4}
+                >
+                  {word}
+                </motion.span>
+              ))
+            ) : (
+              nameWords.map((word, wIdx) => {
+                const wordStart = letterCount;
+                letterCount += word.length + 1;
+                return (
+                  <span
+                    key={wIdx}
+                    className="inline-block whitespace-nowrap"
+                    style={{ marginInlineEnd: wIdx < nameWords.length - 1 ? "0.3em" : undefined }}
+                  >
+                    {word.split("").map((char, cIdx) => (
+                      <motion.span
+                        key={cIdx}
+                        custom={wordStart + cIdx}
+                        variants={letterVariants}
+                        className="inline-block"
+                      >
+                        {char}
+                      </motion.span>
+                    ))}
+                  </span>
+                );
+              })
+            )}
           </motion.h1>
 
           {/* Role cycling */}
@@ -128,10 +158,7 @@ export default function AboutCard({
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.9, duration: 0.5 }}
             className="text-2xl sm:text-3xl font-semibold"
-            style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              color: "var(--color-muted)",
-            }}
+            style={{ fontFamily: "'Space Grotesk', sans-serif", color: "var(--color-muted)" }}
           >
             <TypeAnimation
               key={i18n.language}
@@ -181,21 +208,14 @@ export default function AboutCard({
                   whileHover={{ scale: 1.15, y: -3 }}
                   whileTap={{ scale: 0.95 }}
                   className="w-10 h-10 flex items-center justify-center rounded-full transition-all"
-                  style={{
-                    border: "1px solid var(--color-border)",
-                    color: "var(--color-muted)",
-                  }}
+                  style={{ border: "1px solid var(--color-border)", color: "var(--color-muted)" }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor =
-                      "var(--color-primary)";
-                    (e.currentTarget as HTMLElement).style.color =
-                      "var(--color-text)";
+                    (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)";
+                    (e.currentTarget as HTMLElement).style.color = "var(--color-text)";
                   }}
                   onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor =
-                      "var(--color-border)";
-                    (e.currentTarget as HTMLElement).style.color =
-                      "var(--color-muted)";
+                    (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)";
+                    (e.currentTarget as HTMLElement).style.color = "var(--color-muted)";
                   }}
                 >
                   <Icon size={17} />
@@ -211,28 +231,17 @@ export default function AboutCard({
           className="relative flex-shrink-0 flex items-center justify-center"
           initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{
-            delay: 0.55,
-            duration: 0.9,
-            type: "spring",
-            stiffness: 70,
-          }}
+          transition={{ delay: 0.55, duration: 0.9, type: "spring", stiffness: 70 }}
         >
-          <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96">
+          <div className="relative w-56 h-56 sm:w-80 sm:h-80 lg:w-96 lg:h-96">
             {/* Spinning orbit rings */}
             <div
               className="absolute inset-0 rounded-full"
-              style={{
-                border: "1.5px dashed rgba(255,255,255,0.18)",
-                animation: "spin 14s linear infinite",
-              }}
+              style={{ border: "1.5px dashed rgba(255,255,255,0.18)", animation: "spin 14s linear infinite" }}
             />
             <div
               className="absolute inset-5 rounded-full"
-              style={{
-                border: "1px solid rgba(255,255,255,0.08)",
-                animation: "spin 10s linear infinite reverse",
-              }}
+              style={{ border: "1px solid rgba(255,255,255,0.08)", animation: "spin 10s linear infinite reverse" }}
             />
 
             {/* Portrait */}
@@ -259,14 +268,10 @@ export default function AboutCard({
               className="glass absolute -bottom-3 -left-5 px-4 py-2 rounded-xl text-sm"
               style={{ fontFamily: "'JetBrains Mono', monospace" }}
               animate={{ y: [0, -10, 0] }}
-              transition={{
-                duration: 3.2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+              transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
             >
               <span style={{ color: "var(--color-accent)" }}>{"</>"}</span>
-              <span className="ml-2 text-app font-medium">Senior Dev</span>
+              <span className="ml-2 text-app font-medium">{t("about.tags.seniorDev")}</span>
             </motion.div>
 
             {/* Floating tag: Full Stack */}
@@ -274,34 +279,21 @@ export default function AboutCard({
               className="glass absolute -top-3 -right-5 px-4 py-2 rounded-xl text-sm"
               style={{ fontFamily: "'JetBrains Mono', monospace" }}
               animate={{ y: [0, 10, 0] }}
-              transition={{
-                duration: 3.8,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 0.6,
-              }}
+              transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
             >
               <span style={{ color: "var(--color-accent)" }}>★</span>
-              <span className="ml-2 text-app font-medium">Full Stack</span>
+              <span className="ml-2 text-app font-medium">{t("about.tags.fullStack")}</span>
             </motion.div>
 
             {/* Floating tag: Available */}
             <motion.div
-              className="glass absolute top-1/2 -right-16 px-3 py-1.5 rounded-xl text-xs hidden lg:flex items-center gap-1.5"
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                transform: "translateY(-50%)",
-              }}
+              className="glass absolute top-1/2 -right-20 px-3 py-1.5 rounded-xl text-xs hidden lg:flex items-center gap-1.5"
+              style={{ fontFamily: "'JetBrains Mono', monospace", transform: "translateY(-50%)" }}
               animate={{ x: [0, 6, 0] }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 1,
-              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
             >
               <span className="w-2 h-2 rounded-full bg-white inline-block opacity-80" />
-              <span className="text-app">Available</span>
+              <span className="text-app">{t("about.tags.available")}</span>
             </motion.div>
           </div>
         </motion.div>
@@ -314,7 +306,7 @@ export default function AboutCard({
         animate={{ opacity: 1 }}
         transition={{ delay: 2.2, duration: 0.6 }}
       >
-        <span className="section-label">scroll</span>
+        <span className="section-label">{t("about.scroll")}</span>
         <motion.div
           animate={{ y: [0, 7, 0] }}
           transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
