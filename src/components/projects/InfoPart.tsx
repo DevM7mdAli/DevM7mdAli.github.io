@@ -34,7 +34,7 @@ export default function InfoPart({
     <motion.div
       whileHover={{ y: -8 }}
       transition={{ type: "spring", stiffness: 280, damping: 22 }}
-      className="project-card flex flex-col w-72 flex-shrink-0"
+      className="project-card flex flex-col w-72 flex-shrink-0 h-full"
       style={{
         background: "var(--color-surface)",
         border: "1px solid var(--color-border)",
