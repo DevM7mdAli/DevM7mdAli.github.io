@@ -18,7 +18,12 @@ const NAV_LINKS = [
   { href: "#contact", label: "Contact" },
 ];
 
-export default function Footer({ linkedLink, GitHubLink, XLink, Email }: FooterProps) {
+export default function Footer({
+  linkedLink,
+  GitHubLink,
+  XLink,
+  Email,
+}: FooterProps) {
   const { t } = useTranslation();
 
   const socials = [
@@ -36,11 +41,12 @@ export default function Footer({ linkedLink, GitHubLink, XLink, Email }: FooterP
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
     >
-      {/* Top divider glow */}
+      {/* Top divider */}
       <div
         className="h-px w-full"
         style={{
-          background: "linear-gradient(to right, transparent, rgba(99,102,241,0.4), rgba(34,211,238,0.3), transparent)",
+          background:
+            "linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent)",
         }}
       />
 
@@ -51,7 +57,11 @@ export default function Footer({ linkedLink, GitHubLink, XLink, Email }: FooterP
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           {/* Logo */}
           <a href="/" className="flex items-center gap-2.5 flex-shrink-0">
-            <img src="/DMA.png" alt="DMA" className="logo-themable w-10 h-10" />
+            <img
+              src="/DMA.png"
+              alt="DMA"
+              className="logo-themable size-16 sm:size-24 object-contain"
+            />
           </a>
 
           {/* Nav */}
@@ -62,8 +72,12 @@ export default function Footer({ linkedLink, GitHubLink, XLink, Email }: FooterP
                 href={href}
                 className="text-sm transition-colors"
                 style={{ color: "var(--color-muted)" }}
-                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "var(--color-primary)")}
-                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "var(--color-muted)")}
+                onMouseEnter={(e) =>
+                  ((e.target as HTMLElement).style.color = "var(--color-text)")
+                }
+                onMouseLeave={(e) =>
+                  ((e.target as HTMLElement).style.color = "var(--color-muted)")
+                }
               >
                 {label}
               </a>
@@ -85,15 +99,19 @@ export default function Footer({ linkedLink, GitHubLink, XLink, Email }: FooterP
                   color: "var(--color-muted)",
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)";
-                  (e.currentTarget as HTMLElement).style.color = "var(--color-primary)";
+                  (e.currentTarget as HTMLElement).style.borderColor =
+                    "var(--color-primary)";
+                  (e.currentTarget as HTMLElement).style.color =
+                    "var(--color-text)";
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)";
-                  (e.currentTarget as HTMLElement).style.color = "var(--color-muted)";
+                  (e.currentTarget as HTMLElement).style.borderColor =
+                    "var(--color-border)";
+                  (e.currentTarget as HTMLElement).style.color =
+                    "var(--color-muted)";
                 }}
               >
-                <Icon size={16} />
+                <Icon size={15} />
               </a>
             ))}
           </div>
@@ -104,10 +122,22 @@ export default function Footer({ linkedLink, GitHubLink, XLink, Email }: FooterP
           className="max-w-7xl mx-auto mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3"
           style={{ borderTop: "1px solid var(--color-border)" }}
         >
-          <p className="text-xs" style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace" }}>
+          <p
+            className="text-xs"
+            style={{
+              color: "var(--color-muted)",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          >
             {t("footer.copyright", { year: new Date().getFullYear() })}
           </p>
-          <p className="text-xs" style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace" }}>
+          <p
+            className="text-xs"
+            style={{
+              color: "var(--color-muted)",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          >
             Built with React · TypeScript · Vite
           </p>
         </div>

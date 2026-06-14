@@ -46,7 +46,7 @@ const groups: Group[] = [
       { name: "React JS", icon: FaReact, color: "#61DAFB" },
       { name: "Angular", icon: SiAngular, color: "#DD0031" },
       { name: "React Native", icon: TbBrandReactNative, color: "#61DAFB" },
-      { name: "Next.js", icon: SiNextdotjs, color: "#a5b4fc" },
+      { name: "Next.js", icon: SiNextdotjs, color: "#94a3b8" },
       { name: "Flutter", icon: RiFlutterFill, color: "#54C5F8" },
     ],
   },
@@ -78,21 +78,22 @@ function SkillItem({ name, icon: Icon, color }: Skill) {
   return (
     <motion.div
       whileHover={{ scale: 1.06, y: -3 }}
-      className="flex flex-col items-center gap-2.5 p-4 rounded-xl cursor-default transition-all group"
+      className="flex flex-col items-center gap-2.5 p-4 rounded-xl cursor-default"
       style={{
         background: "var(--color-surface-2)",
         border: "1px solid var(--color-border)",
+        transition: "border-color 0.2s ease, box-shadow 0.2s ease",
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)";
-        (e.currentTarget as HTMLElement).style.boxShadow = `0 0 18px rgba(99,102,241,0.2)`;
+        (e.currentTarget as HTMLElement).style.boxShadow = "0 0 18px var(--color-glow)";
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)";
         (e.currentTarget as HTMLElement).style.boxShadow = "";
       }}
     >
-      <Icon size={36} color={color} />
+      <Icon size={34} color={color} />
       <span
         className="text-xs font-medium text-center"
         style={{ color: "var(--color-muted)" }}
@@ -122,9 +123,8 @@ export default function ListOfSkills() {
               className="px-5 py-2 rounded-full text-sm font-medium transition-all"
               style={{
                 background: isActive ? "var(--color-primary)" : "var(--color-surface)",
-                color: isActive ? "#fff" : "var(--color-muted)",
+                color: isActive ? "var(--color-bg)" : "var(--color-muted)",
                 border: `1px solid ${isActive ? "var(--color-primary)" : "var(--color-border)"}`,
-                boxShadow: isActive ? "0 4px 16px rgba(99,102,241,0.4)" : "none",
               }}
             >
               {t(`skills.groups.${g.key}`)}
@@ -138,7 +138,7 @@ export default function ListOfSkills() {
         key={active}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.28 }}
         className="grid grid-cols-3 sm:grid-cols-5 gap-3 max-w-2xl mx-auto w-full"
       >
         {current.skills.map((skill) => (

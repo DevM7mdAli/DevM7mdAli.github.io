@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { FaGithub, FaLinkedin, FaDownload, FaChevronDown } from "react-icons/fa";
+import {
+  FaGithub,
+  FaLinkedin,
+  FaDownload,
+  FaChevronDown,
+} from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { FaSquareXTwitter } from "react-icons/fa6";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useInView } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
 import { useTranslation } from "react-i18next";
-import { useInView } from "framer-motion";
 
 type AboutCardProps = {
   about: string;
@@ -67,21 +71,21 @@ export default function AboutCard({
       {/* Background grid */}
       <div className="absolute inset-0 hero-grid pointer-events-none" />
 
-      {/* Ambient glow orbs */}
+      {/* Subtle ambient glow orbs */}
       <div
-        className="absolute top-1/4 -left-40 w-[500px] h-[500px] rounded-full pointer-events-none"
+        className="absolute top-1/4 -left-40 w-[480px] h-[480px] rounded-full pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)",
+          background:
+            "radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%)",
           filter: "blur(60px)",
-          animation: "glowPulse 4s ease-in-out infinite",
         }}
       />
       <div
-        className="absolute bottom-1/4 -right-40 w-[500px] h-[500px] rounded-full pointer-events-none"
+        className="absolute bottom-1/4 -right-40 w-[480px] h-[480px] rounded-full pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(34,211,238,0.1) 0%, transparent 70%)",
+          background:
+            "radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%)",
           filter: "blur(60px)",
-          animation: "glowPulse 5s ease-in-out infinite 1s",
         }}
       />
 
@@ -93,7 +97,9 @@ export default function AboutCard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="section-label">Portfolio — 2025</span>
+            <span className="section-label">
+              Portfolio — {new Date().getFullYear()}
+            </span>
           </motion.div>
 
           {/* Name with letter-blur reveal */}
@@ -122,7 +128,10 @@ export default function AboutCard({
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.9, duration: 0.5 }}
             className="text-2xl sm:text-3xl font-semibold"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", color: "var(--color-primary)" }}
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              color: "var(--color-muted)",
+            }}
           >
             <TypeAnimation
               key={i18n.language}
@@ -157,7 +166,7 @@ export default function AboutCard({
               rel="noopener noreferrer"
               className="btn-primary inline-flex items-center gap-2.5 px-6 py-3 rounded-full text-sm font-semibold tracking-wide"
             >
-              <FaDownload size={14} />
+              <FaDownload size={13} />
               {t("about.download")}
             </a>
 
@@ -169,7 +178,7 @@ export default function AboutCard({
                   target={href.startsWith("mailto") ? undefined : "_blank"}
                   rel="noopener noreferrer"
                   aria-label={label}
-                  whileHover={{ scale: 1.18, y: -3 }}
+                  whileHover={{ scale: 1.15, y: -3 }}
                   whileTap={{ scale: 0.95 }}
                   className="w-10 h-10 flex items-center justify-center rounded-full transition-all"
                   style={{
@@ -177,15 +186,19 @@ export default function AboutCard({
                     color: "var(--color-muted)",
                   }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)";
-                    (e.currentTarget as HTMLElement).style.color = "var(--color-primary)";
+                    (e.currentTarget as HTMLElement).style.borderColor =
+                      "var(--color-primary)";
+                    (e.currentTarget as HTMLElement).style.color =
+                      "var(--color-text)";
                   }}
                   onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)";
-                    (e.currentTarget as HTMLElement).style.color = "var(--color-muted)";
+                    (e.currentTarget as HTMLElement).style.borderColor =
+                      "var(--color-border)";
+                    (e.currentTarget as HTMLElement).style.color =
+                      "var(--color-muted)";
                   }}
                 >
-                  <Icon size={18} />
+                  <Icon size={17} />
                 </motion.a>
               ))}
             </div>
@@ -198,21 +211,26 @@ export default function AboutCard({
           className="relative flex-shrink-0 flex items-center justify-center"
           initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.55, duration: 0.9, type: "spring", stiffness: 70 }}
+          transition={{
+            delay: 0.55,
+            duration: 0.9,
+            type: "spring",
+            stiffness: 70,
+          }}
         >
           <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96">
             {/* Spinning orbit rings */}
             <div
               className="absolute inset-0 rounded-full"
               style={{
-                border: "1.5px dashed rgba(99,102,241,0.35)",
+                border: "1.5px dashed rgba(255,255,255,0.18)",
                 animation: "spin 14s linear infinite",
               }}
             />
             <div
               className="absolute inset-5 rounded-full"
               style={{
-                border: "1px solid rgba(34,211,238,0.2)",
+                border: "1px solid rgba(255,255,255,0.08)",
                 animation: "spin 10s linear infinite reverse",
               }}
             />
@@ -241,7 +259,11 @@ export default function AboutCard({
               className="glass absolute -bottom-3 -left-5 px-4 py-2 rounded-xl text-sm"
               style={{ fontFamily: "'JetBrains Mono', monospace" }}
               animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+              transition={{
+                duration: 3.2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
             >
               <span style={{ color: "var(--color-accent)" }}>{"</>"}</span>
               <span className="ml-2 text-app font-medium">Senior Dev</span>
@@ -252,20 +274,33 @@ export default function AboutCard({
               className="glass absolute -top-3 -right-5 px-4 py-2 rounded-xl text-sm"
               style={{ fontFamily: "'JetBrains Mono', monospace" }}
               animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
+              transition={{
+                duration: 3.8,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.6,
+              }}
             >
-              <span style={{ color: "var(--color-gold)" }}>★</span>
+              <span style={{ color: "var(--color-accent)" }}>★</span>
               <span className="ml-2 text-app font-medium">Full Stack</span>
             </motion.div>
 
-            {/* Floating tag: Open Source */}
+            {/* Floating tag: Available */}
             <motion.div
               className="glass absolute top-1/2 -right-16 px-3 py-1.5 rounded-xl text-xs hidden lg:flex items-center gap-1.5"
-              style={{ fontFamily: "'JetBrains Mono', monospace", transform: "translateY(-50%)" }}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                transform: "translateY(-50%)",
+              }}
               animate={{ x: [0, 6, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1,
+              }}
             >
-              <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
+              <span className="w-2 h-2 rounded-full bg-white inline-block opacity-80" />
               <span className="text-app">Available</span>
             </motion.div>
           </div>
@@ -285,7 +320,7 @@ export default function AboutCard({
           transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
           style={{ color: "var(--color-muted)" }}
         >
-          <FaChevronDown size={14} />
+          <FaChevronDown size={13} />
         </motion.div>
       </motion.div>
     </section>

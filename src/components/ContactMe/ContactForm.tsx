@@ -16,25 +16,21 @@ const CONTACT_LINKS = [
     href: "https://www.linkedin.com/in/mohammed-alajmi-b5a327206/",
     icon: FaLinkedin,
     label: "LinkedIn",
-    color: "#0A66C2",
   },
   {
     href: "https://github.com/DevM7mdAli",
     icon: FaGithub,
     label: "GitHub",
-    color: "#94a3b8",
   },
   {
     href: "https://twitter.com/DevM7mdAli",
     icon: FaSquareXTwitter,
     label: "X / Twitter",
-    color: "#94a3b8",
   },
   {
     href: "mailto:Mohammed-Alajmi@outlook.sa",
     icon: MdEmail,
     label: "Email",
-    color: "#6366F1",
   },
 ];
 
@@ -50,7 +46,7 @@ export default function ContactForm() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ type: "spring", stiffness: 120 }}
       >
-        <FaCheckCircle size={52} style={{ color: "var(--color-primary)" }} />
+        <FaCheckCircle size={52} style={{ color: "var(--color-text)" }} />
         <p
           className="text-2xl sm:text-3xl font-bold"
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
@@ -96,25 +92,25 @@ export default function ContactForm() {
           >
             Or reach me directly
           </p>
-          {CONTACT_LINKS.map(({ href, icon: Icon, label, color }) => (
+          {CONTACT_LINKS.map(({ href, icon: Icon, label }) => (
             <a
               key={label}
               href={href}
               target={href.startsWith("mailto") ? undefined : "_blank"}
               rel="noopener noreferrer"
-              className="flex items-center gap-3 group transition-all"
+              className="flex items-center gap-3 group transition-opacity hover:opacity-70"
             >
               <div
-                className="w-10 h-10 flex items-center justify-center rounded-xl transition-all"
+                className="w-10 h-10 flex items-center justify-center rounded-xl"
                 style={{
                   background: "var(--color-surface)",
                   border: "1px solid var(--color-border)",
                 }}
               >
-                <Icon size={18} color={color} />
+                <Icon size={17} style={{ color: "var(--color-text)" }} />
               </div>
               <span
-                className="text-sm font-medium group-hover:underline"
+                className="text-sm font-medium"
                 style={{ color: "var(--color-muted)" }}
               >
                 {label}
@@ -131,8 +127,12 @@ export default function ContactForm() {
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="email"
-              className="text-sm font-medium"
-              style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.72rem", letterSpacing: "0.1em" }}
+              className="text-xs font-medium tracking-widest"
+              style={{
+                color: "var(--color-muted)",
+                fontFamily: "'JetBrains Mono', monospace",
+                letterSpacing: "0.12em",
+              }}
             >
               {t("contact.email").toUpperCase()}
             </label>
@@ -154,8 +154,12 @@ export default function ContactForm() {
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="message"
-              className="text-sm font-medium"
-              style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.72rem", letterSpacing: "0.1em" }}
+              className="text-xs font-medium tracking-widest"
+              style={{
+                color: "var(--color-muted)",
+                fontFamily: "'JetBrains Mono', monospace",
+                letterSpacing: "0.12em",
+              }}
             >
               {t("contact.message").toUpperCase()}
             </label>
@@ -177,11 +181,14 @@ export default function ContactForm() {
           <button
             type="submit"
             disabled={state.submitting}
-            className="btn-primary flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-sm font-semibold tracking-wide mt-1 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn-primary flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-sm font-semibold tracking-wide mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {state.submitting ? (
               <>
-                <div className="w-4 h-4 rounded-full border-2 border-t-transparent border-white animate-spin" />
+                <div
+                  className="w-4 h-4 rounded-full border-2 border-t-transparent animate-spin"
+                  style={{ borderColor: "var(--color-bg)" }}
+                />
                 Sending…
               </>
             ) : (

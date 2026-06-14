@@ -88,9 +88,8 @@ export default function ProjectCard() {
               className="px-4 py-1.5 rounded-full text-sm font-medium transition-all"
               style={{
                 background: active ? "var(--color-primary)" : "var(--color-surface)",
-                color: active ? "#fff" : "var(--color-muted)",
+                color: active ? "var(--color-bg)" : "var(--color-muted)",
                 border: `1px solid ${active ? "var(--color-primary)" : "var(--color-border)"}`,
-                boxShadow: active ? "0 4px 16px rgba(99,102,241,0.38)" : "none",
               }}
             >
               {tag}
@@ -103,8 +102,8 @@ export default function ProjectCard() {
       {isLoading ? (
         <div className="flex justify-center py-16">
           <div
-            className="w-10 h-10 rounded-full border-2 border-t-transparent animate-spin"
-            style={{ borderColor: "var(--color-primary)" }}
+            className="w-9 h-9 rounded-full border-2 border-t-transparent animate-spin"
+            style={{ borderColor: "var(--color-muted)" }}
           />
         </div>
       ) : (
@@ -112,7 +111,7 @@ export default function ProjectCard() {
           key={selectedTag}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
+          transition={{ duration: 0.32 }}
           className="flex flex-row flex-wrap justify-center gap-6"
         >
           {filtered.map((project, i) => (

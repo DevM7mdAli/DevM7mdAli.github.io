@@ -49,13 +49,16 @@ export default function InfoPart({
       }}
     >
       {/* Image */}
-      <div className="relative overflow-hidden" style={{ height: "180px", background: "var(--color-surface-2)" }}>
+      <div
+        className="relative overflow-hidden"
+        style={{ height: "180px", background: "var(--color-surface-2)" }}
+      >
         <span
           className="absolute top-3 left-3 z-10 text-xs font-semibold px-2.5 py-1 rounded-full"
           style={{
-            background: "rgba(99,102,241,0.2)",
-            color: "var(--color-primary)",
-            border: "1px solid rgba(99,102,241,0.3)",
+            background: "rgba(255,255,255,0.08)",
+            color: "var(--color-accent)",
+            border: "1px solid var(--color-border)",
             fontFamily: "'JetBrains Mono', monospace",
             letterSpacing: "0.05em",
           }}
@@ -73,7 +76,10 @@ export default function InfoPart({
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "var(--color-primary)" }} />
+            <div
+              className="w-7 h-7 rounded-full border-2 border-t-transparent animate-spin"
+              style={{ borderColor: "var(--color-muted)" }}
+            />
           </div>
         )}
       </div>
@@ -86,7 +92,10 @@ export default function InfoPart({
         >
           {name}
         </h3>
-        <p className="text-sm leading-relaxed line-clamp-3 flex-1" style={{ color: "var(--color-muted)" }}>
+        <p
+          className="text-sm leading-relaxed line-clamp-3 flex-1"
+          style={{ color: "var(--color-muted)" }}
+        >
           {info}
         </p>
 

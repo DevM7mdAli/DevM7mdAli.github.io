@@ -46,7 +46,10 @@ export default function NavBar() {
       <button
         aria-label="Switch language"
         className="text-xs font-mono font-bold border px-3 py-1.5 rounded-full transition-all"
-        style={{ borderColor: "var(--color-border)", color: "var(--color-muted)" }}
+        style={{
+          borderColor: "var(--color-border)",
+          color: "var(--color-muted)",
+        }}
         onClick={() => {
           const next = lang === "en" ? "ar" : "en";
           setLang(next);
@@ -63,16 +66,15 @@ export default function NavBar() {
     <ul className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8">
       {navLinks.map(({ href, label }) => (
         <li key={href}>
-          <a
-            href={href}
-            className="nav-link"
-            onClick={() => setOpenNav(false)}
-          >
+          <a href={href} className="nav-link" onClick={() => setOpenNav(false)}>
             {label}
           </a>
         </li>
       ))}
-      <li className="lg:ml-4 pt-2 lg:pt-0 border-t lg:border-0" style={{ borderColor: "var(--color-border)" }}>
+      <li
+        className="lg:ml-4 pt-2 lg:pt-0 border-t lg:border-0"
+        style={{ borderColor: "var(--color-border)" }}
+      >
         {controls}
       </li>
     </ul>
@@ -84,10 +86,10 @@ export default function NavBar() {
       style={
         scrolled
           ? {
-              background: "rgba(4, 13, 33, 0.85)",
+              background: "rgba(10, 10, 10, 0.88)",
               backdropFilter: "blur(16px)",
               WebkitBackdropFilter: "blur(16px)",
-              borderBottom: "1px solid rgba(99, 102, 241, 0.15)",
+              borderBottom: "1px solid rgba(255, 255, 255, 0.07)",
             }
           : { background: "transparent" }
       }
@@ -95,7 +97,11 @@ export default function NavBar() {
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-3 lg:py-4">
         <div className="flex items-center justify-between">
           <a href="/" className="flex items-center gap-2.5 flex-shrink-0">
-            <img src="/DMA.png" alt="DMA" className="logo-themable w-9 h-9" />
+            <img
+              src="/DMA.png"
+              alt="DMA"
+              className="logo-themable size-12 sm:size-16 object-contain"
+            />
           </a>
 
           <div className="hidden lg:flex items-center">{navList}</div>
@@ -110,12 +116,31 @@ export default function NavBar() {
               style={{ color: "var(--color-text)" }}
             >
               {openNav ? (
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               ) : (
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               )}
             </MTIconButton>
@@ -123,9 +148,7 @@ export default function NavBar() {
         </div>
 
         <MTCollapse open={openNav}>
-          <div className="glass mt-3 rounded-xl p-4">
-            {navList}
-          </div>
+          <div className="glass mt-3 rounded-xl p-4">{navList}</div>
         </MTCollapse>
       </div>
     </div>
