@@ -138,7 +138,7 @@ export default function Footer({
               fontFamily: "'JetBrains Mono', monospace",
             }}
           >
-            Built with React · TypeScript · Vite
+            Built with love
           </p>
         </div>
       </div>
