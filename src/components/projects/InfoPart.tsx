@@ -40,10 +40,10 @@ export default function InfoPart({
         border: "1px solid var(--color-border)",
       }}
     >
-      {/* Image area */}
+      {/* Image area — 16:9 aspect ratio (professional standard) */}
       <div
-        className="relative overflow-hidden"
-        style={{ height: "180px", background: "var(--color-surface-2)" }}
+        className="relative overflow-hidden aspect-video flex items-center justify-center"
+        style={{ background: "var(--color-surface-2)" }}
       >
         {/* Category badge */}
         {categoryName && (
@@ -61,47 +61,47 @@ export default function InfoPart({
           </span>
         )}
 
-        {/* Loading skeleton */}
+        {/* Loading spinner */}
         {imgState === "loading" && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div
-              className="w-7 h-7 rounded-full border-2 border-t-transparent animate-spin"
-              style={{ borderColor: "var(--color-muted)" }}
-            />
-          </div>
+          <div
+            className="w-7 h-7 rounded-full border-2 border-t-transparent animate-spin"
+            style={{ borderColor: "var(--color-muted)" }}
+          />
         )}
 
-        {/* Image */}
+        {/* Image — object-contain preserves aspect, no cropping */}
         {image_url && (
           <img
             src={image_url}
             alt={title}
-            className={`w-full h-full object-cover transition-transform duration-500 hover:scale-105 ${
-              imgState === "loaded" ? "opacity-100" : "opacity-0"
+            className={`w-full h-full object-contain transition-all duration-500 ${
+              imgState === "loaded"
+                ? "opacity-100"
+                : "opacity-0 absolute"
             }`}
-            style={{ transition: "opacity 0.3s ease, transform 0.5s ease" }}
             onLoad={() => setImgState("loaded")}
             onError={() => setImgState("error")}
           />
         )}
 
-        {/* Error / no image */}
+        {/* Error state — network or file not found */}
         {imgState === "error" && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5">
+          <div className="flex flex-col items-center justify-center gap-2.5 px-4">
             <MdImageNotSupported
-              size={36}
-              style={{ color: "var(--color-muted)", opacity: 0.35 }}
+              size={40}
+              style={{ color: "var(--color-muted)", opacity: 0.3 }}
             />
             <span
               style={{
                 fontFamily: "'JetBrains Mono', monospace",
-                fontSize: "0.62rem",
-                letterSpacing: "0.12em",
+                fontSize: "0.65rem",
+                letterSpacing: "0.1em",
                 color: "var(--color-muted)",
-                opacity: 0.45,
+                opacity: 0.4,
+                textAlign: "center",
               }}
             >
-              {image_url ? "IMAGE UNAVAILABLE" : "NO PREVIEW"}
+              {image_url ? "LOAD FAILED" : "NO IMAGE"}
             </span>
           </div>
         )}
