@@ -19,7 +19,7 @@ import {
   SiGit,
   SiDocker,
   SiHtml5,
-  SiCss3,
+  SiCss,
   SiVite,
 } from "react-icons/si";
 import { TbBrandReactNative } from "react-icons/tb";
@@ -38,7 +38,7 @@ const rowLanguages: Skill[] = [
   { name: "PHP", icon: FaPhp, color: "#8993BE" },
   { name: "Dart", icon: SiDart, color: "#0175C2" },
   { name: "HTML5", icon: SiHtml5, color: "#E34F26" },
-  { name: "CSS3", icon: SiCss3, color: "#1572B6" },
+  { name: "CSS3", icon: SiCss, color: "#1572B6" },
   { name: "Vite", icon: SiVite, color: "#646CFF" },
 ];
 
@@ -77,7 +77,8 @@ type RowProps = {
 
 function CarouselRow({ skills, direction, speed, label }: RowProps) {
   const doubled = [...skills, ...skills];
-  const trackClass = direction === "left" ? "carousel-track" : "carousel-track-r";
+  const trackClass =
+    direction === "left" ? "carousel-track" : "carousel-track-r";
 
   return (
     <div className="flex flex-col gap-3">
@@ -114,7 +115,8 @@ function Badge({ name, icon: Icon, color }: Skill) {
         background: "var(--color-surface)",
         border: "1px solid var(--color-border)",
         borderRadius: "12px",
-        transition: "border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease",
+        transition:
+          "border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease",
         cursor: "default",
       }}
       onMouseEnter={(e) => {
@@ -156,9 +158,24 @@ export default function SkillsCarousel() {
 
   return (
     <div className="full-bleed flex flex-col gap-6 py-6 select-none">
-      <CarouselRow skills={rowLanguages} direction="left" speed={42} label={t("skills.row.languages")} />
-      <CarouselRow skills={rowFrameworks} direction="right" speed={65} label={t("skills.row.frameworks")} />
-      <CarouselRow skills={rowData} direction="left" speed={28} label={t("skills.row.data")} />
+      <CarouselRow
+        skills={rowLanguages}
+        direction="left"
+        speed={42}
+        label={t("skills.row.languages")}
+      />
+      <CarouselRow
+        skills={rowFrameworks}
+        direction="right"
+        speed={65}
+        label={t("skills.row.frameworks")}
+      />
+      <CarouselRow
+        skills={rowData}
+        direction="left"
+        speed={28}
+        label={t("skills.row.data")}
+      />
     </div>
   );
 }
