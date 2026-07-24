@@ -1,21 +1,21 @@
 {
   "nav": {
-    "about": "About me",
+    "about": "About",
     "skills": "Skills",
     "experience": "Experience",
     "projects": "Projects",
-    "contact": "Contact me"
+    "contact": "Contact"
   },
   "about": {
     "titleCycle": [
-      "About me",
-      "Package development",
-      "Web developer",
-      "App developer",
-      "Cyber security"
+      "Software Engineer",
+      "Package Developer",
+      "Web Developer",
+      "App Developer",
+      "Security Enthusiast"
     ],
     "download": "Download my resume",
-    "body": "Mohammed Alajmi a software programmer with a deep passion for programming, particularly in package development, application development, web development, and cybersecurity. I find great excitement in learning about new technologies and exploring various frameworks to create websites and applications that serve and assist people through their daily lives.",
+    "body": "I'm a software engineer who enjoys working across the whole stack, from small packages and APIs to full web and mobile apps. Cybersecurity is my other big interest, and I'm usually testing out some new framework or tool just to see what it's good for. Most of what I build is meant to make something in someone's day a little easier.",
     "name": "Mohammed Alajmi",
     "portfolio": "Portfolio",
     "scroll": "scroll",
@@ -26,11 +26,10 @@
     }
   },
   "skills": {
-    "title": "My skills",
-    "label": "My Arsenal",
-    "title1": "My Skills Have",
-    "title2": "No Limit.",
-    "desc": "From pixel-perfect interfaces to battle-tested APIs — I engineer across the entire stack with zero compromise.",
+    "label": "What I Use",
+    "title1": "A Toolkit I've",
+    "title2": "Built Over Time",
+    "desc": "I care about getting the details right, from clean interfaces to APIs that hold up once real people are using them.",
     "groups": {
       "Languages": "Languages",
       "Front End": "Front End",
@@ -51,31 +50,38 @@
   },
   "projects": {
     "label": "Selected Work",
-    "title": "Projects I worked on",
+    "title": "Projects I've worked on",
     "subtitle": "Selected work from the past few years.",
     "view": "View project",
     "all": "All",
-    "loadMore": "Load more"
+    "loadMore": "Load more",
+    "showing": "Showing {{shown}} of {{total}}",
+    "allLoaded": "All {{count}} projects loaded",
+    "private": "Private",
+    "imageError": "Couldn't load image",
+    "noImage": "No image"
   },
   "experience": {
     "label": "Career",
     "title": "Work Experience",
-    "subtitle": "Companies and roles that shaped my craft.",
+    "subtitle": "Companies I've worked at and the roles I held.",
     "current": "CURRENT",
     "present": "Present",
     "empty": "No experience entries yet",
-    "loadMore": "Load more"
+    "loadMore": "Load more",
+    "allLoaded": "All {{count}} entries loaded"
   },
   "contact": {
+    "label": "Get in Touch",
     "title": "Contact me",
-    "intro": "Have a project in mind? Let's build something great together.",
+    "intro": "Got a project in mind? I'd love to hear about it.",
     "directTitle": "Or reach me directly",
-    "backSoon": "I'll get back to you as soon as possible.",
+    "backSoon": "I'll get back to you soon.",
     "sending": "Sending…",
-    "email": "Email Address",
+    "email": "Email address",
     "message": "Your message",
-    "submit": "Submit",
-    "received": "Your email has been received",
+    "submit": "Send",
+    "received": "Got your message, thanks!",
     "placeholder": {
       "email": "your@email.com",
       "message": "Tell me about your project..."

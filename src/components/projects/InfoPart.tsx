@@ -101,7 +101,7 @@ export default function InfoPart({
                 textAlign: "center",
               }}
             >
-              {image_url ? "LOAD FAILED" : "NO IMAGE"}
+              {image_url ? t("projects.imageError") : t("projects.noImage")}
             </span>
           </div>
         )}
@@ -193,7 +193,7 @@ export default function InfoPart({
                 fontFamily: "'JetBrains Mono', monospace",
               }}
             >
-              Private
+              {t("projects.private")}
             </span>
           )}
         </div>

@@ -189,7 +189,7 @@ export default function ExperienceSection() {
             letterSpacing: "0.08em",
           }}
         >
-          — {t("experience.empty")} —
+          {t("experience.empty")}
         </p>
       ) : (
         <div className="flex flex-col gap-4 max-w-3xl mx-auto w-full">
@@ -261,7 +261,7 @@ export default function ExperienceSection() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              — ALL {experiences.length} ENTRIES LOADED —
+              {t("experience.allLoaded", { count: experiences.length })}
             </motion.p>
           )}
         </div>

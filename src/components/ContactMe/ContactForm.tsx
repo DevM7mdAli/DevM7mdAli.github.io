@@ -57,7 +57,7 @@ export default function ContactForm() {
     >
       {/* Header */}
       <div className="text-center flex flex-col gap-3">
-        <span className="section-label block">{t("contact.title")}</span>
+        <span className="section-label block">{t("contact.label")}</span>
         <h2
           className="text-4xl sm:text-5xl font-bold"
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}

@@ -100,7 +100,7 @@ export default function AboutCard({
             transition={{ duration: 0.5 }}
           >
             <span className="section-label">
-              {t("about.portfolio")} — {new Date().getFullYear()}
+              {t("about.portfolio")} · {new Date().getFullYear()}
             </span>
           </motion.div>
 

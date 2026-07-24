@@ -168,7 +168,7 @@ export default function ProjectCard() {
                     letterSpacing: "0.08em",
                   }}
                 >
-                  Showing {shown.length} of {allFiltered.length}
+                  {t("projects.showing", { shown: shown.length, total: allFiltered.length })}
                 </p>
                 <button
                   onClick={() => setVisible((v) => v + LOAD_STEP)}
@@ -222,7 +222,7 @@ export default function ProjectCard() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              — ALL {allFiltered.length} PROJECTS LOADED —
+              {t("projects.allLoaded", { count: allFiltered.length })}
             </motion.p>
           )}
         </div>
