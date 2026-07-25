@@ -90,5 +90,12 @@
   "footer": {
     "copyright": "© {{year}} Mohammed Alajmi",
     "built": "Built with ❤️"
+  },
+  "error": {
+    "eyebrow": "Error",
+    "title": "Lost in the stack",
+    "subtitle": "This route doesn't exist — the page may have moved, or the URL is off.",
+    "notFound": "404 Not Found",
+    "cta": "Back to home"
   }
 }
