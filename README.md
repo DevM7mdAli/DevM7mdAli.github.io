@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+# mohammed-alajmi.me
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Personal portfolio for **Mohammed Alajmi** ([@DevM7mdAli](https://github.com/DevM7mdAli)) — software engineer, full-stack developer, and app developer.
+
+Live at **[mohammed-alajmi.me](https://mohammed-alajmi.me)**.
+
+## Features
+
+- **Bilingual** — English and Arabic, including full RTL layout, via `react-i18next`.
+- **Light/dark theme** with a persisted preference (`zustand` + `localStorage`).
+- **Dynamic content** — projects and work experience are fetched from Supabase rather than hardcoded, with categories and tags for filtering.
+- **Animated, responsive UI** built with Tailwind CSS and Framer Motion.
+- **Contact form** wired to Formspree.
+- **SPA routing on GitHub Pages** — a `404.html` redirect trick restores the original path so React Router's own not-found page renders instead of silently falling back to the homepage.
+
+## Tech Stack
+
+- [Vite](https://vitejs.dev/) + [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/) (with [Material Tailwind](https://www.material-tailwind.com/))
+- [React Router](https://reactrouter.com/)
+- [Supabase](https://supabase.com/) — projects & experience data (Postgres + PostgREST)
+- [TanStack Query](https://tanstack.com/query) — data fetching/caching
+- [Zustand](https://zustand-demo.pmnd.rs/) — UI state (theme, language)
+- [Framer Motion](https://www.framer.com/motion/) — animations
+- [react-i18next](https://react.i18next.com/) — localization
+- [Formspree](https://formspree.io/) — contact form backend
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- [pnpm](https://pnpm.io/)
+- A Supabase project (for projects/experience data)
+
+### Install
+
+```bash
+pnpm install
+```
+
+### Environment variables
+
+Copy `.env.example` to `.env` and fill in your Supabase project's URL and anon/public key:
+
+```bash
+cp .env.example .env
+```
+
+```
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-public-key
+```
+
+The anon key is read-only by design (enforced via Row-Level Security) — the site only ever reads `projects`, `experiences`, `project_categories`, `tags`, and `project_tags`. See [`supabase/`](./supabase) for the SQL used to seed that data; run those scripts in the Supabase SQL editor with an account that has write access.
+
+### Run the dev server
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:5173](http://localhost:5173).
 
 ## Available Scripts
 
-In the project directory, you can run:
+| Command         | Description                                      |
+| --------------- | ------------------------------------------------- |
+| `pnpm dev`      | Start the Vite dev server                         |
+| `pnpm build`    | Type-check-free production build to `dist/`       |
+| `pnpm preview`  | Preview the production build locally              |
+| `pnpm deploy`   | Build and publish `dist/` to GitHub Pages (`gh-pages`) |
 
-### `npm start`
+## Project Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+src/
+├── components/       # UI sections (About, Skills, Experience, projects, ContactMe, NavBar, Footer, Error)
+├── data/             # Static profile data (links, resume, etc.)
+├── i18n/             # react-i18next setup + en/ar locale files
+├── lib/              # Supabase client, shared types, data-fetching helpers
+├── stores/           # Zustand stores (theme, language)
+├── utils/            # Small shared helpers (typed Framer Motion wrappers, etc.)
+├── App.tsx           # Router setup
+└── main.tsx          # Entry point
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+public/               # Static assets, including the GitHub Pages SPA 404 redirect
+supabase/              # SQL seed/migration scripts for the projects & experience data
+```
 
-### `npm test`
+## Deployment
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The site is a static build deployed to GitHub Pages via `gh-pages`, served under the custom domain in `public/CNAME`:
 
-### `npm run build`
+```bash
+pnpm deploy
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Since GitHub Pages has no server-side routing, `public/404.html` implements the [rafgraph/spa-github-pages](https://github.com/rafgraph/spa-github-pages) redirect trick, and `index.html` decodes it back into the real path before React Router mounts — so a bad URL correctly shows the app's own 404 page rather than bouncing to the homepage.
