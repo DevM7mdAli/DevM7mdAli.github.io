@@ -84,20 +84,13 @@
       name="twitter:image:alt"
       content="Mohammed Alajmi — Software Engineer and Full-Stack Developer"
     />
-    <!-- Google tag (gtag.js) -->
+    <!-- Cloudflare Web Analytics -->
     <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-BFT3X9Z18W"
+      type="module"
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "147bd0cd227a46e8a458788a176e62f1"}'
     ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-
-      gtag("config", "G-BFT3X9Z18W");
-    </script>
+    <!-- End Cloudflare Web Analytics -->
   </head>
   <body>
     <div id="root"></div>
