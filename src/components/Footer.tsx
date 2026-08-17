@@ -1,8 +1,9 @@
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaLock } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 type FooterProps = {
   linkedLink: string;
@@ -11,7 +12,12 @@ type FooterProps = {
   Email: string;
 };
 
-export default function Footer({ linkedLink, GitHubLink, XLink, Email }: FooterProps) {
+export default function Footer({
+  linkedLink,
+  GitHubLink,
+  XLink,
+  Email,
+}: FooterProps) {
   const { t } = useTranslation();
 
   const NAV_LINKS = [
@@ -41,11 +47,15 @@ export default function Footer({ linkedLink, GitHubLink, XLink, Email }: FooterP
       <div
         className="h-px w-full"
         style={{
-          background: "linear-gradient(to right, transparent, var(--color-border), transparent)",
+          background:
+            "linear-gradient(to right, transparent, var(--color-border), transparent)",
         }}
       />
 
-      <div className="w-full px-8 lg:px-16 py-10" style={{ background: "var(--color-surface)" }}>
+      <div
+        className="w-full px-8 lg:px-16 py-10"
+        style={{ background: "var(--color-surface)" }}
+      >
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           {/* Logo */}
           <a href="/" className="flex items-center gap-2.5 flex-shrink-0">
@@ -64,8 +74,12 @@ export default function Footer({ linkedLink, GitHubLink, XLink, Email }: FooterP
                 href={href}
                 className="text-sm transition-colors"
                 style={{ color: "var(--color-muted)" }}
-                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = "var(--color-text)")}
-                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = "var(--color-muted)")}
+                onMouseEnter={(e) =>
+                  ((e.target as HTMLElement).style.color = "var(--color-text)")
+                }
+                onMouseLeave={(e) =>
+                  ((e.target as HTMLElement).style.color = "var(--color-muted)")
+                }
               >
                 {label}
               </a>
@@ -82,14 +96,21 @@ export default function Footer({ linkedLink, GitHubLink, XLink, Email }: FooterP
                 rel="noopener noreferrer"
                 aria-label={label}
                 className="w-9 h-9 flex items-center justify-center rounded-full transition-all"
-                style={{ border: "1px solid var(--color-border)", color: "var(--color-muted)" }}
+                style={{
+                  border: "1px solid var(--color-border)",
+                  color: "var(--color-muted)",
+                }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)";
-                  (e.currentTarget as HTMLElement).style.color = "var(--color-text)";
+                  (e.currentTarget as HTMLElement).style.borderColor =
+                    "var(--color-primary)";
+                  (e.currentTarget as HTMLElement).style.color =
+                    "var(--color-text)";
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)";
-                  (e.currentTarget as HTMLElement).style.color = "var(--color-muted)";
+                  (e.currentTarget as HTMLElement).style.borderColor =
+                    "var(--color-border)";
+                  (e.currentTarget as HTMLElement).style.color =
+                    "var(--color-muted)";
                 }}
               >
                 <Icon size={15} />
@@ -105,16 +126,24 @@ export default function Footer({ linkedLink, GitHubLink, XLink, Email }: FooterP
         >
           <p
             className="text-xs"
-            style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace" }}
+            style={{
+              color: "var(--color-muted)",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
           >
             {t("footer.copyright", { year: new Date().getFullYear() })}
           </p>
-          <p
-            className="text-xs"
-            style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace" }}
-          >
-            {t("footer.built")}
-          </p>
+          <div className="flex items-center gap-4">
+            <p
+              className="text-xs"
+              style={{
+                color: "var(--color-muted)",
+                fontFamily: "'JetBrains Mono', monospace",
+              }}
+            >
+              {t("footer.built")}
+            </p>
+          </div>
         </div>
       </div>
     </motion.footer>

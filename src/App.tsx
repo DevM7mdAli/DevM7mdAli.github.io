@@ -2,7 +2,6 @@ import NavBar from "./components/NavBar";
 import AboutCard from "./components/About/AboutCard";
 import Skills from "./components/Skills/Skills";
 import ExperienceSection from "./components/Experience/ExperienceSection";
-import me from "./data/me.json";
 import ProjectCard from "./components/projects/ProjectCard";
 import {
   createBrowserRouter,
@@ -13,6 +12,9 @@ import {
 import Error404 from "./components/Error";
 import Footer from "./components/Footer";
 import ContactForm from "./components/ContactMe/ContactForm";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminLogin from "./pages/admin/AdminLogin";
+import { useProfile } from "./hooks/useProfile";
 
 function SectionDivider() {
   return (
@@ -28,6 +30,8 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route errorElement={<Error404 />}>
       <Route index element={<HolderElement />} />
+      <Route path="manage" element={<AdminDashboard />} />
+      <Route path="manage/login" element={<AdminLogin />} />
     </Route>,
   ),
 );
@@ -37,6 +41,8 @@ function App() {
 }
 
 function HolderElement() {
+  const profile = useProfile();
+
   return (
     <div
       className="flex flex-col min-h-screen"
@@ -46,11 +52,13 @@ function HolderElement() {
 
       <main className="w-full">
         <AboutCard
-          resumeLink={me.resumeLink}
-          linkedLink={me.linkedLink}
-          GitHubLink={me.GitHubLink}
-          XLink={me.XLink}
-          Email={me.Email}
+          resumeLink={profile.resumeLink}
+          linkedLink={profile.linkedLink}
+          GitHubLink={profile.GitHubLink}
+          XLink={profile.XLink}
+          Email={profile.Email}
+          customAboutEn={profile.about_en}
+          customAboutAr={profile.about_ar}
           about="about.body"
         />
 
@@ -67,10 +75,10 @@ function HolderElement() {
       </main>
 
       <Footer
-        linkedLink={me.linkedLink}
-        GitHubLink={me.GitHubLink}
-        XLink={me.XLink}
-        Email={me.Email}
+        linkedLink={profile.linkedLink}
+        GitHubLink={profile.GitHubLink}
+        XLink={profile.XLink}
+        Email={profile.Email}
       />
     </div>
   );

@@ -18,6 +18,8 @@ type AboutCardProps = {
   GitHubLink: string;
   XLink: string;
   Email: string;
+  customAboutEn?: string | null;
+  customAboutAr?: string | null;
 };
 
 const letterVariants = {
@@ -37,6 +39,8 @@ export default function AboutCard({
   GitHubLink,
   XLink,
   Email,
+  customAboutEn,
+  customAboutAr,
 }: AboutCardProps) {
   const viewRef = useRef<HTMLDivElement>(null);
   const inView = useInView(viewRef, { margin: "-10% 0px" });
@@ -66,6 +70,10 @@ export default function AboutCard({
 
   // Build per-letter global index for staggered animation
   let letterCount = 0;
+
+  const bioText = i18n.language === "ar"
+    ? (customAboutAr || t(about))
+    : (customAboutEn || t(about));
 
   return (
     <section
@@ -104,10 +112,7 @@ export default function AboutCard({
             </span>
           </motion.div>
 
-          {/* Name animation:
-              - LTR (EN): letter-by-letter blur reveal inside each word
-              - RTL (AR): word-by-word reveal — splitting Arabic into chars
-                          breaks contextual letter shaping */}
+          {/* Name animation */}
           <motion.h1
             className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight tracking-tight"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
@@ -177,7 +182,7 @@ export default function AboutCard({
             className="text-base sm:text-lg leading-relaxed max-w-xl"
             style={{ color: "var(--color-muted)" }}
           >
-            {t(about)}
+            {bioText}
           </motion.p>
 
           {/* CTAs */}
