@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import {
@@ -7,14 +7,31 @@ import {
   createSkill,
   updateSkill,
   deleteSkill,
+  placeSkills,
   uploadAssetFile,
   type Skill,
+  type SkillGroup,
   type SkillPayload,
+  type SkillPlacement,
 } from "../../lib/supabase";
 import { iconRegistry, iconRegistryKeys } from "../../lib/iconRegistry";
 import SkillIcon from "../Skills/SkillIcon";
-import { FaPlus, FaEdit, FaTrash, FaSpinner, FaTimes, FaUpload, FaEyeSlash } from "react-icons/fa";
+import SortableCard from "./SortableCard";
+import DroppableGroup from "./DroppableGroup";
+import {
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaSpinner,
+  FaTimes,
+  FaUpload,
+  FaEyeSlash,
+  FaGripVertical,
+} from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import { DragDropProvider } from "@dnd-kit/react";
+import { move } from "@dnd-kit/helpers";
+import { isSortable } from "@dnd-kit/react/sortable";
 
 const BLANK: SkillPayload = {
   name: "",
@@ -26,6 +43,97 @@ const BLANK: SkillPayload = {
   is_visible: true,
 };
 
+const UNGROUPED = "ungrouped";
+const SKILL_TYPE = "skill";
+
+/* Same trap as ProjectsManager: a defaulted `= []` is a new array every
+   render, so it cannot be a useEffect dependency. */
+const NO_SKILLS: Skill[] = [];
+const NO_GROUPS: SkillGroup[] = [];
+
+function groupKey(groupId: number | null): string {
+  return groupId == null ? UNGROUPED : String(groupId);
+}
+
+function groupIdFromKey(key: string): number | null {
+  return key === UNGROUPED ? null : Number(key);
+}
+
+function buildByGroup(skills: Skill[], groups: SkillGroup[]): Record<string, Skill[]> {
+  const next: Record<string, Skill[]> = { [UNGROUPED]: [] };
+  for (const g of groups) next[String(g.id)] = [];
+  const sorted = [...skills].sort(
+    (a, b) => a.sort_order - b.sort_order || a.name.localeCompare(b.name),
+  );
+  for (const s of sorted) {
+    const key = groupKey(s.group_id);
+    if (!next[key]) next[key] = [];
+    next[key].push(s);
+  }
+  return next;
+}
+
+function columnKeys(groups: SkillGroup[], byGroup: Record<string, Skill[]>): string[] {
+  const keys = [...groups.map((g) => String(g.id)), UNGROUPED];
+  for (const key of Object.keys(byGroup)) {
+    if (!keys.includes(key)) keys.push(key);
+  }
+  return keys;
+}
+
+function toPlacements(byGroup: Record<string, Skill[]>): SkillPlacement[] {
+  return Object.entries(byGroup).flatMap(([key, items]) =>
+    items.map((skill, index) => ({
+      id: skill.id,
+      group_id: groupIdFromKey(key),
+      sort_order: index,
+    })),
+  );
+}
+
+function diffPlacements(from: SkillPlacement[], to: SkillPlacement[]): SkillPlacement[] {
+  const prev = new Map(from.map((p) => [p.id, p]));
+  return to.filter((p) => {
+    const old = prev.get(p.id);
+    return !old || old.group_id !== p.group_id || old.sort_order !== p.sort_order;
+  });
+}
+
+/** Stamp group_id / sort_order from the board so an edit modal opened
+    before the refetch shows the row the card is actually sitting in. */
+function relocate(
+  board: Record<string, Skill[]>,
+  fromGroup: string,
+  fromIndex: number,
+  toGroup: string,
+  toIndex: number,
+): Record<string, Skill[]> {
+  if (fromGroup === toGroup && fromIndex === toIndex) return board;
+  const sourceItems = [...(board[fromGroup] ?? [])];
+  if (fromIndex < 0 || fromIndex >= sourceItems.length) return board;
+  const [item] = sourceItems.splice(fromIndex, 1);
+  if (fromGroup === toGroup) {
+    sourceItems.splice(toIndex, 0, item);
+    return { ...board, [fromGroup]: sourceItems };
+  }
+  const targetItems = [...(board[toGroup] ?? [])];
+  const clamped = Math.max(0, Math.min(toIndex, targetItems.length));
+  targetItems.splice(clamped, 0, item);
+  return { ...board, [fromGroup]: sourceItems, [toGroup]: targetItems };
+}
+
+function applyPlacements(byGroup: Record<string, Skill[]>): Record<string, Skill[]> {
+  const next: Record<string, Skill[]> = {};
+  for (const [key, items] of Object.entries(byGroup)) {
+    next[key] = items.map((s, i) => ({
+      ...s,
+      group_id: groupIdFromKey(key),
+      sort_order: i,
+    }));
+  }
+  return next;
+}
+
 export default function SkillsManager() {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
@@ -36,15 +144,24 @@ export default function SkillsManager() {
   const [form, setForm] = useState<SkillPayload>(BLANK);
   const [uploading, setUploading] = useState(false);
   const [formError, setFormError] = useState("");
+  const [placeError, setPlaceError] = useState("");
 
-  const { data: skills = [], isLoading } = useQuery({
+  const [byGroup, setByGroup] = useState<Record<string, Skill[]>>({ [UNGROUPED]: [] });
+  const byGroupRef = useRef(byGroup);
+  byGroupRef.current = byGroup;
+  const snapshotRef = useRef(byGroup);
+
+  const { data: skillsData, isLoading } = useQuery({
     queryKey: ["admin-skills"],
     queryFn: fetchAdminSkills,
   });
-  const { data: groups = [] } = useQuery({
+  const skills = skillsData ?? NO_SKILLS;
+
+  const { data: groupsData } = useQuery({
     queryKey: ["admin-skill-groups"],
     queryFn: fetchAdminSkillGroups,
   });
+  const groups = groupsData ?? NO_GROUPS;
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["admin-skills"] });
@@ -77,6 +194,23 @@ export default function SkillsManager() {
       setDeleteConfirmId(null);
     },
   });
+
+  const placeMutation = useMutation({
+    mutationFn: placeSkills,
+    onSuccess: () => {
+      setPlaceError("");
+      invalidate();
+    },
+    onError: (err: Error) => {
+      setByGroup(snapshotRef.current);
+      setPlaceError(err.message);
+    },
+  });
+
+  useEffect(() => {
+    if (!skillsData || placeMutation.isPending) return;
+    setByGroup(buildByGroup(skillsData, groupsData ?? NO_GROUPS));
+  }, [skillsData, groupsData, placeMutation.isPending]);
 
   const openModal = (skill?: Skill) => {
     setFormError("");
@@ -156,13 +290,9 @@ export default function SkillsManager() {
     is_visible: form.is_visible,
   };
 
-  const grouped = groups.map((g) => ({
-    group: g,
-    items: skills
-      .filter((s) => s.group_id === g.id)
-      .sort((a, b) => a.sort_order - b.sort_order),
-  }));
-  const ungrouped = skills.filter((s) => s.group_id == null);
+  const groupById = new Map(groups.map((g) => [String(g.id), g]));
+  const columns = columnKeys(groups, byGroup);
+  const dragEnabled = !placeMutation.isPending;
 
   return (
     <div className="flex flex-col gap-6">
@@ -201,87 +331,198 @@ export default function SkillsManager() {
           </button>
         </div>
       ) : (
-        <div className="flex flex-col gap-6">
-          {[...grouped, { group: null, items: ungrouped }].map(({ group, items }) => {
-            if (items.length === 0) return null;
-            return (
-              <div key={group?.id ?? "ungrouped"} className="flex flex-col gap-3">
-                <div className="flex items-baseline gap-3">
-                  <span className="section-label">
-                    {group ? group.name : t("manage.skills.ungrouped")}
-                  </span>
-                  {group && (
-                    <span
-                      className="text-[11px]"
-                      style={{ color: "var(--color-muted)", fontFamily: "var(--font-mono)" }}
-                    >
-                      {group.direction} · {group.speed_s}s
-                    </span>
-                  )}
-                </div>
+        <div className="flex flex-col gap-4">
+          {placeError && (
+            <div
+              className="p-3 rounded-lg text-xs"
+              style={{
+                background: "rgba(239, 68, 68, 0.1)",
+                border: "1px solid rgba(239, 68, 68, 0.2)",
+                color: "#f87171",
+              }}
+            >
+              {t("manage.skills.reorderFailed", { error: placeError })}
+            </div>
+          )}
+          <p className="text-xs flex items-center gap-2" style={{ color: "var(--color-muted)" }}>
+            <FaGripVertical size={10} />
+            <span>{t("manage.skills.dragHint")}</span>
+            {placeMutation.isPending && <FaSpinner size={10} className="animate-spin" />}
+          </p>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {items.map((skill) => (
-                    <div
-                      key={skill.id}
-                      className="rounded-lg border p-3 flex items-center gap-3"
-                      style={{
-                        background: "var(--color-surface)",
-                        borderColor: "var(--color-border)",
-                        opacity: skill.is_visible ? 1 : 0.5,
-                      }}
-                    >
-                      <SkillIcon skill={skill} size={26} />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-semibold truncate">{skill.name}</span>
-                          {!skill.is_visible && (
-                            <FaEyeSlash size={10} style={{ color: "var(--color-muted)" }} />
-                          )}
-                        </div>
-                        <span
-                          className="text-[10px] truncate block"
-                          style={{ color: "var(--color-muted)", fontFamily: "var(--font-mono)" }}
-                        >
-                          {skill.icon_key && skill.icon_key in iconRegistry
-                            ? skill.icon_key
-                            : skill.icon_url
-                              ? t("manage.skills.uploadedIcon")
-                              : t("manage.skills.missingIcon")}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => openModal(skill)}
-                          className="p-1.5 rounded-lg border"
+          <DragDropProvider
+            onDragStart={() => {
+              snapshotRef.current = byGroupRef.current;
+            }}
+            onDragOver={(event) => {
+              const { source } = event.operation;
+              if (source?.type === "group") return;
+              setByGroup((items) => move(items, event));
+            }}
+            onDragEnd={(event) => {
+              if (event.canceled) {
+                setByGroup(snapshotRef.current);
+                return;
+              }
+
+              const snapshot = snapshotRef.current;
+              const { source } = event.operation;
+              let board = byGroupRef.current;
+
+              /* Prefer the sortable's final group/index: the last onDragOver
+                 setState may not have flushed by the time drop fires. Fall
+                 back to the (possibly stale) React board if the event has
+                 no group yet — empty-row drops go through the droppable. */
+              if (isSortable(source) && source.initialGroup != null && source.group != null) {
+                const relocated = relocate(
+                  snapshot,
+                  String(source.initialGroup),
+                  source.initialIndex,
+                  String(source.group),
+                  source.index,
+                );
+                if (diffPlacements(toPlacements(snapshot), toPlacements(relocated)).length > 0) {
+                  board = relocated;
+                }
+              }
+
+              const next = applyPlacements(board);
+              setByGroup(next);
+              const changed = diffPlacements(toPlacements(snapshot), toPlacements(next));
+              if (changed.length === 0) return;
+              placeMutation.mutate(changed);
+            }}
+          >
+            <div className="flex flex-col gap-6">
+              {columns.map((key) => {
+                const group = key === UNGROUPED ? null : (groupById.get(key) ?? null);
+                const items = byGroup[key] ?? [];
+                return (
+                  <DroppableGroup key={key} id={key} className="flex flex-col gap-3 p-1">
+                    <div className="flex items-baseline gap-3">
+                      <span className="section-label">
+                        {group ? group.name : t("manage.skills.ungrouped")}
+                      </span>
+                      <span
+                        className="text-[11px]"
+                        style={{ color: "var(--color-muted)", fontFamily: "var(--font-mono)" }}
+                      >
+                        {group
+                          ? `${group.direction} · ${group.speed_s}s · ${items.length}`
+                          : items.length}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 min-h-[4.5rem]">
+                      {items.length === 0 ? (
+                        <div
+                          className="col-span-full rounded-lg border border-dashed py-8 text-center text-xs"
                           style={{
                             borderColor: "var(--color-border)",
-                            background: "var(--color-surface-2)",
-                            color: "var(--color-text)",
+                            color: "var(--color-muted)",
                           }}
-                          title={t("manage.projects.edit")}
                         >
-                          <FaEdit size={10} />
-                        </button>
-                        <button
-                          onClick={() => setDeleteConfirmId(skill.id)}
-                          className="p-1.5 rounded-lg border"
-                          style={{
-                            borderColor: "rgba(239, 68, 68, 0.2)",
-                            background: "rgba(239, 68, 68, 0.08)",
-                            color: "#f87171",
-                          }}
-                          title={t("manage.projects.delete")}
-                        >
-                          <FaTrash size={10} />
-                        </button>
-                      </div>
+                          {t("manage.skills.dropHere")}
+                        </div>
+                      ) : (
+                        items.map((skill, index) => (
+                          <SortableCard
+                            key={skill.id}
+                            id={skill.id}
+                            index={index}
+                            group={key}
+                            type={SKILL_TYPE}
+                            accept={SKILL_TYPE}
+                            disabled={!dragEnabled}
+                            className="rounded-lg border p-3 flex items-center gap-2"
+                            style={{
+                              background: "var(--color-surface)",
+                              borderColor: "var(--color-border)",
+                              opacity: skill.is_visible ? 1 : 0.5,
+                            }}
+                          >
+                            {({ handleRef }) => (
+                              <>
+                                <button
+                                  ref={handleRef as (element: Element | null) => void}
+                                  type="button"
+                                  disabled={!dragEnabled}
+                                  aria-label={t("manage.skills.dragHandle")}
+                                  title={t("manage.skills.dragHandle")}
+                                  className="p-1.5 rounded-lg shrink-0"
+                                  style={{
+                                    color: "var(--color-muted)",
+                                    cursor: dragEnabled ? "grab" : "not-allowed",
+                                    opacity: dragEnabled ? 1 : 0.4,
+                                    touchAction: "none",
+                                  }}
+                                >
+                                  <FaGripVertical size={11} />
+                                </button>
+                                <SkillIcon skill={skill} size={26} />
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="text-xs font-semibold truncate">
+                                      {skill.name}
+                                    </span>
+                                    {!skill.is_visible && (
+                                      <FaEyeSlash
+                                        size={10}
+                                        style={{ color: "var(--color-muted)" }}
+                                      />
+                                    )}
+                                  </div>
+                                  <span
+                                    className="text-[10px] truncate block"
+                                    style={{
+                                      color: "var(--color-muted)",
+                                      fontFamily: "var(--font-mono)",
+                                    }}
+                                  >
+                                    {skill.icon_key && skill.icon_key in iconRegistry
+                                      ? skill.icon_key
+                                      : skill.icon_url
+                                        ? t("manage.skills.uploadedIcon")
+                                        : t("manage.skills.missingIcon")}
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-1 shrink-0">
+                                  <button
+                                    onClick={() => openModal(skill)}
+                                    className="p-1.5 rounded-lg border"
+                                    style={{
+                                      borderColor: "var(--color-border)",
+                                      background: "var(--color-surface-2)",
+                                      color: "var(--color-text)",
+                                    }}
+                                    title={t("manage.projects.edit")}
+                                  >
+                                    <FaEdit size={10} />
+                                  </button>
+                                  <button
+                                    onClick={() => setDeleteConfirmId(skill.id)}
+                                    className="p-1.5 rounded-lg border"
+                                    style={{
+                                      borderColor: "rgba(239, 68, 68, 0.2)",
+                                      background: "rgba(239, 68, 68, 0.08)",
+                                      color: "#f87171",
+                                    }}
+                                    title={t("manage.projects.delete")}
+                                  >
+                                    <FaTrash size={10} />
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </SortableCard>
+                        ))
+                      )}
                     </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+                  </DroppableGroup>
+                );
+              })}
+            </div>
+          </DragDropProvider>
         </div>
       )}
 

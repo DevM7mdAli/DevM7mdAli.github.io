@@ -29,6 +29,6 @@ export function useAdminAuth() {
   return {
     user,
     loading,
-    isAuthenticated: !!user,
+    isAuthenticated: user !== null,
   };
 }

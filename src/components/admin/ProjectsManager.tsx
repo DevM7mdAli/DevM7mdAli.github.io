@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import {
@@ -8,6 +8,7 @@ import {
   createProject,
   updateProject,
   deleteProject,
+  reorderProjects,
   createCategory,
   uploadAssetFile,
   fetchAdminExperiences,
@@ -26,10 +27,19 @@ import {
   FaSpinner,
   FaTimes,
   FaCheck,
+  FaGripVertical,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import { DragDropProvider } from "@dnd-kit/react";
+import { move } from "@dnd-kit/helpers";
+import SortableCard from "./SortableCard";
 import SkillChips from "../projects/SkillChips";
 import SkillIcon from "../Skills/SkillIcon";
+
+/* Stable empty reference. `useQuery({...})` destructured as `data = []` mints a
+   fresh array on every render when data is undefined, which makes it useless as
+   a useEffect dependency — the effect refires forever. */
+const NO_PROJECTS: Project[] = [];
 
 export default function ProjectsManager() {
   const queryClient = useQueryClient();
@@ -63,12 +73,18 @@ export default function ProjectsManager() {
   const [skillFilter, setSkillFilter] = useState("");
 
   const [formError, setFormError] = useState("");
+  const [orderError, setOrderError] = useState("");
+
+  // Local mirror of the server order. Dragging updates this first so the card
+  // moves under the cursor; the write follows and rolls back on failure.
+  const [orderedProjects, setOrderedProjects] = useState<Project[]>([]);
 
   // Queries
-  const { data: projects = [], isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["admin-projects"],
     queryFn: fetchAdminProjects,
   });
+  const projects = data ?? NO_PROJECTS;
 
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
@@ -86,6 +102,25 @@ export default function ProjectsManager() {
   });
 
   // Mutations
+  // Depends on `data`, not the defaulted array: TanStack keeps `data`
+  // referentially stable across renders via structural sharing.
+  useEffect(() => {
+    if (data) setOrderedProjects(data);
+  }, [data]);
+
+  const reorderMutation = useMutation({
+    mutationFn: reorderProjects,
+    onSuccess: () => {
+      setOrderError("");
+      queryClient.invalidateQueries({ queryKey: ["admin-projects"] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+    onError: (err: Error) => {
+      setOrderedProjects(projects); // put it back where the server still has it
+      setOrderError(err.message);
+    },
+  });
+
   const createMutation = useMutation({
     mutationFn: createProject,
     onSuccess: () => {
@@ -217,7 +252,7 @@ export default function ProjectsManager() {
     }
   };
 
-  const filteredProjects = projects.filter((p) => {
+  const filteredProjects = orderedProjects.filter((p) => {
     const query = search.toLowerCase();
     const categoryName = p.category?.name || p.category?.name_en || p.category?.name_ar || p.category?.slug || "";
     const skillNames = (p.skills ?? []).map((sk) => sk.name).join(" ");
@@ -227,6 +262,15 @@ export default function ProjectsManager() {
       categoryName.toLowerCase().includes(query)
     );
   });
+
+  /**
+   * Reordering a *filtered* list silently corrupts the order: the visible
+   * cards are a subset, so writing positions 0..N renumbers them straight over
+   * the top of whatever is currently hidden. Dragging is therefore only
+   * offered on the full list, and the UI says so rather than just going dead.
+   */
+  const listIsUnfiltered = search.trim() === "";
+  const dragEnabled = listIsUnfiltered && !reorderMutation.isPending;
 
   return (
     <div className="flex flex-col gap-6">
@@ -274,16 +318,73 @@ export default function ProjectsManager() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project) => {
-            const catName = project.category?.name || project.category?.name_en || project.category?.name_ar || project.category?.slug;
-            return (
-              <div
-                key={project.id}
-                className="group rounded-lg border overflow-hidden flex flex-col justify-between transition-all"
-                style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
-              >
-                <div>
+        <>
+        {orderError && (
+          <div
+            className="p-3 rounded-lg text-xs"
+            style={{
+              background: "rgba(239, 68, 68, 0.1)",
+              border: "1px solid rgba(239, 68, 68, 0.2)",
+              color: "#f87171",
+            }}
+          >
+            {t("manage.projects.reorderFailed", { error: orderError })}
+          </div>
+        )}
+        <p className="text-xs flex items-center gap-2" style={{ color: "var(--color-muted)" }}>
+          <FaGripVertical size={10} />
+          <span>
+            {listIsUnfiltered
+              ? t("manage.projects.dragHint")
+              : t("manage.projects.dragDisabledHint")}
+          </span>
+          {reorderMutation.isPending && <FaSpinner size={10} className="animate-spin" />}
+        </p>
+        <DragDropProvider
+          onDragEnd={(event) => {
+            if (!dragEnabled) return;
+            const next = move(orderedProjects, event);
+            if (next === orderedProjects) return;
+            setOrderedProjects(next);
+            reorderMutation.mutate(next.map((p) => p.id));
+          }}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProjects.map((project, index) => {
+              const catName = project.category?.name || project.category?.name_en || project.category?.name_ar || project.category?.slug;
+              return (
+                <SortableCard
+                  key={project.id}
+                  id={project.id}
+                  index={index}
+                  disabled={!dragEnabled}
+                  className="group rounded-lg border overflow-hidden flex flex-col justify-between transition-all"
+                  style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
+                >
+                  {({ handleRef }) => (
+                    <>
+                <div className="relative">
+                  {/* Drag handle. Separate from the card body because the card
+                      itself opens the editor — making the whole surface
+                      draggable would hijack every click. */}
+                  <button
+                    ref={handleRef as any}
+                    type="button"
+                    disabled={!dragEnabled}
+                    aria-label={t("manage.projects.dragHandle")}
+                    title={dragEnabled ? t("manage.projects.dragHandle") : t("manage.projects.dragDisabled")}
+                    className="absolute top-2 left-2 z-10 p-2 rounded-lg border"
+                    style={{
+                      background: "var(--color-surface)",
+                      borderColor: "var(--color-border)",
+                      color: "var(--color-muted)",
+                      cursor: dragEnabled ? "grab" : "not-allowed",
+                      opacity: dragEnabled ? 1 : 0.4,
+                      touchAction: "none",
+                    }}
+                  >
+                    <FaGripVertical size={12} />
+                  </button>
                   {/* Image Cover */}
                   <div
                     className="relative h-44 w-full overflow-hidden border-b"
@@ -392,10 +493,14 @@ export default function ProjectsManager() {
                     </button>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+                    </>
+                  )}
+                </SortableCard>
+              );
+            })}
+          </div>
+        </DragDropProvider>
+        </>
       )}
 
       {/* CREATE / EDIT MODAL */}

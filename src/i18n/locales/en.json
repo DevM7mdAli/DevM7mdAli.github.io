@@ -146,7 +146,12 @@
       "experienceHint": "Optional. Leave unset for personal projects.",
       "skills": "Technologies",
       "skillsSelected": "{{count}} selected",
-      "skillsFilter": "Filter technologies…"
+      "skillsFilter": "Filter technologies…",
+      "dragHandle": "Drag to reorder",
+      "dragHint": "Drag a card by its handle to set the order projects appear in on the site.",
+      "dragDisabled": "Clear the search to reorder",
+      "dragDisabledHint": "Reordering is off while a search is active — it would renumber the projects hidden by the filter. Clear the search to drag.",
+      "reorderFailed": "Couldn't save the new order: {{error}}"
     },
     "experience": {
       "title": "Work Experiences",
@@ -215,11 +220,15 @@
     },
     "skills": {
       "title": "Skills & Stack",
-      "subtitle": "Manage the technologies shown in the carousel.",
+      "subtitle": "Manage the technologies shown in the carousel. Drag a skill onto a row to change its type.",
       "addNew": "Add Skill",
       "name": "Name",
       "group": "Carousel Row",
       "ungrouped": "No row",
+      "dragHint": "Drag a skill onto a carousel row to move it there, or reorder within a row.",
+      "dragHandle": "Drag to another row",
+      "dropHere": "Drop skills here",
+      "reorderFailed": "Couldn't save the new row or order: {{error}}",
       "iconKey": "Icon Key (bundled library)",
       "iconKeyHint": "Pick from the list — these ship with the site and render instantly.",
       "iconUpload": "Or upload an SVG",

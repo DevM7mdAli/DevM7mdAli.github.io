@@ -45,6 +45,8 @@ export type Project = {
   description_en?: string;
   description_ar?: string;
   category_id?: number | null;
+  /** Manual display position, lowest first. Set by dragging in /manage. */
+  sort_order?: number;
   /** Nullable FK — personal projects leave this null. */
   experience_id?: string | null;
   category: ProjectCategory | null;
@@ -123,6 +125,7 @@ const projectSelect = (locale: Locale) => `
   live_url,
   category_id,
   experience_id,
+  sort_order,
   title:title_${locale},
   description:description_${locale},
   category:project_categories (
@@ -172,6 +175,7 @@ export async function fetchProjects(locale: Locale): Promise<Project[]> {
   const { data, error } = await supabase
     .from("projects")
     .select(projectSelect(locale))
+    .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -239,6 +243,7 @@ export async function fetchProjectsByExperience(
     .from("projects")
     .select(projectSelect(locale))
     .eq("experience_id", experienceId)
+    .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -330,6 +335,7 @@ export async function fetchAdminProjects(): Promise<Project[]> {
       associated_work:experiences ( id, slug, company_name, role_en, role_ar, is_current )
     `,
     )
+    .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -410,6 +416,18 @@ export async function updateProject(id: string, payload: CreateProjectPayload) {
       if (skillErr) throw new Error(`Project saved, but skills failed: ${skillErr.message}`);
     }
   }
+}
+
+/**
+ * Persist a whole reorder in one round trip.
+ *
+ * `ids` is the complete ordered list; the RPC derives each row's position from
+ * its index. Doing this row-by-row from the client would be N requests that
+ * can half-apply and leave two projects sharing a position.
+ */
+export async function reorderProjects(ids: string[]) {
+  const { error } = await supabase.rpc("reorder_projects", { ids });
+  if (error) throw new Error(error.message);
 }
 
 export async function deleteProject(id: string) {
@@ -551,6 +569,28 @@ export async function createSkill(payload: SkillPayload) {
 export async function updateSkill(id: string, payload: SkillPayload) {
   const { error } = await supabase.from("skills").update(payload).eq("id", id);
   if (error) throw new Error(error.message);
+}
+
+/** Row + order after a skill is dragged onto a carousel row. */
+export type SkillPlacement = {
+  id: string;
+  group_id: number | null;
+  sort_order: number;
+};
+
+/**
+ * Writes only `group_id` and `sort_order`. Dragging between rows must not
+ * clobber the rest of the skill (icon, colour, visibility) the way a full
+ * `updateSkill` would if we reconstructed the payload from a stale card.
+ */
+export async function placeSkills(placements: SkillPlacement[]) {
+  const results = await Promise.all(
+    placements.map(({ id, group_id, sort_order }) =>
+      supabase.from("skills").update({ group_id, sort_order }).eq("id", id),
+    ),
+  );
+  const failed = results.find((r) => r.error);
+  if (failed?.error) throw new Error(failed.error.message);
 }
 
 export async function deleteSkill(id: string) {

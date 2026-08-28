@@ -12,8 +12,36 @@ import {
 import Error404 from "./components/Error";
 import Footer from "./components/Footer";
 import ContactForm from "./components/ContactMe/ContactForm";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminLogin from "./pages/admin/AdminLogin";
+import { lazy, Suspense } from "react";
+
+/**
+ * The admin is auth-gated and visited by exactly one person, but it was being
+ * bundled into the entry chunk every public visitor downloads — five manager
+ * screens, their modals, and now a drag-and-drop library. Splitting it out
+ * means that code is fetched only when /manage is actually opened.
+ */
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
+
+function AdminChunk({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className="min-h-screen w-full flex items-center justify-center"
+          style={{ background: "var(--color-bg)" }}
+        >
+          <div
+            className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
+            style={{ borderColor: "var(--color-muted)" }}
+          />
+        </div>
+      }
+    >
+      {children}
+    </Suspense>
+  );
+}
 import ExperienceIndex from "./pages/ExperienceIndex";
 import ExperienceDetail from "./pages/ExperienceDetail";
 import ProjectIndex from "./pages/ProjectIndex";
@@ -38,8 +66,8 @@ const router = createBrowserRouter(
       <Route path="experience/:slug" element={<ExperienceDetail />} />
       <Route path="projects" element={<ProjectIndex />} />
       <Route path="projects/:slug" element={<ProjectDetail />} />
-      <Route path="manage" element={<AdminDashboard />} />
-      <Route path="manage/login" element={<AdminLogin />} />
+      <Route path="manage" element={<AdminChunk><AdminDashboard /></AdminChunk>} />
+      <Route path="manage/login" element={<AdminChunk><AdminLogin /></AdminChunk>} />
     </Route>,
   ),
 );
