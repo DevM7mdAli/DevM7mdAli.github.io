@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { FaExternalLinkAlt, FaGithub, FaBriefcase, FaArrowRight } from "react-icons/fa";
 import { MdImageNotSupported } from "react-icons/md";
 import type { Project } from "../../lib/supabase";
+import SkillChips from "./SkillChips";
 
 type InfoPartProps = { project: Project };
 
@@ -35,7 +36,6 @@ export default function InfoPart({ project }: InfoPartProps) {
     associated_work,
   } = project;
   const categoryName = project.category?.name ?? "";
-  const tags = project.tags.map((t) => t.tag?.name).filter(Boolean) as string[];
   const [imgState, setImgState] = useState<ImgState>(
     image_url ? "loading" : "error",
   );
@@ -157,24 +157,12 @@ export default function InfoPart({ project }: InfoPartProps) {
           {description}
         </p>
 
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            {tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-xs px-2 py-0.5 rounded-full"
-                style={{
-                  background: "var(--color-surface-2)",
-                  border: "1px solid var(--color-border)",
-                  color: "var(--color-muted)",
-                  fontFamily: "'JetBrains Mono', monospace",
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
+        {/* Icons rather than text pills: five names wrap to three lines and
+            bury the description, whereas the icon row is a fixed height no
+            matter how many technologies a project uses. */}
+        <div className="pt-1">
+          <SkillChips skills={project.skills} max={5} size={30} />
+        </div>
 
         {/* Affordance row: the cue on the left says the card is pressable; the
             icons on the right are the secondary escapes. */}

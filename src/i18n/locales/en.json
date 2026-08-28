@@ -30,12 +30,6 @@
     "title1": "A Toolkit I've",
     "title2": "Built Over Time",
     "desc": "I care about getting the details right, from clean interfaces to APIs that hold up once real people are using them.",
-    "groups": {
-      "Languages": "Languages",
-      "Front End": "Front End",
-      "Back End": "Back End",
-      "DataBase": "Database"
-    },
     "stat": {
       "languages": "Languages",
       "frameworks": "Frameworks",
@@ -67,7 +61,9 @@
     "builtAt": "{{role}} at {{company}}",
     "viewDetails": "View details",
     "openLive": "Open {{title}} live site (new tab)",
-    "openRepo": "Open {{title}} on GitHub (new tab)"
+    "openRepo": "Open {{title}} on GitHub (new tab)",
+    "builtWith": "Built with",
+    "moreSkills": "{{count}} more"
   },
   "experience": {
     "label": "Career",
@@ -120,7 +116,6 @@
       "projects": "Projects",
       "experiences": "Experience",
       "categories": "Categories",
-      "tags": "Tags",
       "profile": "Profile & Links",
       "skills": "Skills"
     },
@@ -140,7 +135,6 @@
       "githubUrl": "GitHub Repository URL",
       "liveUrl": "Live Project URL",
       "category": "Category",
-      "tags": "Tags",
       "cancel": "Cancel",
       "save": "Save Project",
       "update": "Update Project",
@@ -152,7 +146,10 @@
       "slugHint": "Derived from the English title. Don't change it once the link is public.",
       "experience": "Associated Experience",
       "noExperience": "Personal project — no company",
-      "experienceHint": "Optional. Leave unset for personal projects."
+      "experienceHint": "Optional. Leave unset for personal projects.",
+      "skills": "Technologies",
+      "skillsSelected": "{{count}} selected",
+      "skillsFilter": "Filter technologies…"
     },
     "experience": {
       "title": "Work Experiences",
@@ -194,21 +191,6 @@
       "update": "Update Category",
       "deleteTitle": "Delete Category?",
       "deleteMessage": "Are you sure you want to delete this category? Projects assigned to it will be unassigned."
-    },
-    "tags": {
-      "title": "Tags",
-      "addNew": "Add New Tag",
-      "searchPlaceholder": "Search tags...",
-      "nameEn": "Tag Name (English)",
-      "nameAr": "Tag Name (Arabic)",
-      "noTags": "No tags found.",
-      "createFirst": "+ Add your first tag",
-      "editTitle": "Edit Tag",
-      "createTitle": "Add New Tag",
-      "save": "Create Tag",
-      "update": "Update Tag",
-      "deleteTitle": "Delete Tag?",
-      "deleteMessage": "Are you sure you want to delete this tag?"
     },
     "profile": {
       "title": "Personal Info & Profile",

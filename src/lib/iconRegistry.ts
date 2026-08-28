@@ -21,6 +21,17 @@ import {
   SiTailwindcss,
   SiTypescript,
   SiVite,
+  // Technologies that arrived from the old project tags (migration 0006).
+  SiGooglegemini,
+  SiDrizzle,
+  SiExpo,
+  SiRedis,
+  SiMinio,
+  SiPostman,
+  SiWebcomponentsdotorg,
+  SiPrisma,
+  SiTrpc,
+  SiVuedotjs,
 } from "react-icons/si";
 import { TbBrandReactNative } from "react-icons/tb";
 import { FaPhp, FaReact } from "react-icons/fa";
@@ -71,6 +82,17 @@ export const iconRegistry: Readonly<Record<string, IconType>> = {
   SiDocker,
   SiGit,
   SiTailwindcss,
+  // From the old project tags
+  SiGooglegemini,
+  SiDrizzle,
+  SiExpo,
+  SiRedis,
+  SiMinio,
+  SiPostman,
+  SiWebcomponentsdotorg,
+  SiPrisma,
+  SiTrpc,
+  SiVuedotjs,
 };
 
 /** Sorted keys, for the admin panel's icon-key datalist. */

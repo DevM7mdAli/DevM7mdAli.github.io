@@ -9,6 +9,7 @@ import { fetchProjectBySlug, type Locale } from "../lib/supabase";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import PageShell, { PageSpinner } from "../components/PageShell";
 import Error404 from "../components/Error";
+import SkillChips from "../components/projects/SkillChips";
 
 export default function ProjectDetail() {
   const { slug = "" } = useParams();
@@ -39,8 +40,6 @@ export default function ProjectDetail() {
   }
 
   if (!project) return <Error404 />;
-
-  const tags = project.tags.map((x) => x.tag?.name).filter(Boolean) as string[];
 
   return (
     <PageShell backTo="/projects" backLabel={t("projects.backToList")}>
@@ -117,23 +116,14 @@ export default function ProjectDetail() {
           {project.description}
         </p>
 
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-xs px-2.5 py-1 rounded-full"
-                style={{
-                  background: "var(--color-surface-2)",
-                  border: "1px solid var(--color-border)",
-                  color: "var(--color-muted)",
-                  fontFamily: "'JetBrains Mono', monospace",
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+        {/* The detail page has the room, so nothing is collapsed here — this
+            is where someone lands after the card's "+N" told them there was
+            more to see. */}
+        {project.skills.length > 0 && (
+          <section className="flex flex-col gap-3">
+            <span className="section-label">{t("projects.builtWith")}</span>
+            <SkillChips skills={project.skills} variant="full" />
+          </section>
         )}
 
         <div className="flex flex-wrap gap-3">

@@ -23,15 +23,6 @@ export type ProjectCategory = {
   created_at?: string;
 };
 
-export type Tag = {
-  id: number;
-  slug: string;
-  name: string;
-  name_en?: string;
-  name_ar?: string;
-  created_at?: string;
-};
-
 /** The experience a project was built during, as embedded on a project. */
 export type AssociatedWork = {
   id: string;
@@ -57,7 +48,9 @@ export type Project = {
   /** Nullable FK — personal projects leave this null. */
   experience_id?: string | null;
   category: ProjectCategory | null;
-  tags: Array<{ tag: Tag; tag_id?: number }>;
+  /** Technologies used. Replaced the old free-text tags in migration 0006 —
+   *  a tag was always a technology, and skills already carry icon + colour. */
+  skills: Skill[];
   associated_work: AssociatedWork | null;
   created_at?: string;
 };
@@ -137,11 +130,9 @@ const projectSelect = (locale: Locale) => `
     slug,
     name:name_${locale}
   ),
-  tags:project_tags (
-    tag:tags (
-      id,
-      slug,
-      name:name_${locale}
+  skills:project_skills (
+    skill:skills (
+      id, name, icon_key, icon_url, color, sort_order, group_id, is_visible
     )
   ),
   associated_work:experiences (
@@ -166,6 +157,15 @@ const experienceSelect = (locale: Locale) => `
   location:location_${locale}
 `;
 
+
+/** PostgREST returns the join rows wrapped; flatten and order them. */
+function flattenSkills(rows: any): Skill[] {
+  return (rows ?? [])
+    .map((r: any) => r.skill)
+    .filter(Boolean)
+    .sort((a: Skill, b: Skill) => a.sort_order - b.sort_order || a.name.localeCompare(b.name));
+}
+
 /* ── Public queries ─────────────────────────────────────── */
 
 export async function fetchProjects(locale: Locale): Promise<Project[]> {
@@ -178,7 +178,7 @@ export async function fetchProjects(locale: Locale): Promise<Project[]> {
     console.error("fetchProjects error:", error);
     return [];
   }
-  return (data ?? []) as unknown as Project[];
+  return (data ?? []).map((p: any) => ({ ...p, skills: flattenSkills(p.skills) })) as Project[];
 }
 
 /** Detail-page fetch. Returns null for an unknown slug so the route can 404. */
@@ -196,7 +196,8 @@ export async function fetchProjectBySlug(
     console.error("fetchProjectBySlug error:", error);
     return null;
   }
-  return (data as unknown as Project) ?? null;
+  if (!data) return null;
+  return { ...(data as any), skills: flattenSkills((data as any).skills) } as Project;
 }
 
 export async function fetchExperiences(locale: Locale): Promise<Experience[]> {
@@ -244,7 +245,7 @@ export async function fetchProjectsByExperience(
     console.error("fetchProjectsByExperience error:", error);
     return [];
   }
-  return (data ?? []) as unknown as Project[];
+  return (data ?? []).map((p: any) => ({ ...p, skills: flattenSkills(p.skills) })) as Project[];
 }
 
 export async function fetchProfileSettings(): Promise<ProfileSettings | null> {
@@ -325,7 +326,7 @@ export async function fetchAdminProjects(): Promise<Project[]> {
       `
       *,
       category:project_categories ( * ),
-      tags:project_tags ( tag:tags ( * ) ),
+      skills:project_skills ( skill:skills ( * ) ),
       associated_work:experiences ( id, slug, company_name, role_en, role_ar, is_current )
     `,
     )
@@ -343,12 +344,7 @@ export async function fetchAdminProjects(): Promise<Project[]> {
     category: p.category
       ? { ...p.category, name: p.category.name_en || p.category.name_ar || p.category.slug || "" }
       : null,
-    tags: (p.tags ?? []).map((t: any) => ({
-      ...t,
-      tag: t.tag
-        ? { ...t.tag, name: t.tag.name_en || t.tag.name_ar || t.tag.slug || "" }
-        : null,
-    })),
+    skills: flattenSkills(p.skills),
     associated_work: p.associated_work
       ? {
           ...p.associated_work,
@@ -370,11 +366,11 @@ export type CreateProjectPayload = {
   category_id?: number | null;
   /** null = a personal project, not tied to any job. */
   experience_id?: string | null;
-  tag_ids?: number[];
+  skill_ids?: string[];
 };
 
 export async function createProject(payload: CreateProjectPayload) {
-  const { tag_ids = [], ...projectData } = payload;
+  const { skill_ids = [], ...projectData } = payload;
 
   const { data: project, error } = await supabase
     .from("projects")
@@ -384,34 +380,34 @@ export async function createProject(payload: CreateProjectPayload) {
 
   if (error) throw new Error(error.message);
 
-  if (tag_ids.length > 0) {
-    const { error: tagErr } = await supabase
-      .from("project_tags")
-      .insert(tag_ids.map((tag_id) => ({ project_id: project.id, tag_id })));
-    if (tagErr) throw new Error(`Project saved, but tags failed: ${tagErr.message}`);
+  if (skill_ids.length > 0) {
+    const { error: skillErr } = await supabase
+      .from("project_skills")
+      .insert(skill_ids.map((skill_id) => ({ project_id: project.id, skill_id })));
+    if (skillErr) throw new Error(`Project saved, but skills failed: ${skillErr.message}`);
   }
 
   return project;
 }
 
 export async function updateProject(id: string, payload: CreateProjectPayload) {
-  const { tag_ids, ...projectData } = payload;
+  const { skill_ids, ...projectData } = payload;
 
   const { error } = await supabase.from("projects").update(projectData).eq("id", id);
   if (error) throw new Error(error.message);
 
-  if (tag_ids !== undefined) {
+  if (skill_ids !== undefined) {
     const { error: delErr } = await supabase
-      .from("project_tags")
+      .from("project_skills")
       .delete()
       .eq("project_id", id);
-    if (delErr) throw new Error(`Could not replace tags: ${delErr.message}`);
+    if (delErr) throw new Error(`Could not replace skills: ${delErr.message}`);
 
-    if (tag_ids.length > 0) {
-      const { error: tagErr } = await supabase
-        .from("project_tags")
-        .insert(tag_ids.map((tag_id) => ({ project_id: id, tag_id })));
-      if (tagErr) throw new Error(`Project saved, but tags failed: ${tagErr.message}`);
+    if (skill_ids.length > 0) {
+      const { error: skillErr } = await supabase
+        .from("project_skills")
+        .insert(skill_ids.map((skill_id) => ({ project_id: id, skill_id })));
+      if (skillErr) throw new Error(`Project saved, but skills failed: ${skillErr.message}`);
     }
   }
 }
@@ -421,7 +417,7 @@ export async function deleteProject(id: string) {
   if (error) throw new Error(error.message);
 }
 
-/* ── Admin CRUD: categories & tags ──────────────────────── */
+/* ── Admin CRUD: categories ─────────────────────────────── */
 
 export async function fetchCategories(): Promise<ProjectCategory[]> {
   const { data, error } = await supabase.from("project_categories").select("*");
@@ -455,41 +451,6 @@ export async function updateCategory(id: number, name_en: string, name_ar: strin
 
 export async function deleteCategory(id: number) {
   const { error } = await supabase.from("project_categories").delete().eq("id", id);
-  if (error) throw new Error(error.message);
-}
-
-export async function fetchTags(): Promise<Tag[]> {
-  const { data, error } = await supabase.from("tags").select("*");
-  if (error) {
-    console.error("fetchTags error:", error);
-    return [];
-  }
-  return (data ?? []).map((tag: any) => ({
-    ...tag,
-    name: tag.name_en || tag.name_ar || tag.slug || "",
-  }));
-}
-
-export async function createTag(name_en: string, name_ar: string) {
-  const { data, error } = await supabase
-    .from("tags")
-    .insert([{ slug: slugify(name_en), name_en, name_ar }])
-    .select()
-    .single();
-  if (error) throw new Error(error.message);
-  return data;
-}
-
-export async function updateTag(id: number, name_en: string, name_ar: string) {
-  const { error } = await supabase
-    .from("tags")
-    .update({ slug: slugify(name_en), name_en, name_ar })
-    .eq("id", id);
-  if (error) throw new Error(error.message);
-}
-
-export async function deleteTag(id: number) {
-  const { error } = await supabase.from("tags").delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
 

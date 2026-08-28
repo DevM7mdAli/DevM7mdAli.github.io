@@ -4,12 +4,11 @@ import { useTranslation } from "react-i18next";
 import {
   fetchAdminProjects,
   fetchCategories,
-  fetchTags,
+  fetchAdminSkills,
   createProject,
   updateProject,
   deleteProject,
   createCategory,
-  createTag,
   uploadAssetFile,
   fetchAdminExperiences,
   slugify,
@@ -29,6 +28,8 @@ import {
   FaCheck,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import SkillChips from "../projects/SkillChips";
+import SkillIcon from "../Skills/SkillIcon";
 
 export default function ProjectsManager() {
   const queryClient = useQueryClient();
@@ -51,7 +52,7 @@ export default function ProjectsManager() {
   const [experienceId, setExperienceId] = useState<string>("");
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
-  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
+  const [selectedSkillIds, setSelectedSkillIds] = useState<string[]>([]);
   const [uploadingImage, setUploadingImage] = useState(false);
 
   // Inline Category / Tag Creation State
@@ -59,9 +60,7 @@ export default function ProjectsManager() {
   const [newCatAr, setNewCatAr] = useState("");
   const [showAddCat, setShowAddCat] = useState(false);
 
-  const [newTagEn, setNewTagEn] = useState("");
-  const [newTagAr, setNewTagAr] = useState("");
-  const [showAddTag, setShowAddTag] = useState(false);
+  const [skillFilter, setSkillFilter] = useState("");
 
   const [formError, setFormError] = useState("");
 
@@ -76,9 +75,9 @@ export default function ProjectsManager() {
     queryFn: fetchCategories,
   });
 
-  const { data: tags = [] } = useQuery({
-    queryKey: ["tags"],
-    queryFn: fetchTags,
+  const { data: skills = [] } = useQuery({
+    queryKey: ["admin-skills"],
+    queryFn: fetchAdminSkills,
   });
 
   const { data: experiences = [] } = useQuery({
@@ -128,17 +127,6 @@ export default function ProjectsManager() {
     },
   });
 
-  const tagMutation = useMutation({
-    mutationFn: ({ en, ar }: { en: string; ar: string }) => createTag(en, ar),
-    onSuccess: (newTag) => {
-      queryClient.invalidateQueries({ queryKey: ["tags"] });
-      setSelectedTagIds((prev) => [...prev, Number(newTag.id)]);
-      setNewTagEn("");
-      setNewTagAr("");
-      setShowAddTag(false);
-    },
-  });
-
   const openModal = (project?: Project) => {
     setFormError("");
     if (project) {
@@ -154,11 +142,7 @@ export default function ProjectsManager() {
       setExperienceId(project.experience_id ?? "");
       setSlug(project.slug || "");
       setSlugTouched(true);
-      setSelectedTagIds(
-        (project.tags ?? [])
-          .map((t) => t.tag_id ?? t.tag?.id)
-          .filter((id): id is number => id != null),
-      );
+      setSelectedSkillIds((project.skills ?? []).map((sk) => sk.id));
     } else {
       setEditingProject(null);
       setTitleEn("");
@@ -172,7 +156,8 @@ export default function ProjectsManager() {
       setExperienceId("");
       setSlug("");
       setSlugTouched(false);
-      setSelectedTagIds([]);
+      setSelectedSkillIds([]);
+      setSkillFilter("");
     }
     setIsModalOpen(true);
   };
@@ -222,7 +207,7 @@ export default function ProjectsManager() {
       live_url: liveUrl.trim() || null,
       category_id: categoryId ? Number(categoryId) : null,
       experience_id: experienceId || null,
-      tag_ids: selectedTagIds,
+      skill_ids: selectedSkillIds,
     };
 
     if (editingProject) {
@@ -235,6 +220,7 @@ export default function ProjectsManager() {
   const filteredProjects = projects.filter((p) => {
     const query = search.toLowerCase();
     const categoryName = p.category?.name || p.category?.name_en || p.category?.name_ar || p.category?.slug || "";
+    const skillNames = (p.skills ?? []).map((sk) => sk.name).join(" ");
     return (
       p.title?.toLowerCase().includes(query) ||
       p.description?.toLowerCase().includes(query) ||
@@ -338,26 +324,10 @@ export default function ProjectsManager() {
                       {project.description}
                     </p>
 
-                    {/* Tags */}
-                    {project.tags && project.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 pt-2">
-                        {project.tags.map((tItem, idx) => {
-                          const tagName = tItem.tag?.name || tItem.tag?.name_en || tItem.tag?.name_ar || tItem.tag?.slug;
-                          if (!tagName) return null;
-                          return (
-                            <span
-                              key={idx}
-                              className="px-2 py-0.5 rounded-md text-[10px] border font-mono"
-                              style={{
-                                background: "var(--color-surface-2)",
-                                borderColor: "var(--color-border)",
-                                color: "var(--color-muted)",
-                              }}
-                            >
-                              {tagName}
-                            </span>
-                          );
-                        })}
+                    {/* Technologies */}
+                    {project.skills && project.skills.length > 0 && (
+                      <div className="pt-2">
+                        <SkillChips skills={project.skills} max={8} size={24} />
                       </div>
                     )}
                   </div>
@@ -714,84 +684,63 @@ export default function ProjectsManager() {
                   )}
                 </div>
 
-                {/* Tags Selection */}
+                {/* Technologies — the list is managed under the Skills tab;
+                    this only picks from it. */}
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="text-xs font-medium" style={{ color: "var(--color-muted)" }}>
-                      {t("manage.projects.tags")}
+                      {t("manage.projects.skills")}
                     </label>
-                    <button
-                      type="button"
-                      onClick={() => setShowAddTag(!showAddTag)}
-                      className="text-[11px] font-semibold hover:underline"
-                      style={{ color: "var(--color-text)" }}
-                    >
-                      {showAddTag ? "Cancel" : "+ New Tag"}
-                    </button>
+                    <span className="text-[11px]" style={{ color: "var(--color-muted)" }}>
+                      {t("manage.projects.skillsSelected", { count: selectedSkillIds.length })}
+                    </span>
                   </div>
 
-                  {showAddTag ? (
-                    <div className="p-3 rounded-xl border flex flex-col gap-2 mb-2" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}>
-                      <div className="grid grid-cols-2 gap-2">
-                        <input
-                          type="text"
-                          placeholder="Tag Name (EN)"
-                          value={newTagEn}
-                          onChange={(e) => setNewTagEn(e.target.value)}
-                          className="form-input text-xs"
-                        />
-                        <input
-                          type="text"
-                          placeholder="الوسم (عربي)"
-                          value={newTagAr}
-                          onChange={(e) => setNewTagAr(e.target.value)}
-                          className="form-input text-xs text-right"
-                          dir="rtl"
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (newTagEn.trim()) {
-                            tagMutation.mutate({
-                              en: newTagEn.trim(),
-                              ar: newTagAr.trim() || newTagEn.trim(),
-                            });
-                          }
-                        }}
-                        disabled={tagMutation.isPending}
-                        className="btn-primary self-end px-3 py-1.5 rounded-lg text-xs font-semibold"
-                      >
-                        {tagMutation.isPending ? "Creating..." : "Save Tag"}
-                      </button>
-                    </div>
-                  ) : null}
+                  <input
+                    type="text"
+                    value={skillFilter}
+                    onChange={(e) => setSkillFilter(e.target.value)}
+                    placeholder={t("manage.projects.skillsFilter")}
+                    className="form-input text-xs mb-2"
+                  />
 
-                  <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-3 rounded-xl border" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}>
-                    {tags.map((tag: any) => {
-                      const isSelected = selectedTagIds.includes(tag.id);
-                      const tagName = tag.name || tag.name_en || tag.name_ar || tag.slug;
-                      return (
-                        <button
-                          type="button"
-                          key={tag.id}
-                          onClick={() => {
-                            setSelectedTagIds((prev) =>
-                              isSelected ? prev.filter((id) => id !== tag.id) : [...prev, tag.id]
-                            );
-                          }}
-                          className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono border transition-all"
-                          style={{
-                            background: isSelected ? "var(--color-primary)" : "var(--color-surface)",
-                            color: isSelected ? "var(--color-bg)" : "var(--color-muted)",
-                            borderColor: isSelected ? "var(--color-primary)" : "var(--color-border)",
-                          }}
-                        >
-                          {isSelected && <FaCheck size={10} />}
-                          <span>{tagName}</span>
-                        </button>
-                      );
-                    })}
+                  <div
+                    className="flex flex-wrap gap-2 max-h-44 overflow-y-auto p-3 rounded-xl border"
+                    style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}
+                  >
+                    {skills
+                      .filter((sk) =>
+                        sk.name.toLowerCase().includes(skillFilter.trim().toLowerCase()),
+                      )
+                      // Selected first, so a long list never hides the current choices.
+                      .sort((a, b) => {
+                        const sa = selectedSkillIds.includes(a.id) ? 0 : 1;
+                        const sb = selectedSkillIds.includes(b.id) ? 0 : 1;
+                        return sa - sb || a.name.localeCompare(b.name);
+                      })
+                      .map((sk) => {
+                        const isSelected = selectedSkillIds.includes(sk.id);
+                        return (
+                          <button
+                            type="button"
+                            key={sk.id}
+                            onClick={() =>
+                              setSelectedSkillIds((prev) =>
+                                isSelected ? prev.filter((id) => id !== sk.id) : [...prev, sk.id],
+                              )
+                            }
+                            className="flex items-center gap-1.5 pl-2 pr-3 py-1.5 rounded-lg text-xs border transition-all"
+                            style={{
+                              background: isSelected ? "var(--color-primary)" : "var(--color-surface)",
+                              color: isSelected ? "var(--color-bg)" : "var(--color-muted)",
+                              borderColor: isSelected ? "var(--color-primary)" : "var(--color-border)",
+                            }}
+                          >
+                            {isSelected ? <FaCheck size={10} /> : <SkillIcon skill={sk} size={14} />}
+                            <span>{sk.name}</span>
+                          </button>
+                        );
+                      })}
                   </div>
                 </div>
 
