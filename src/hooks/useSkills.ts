@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { fetchSkillRows, type Locale, type SkillRow } from "../lib/supabase";
-import { staticSkillRows } from "../data/skills";
+import { staticSkillRows, staticGroupLabelKeys } from "../data/skills";
 
 export type UseSkillsResult = {
   rows: SkillRow[];
@@ -35,16 +35,26 @@ export function useSkills(): UseSkillsResult {
   return { rows, isFallback };
 }
 
-/** Totals for the stats strip, derived so they can't drift from the carousel. */
-export function useSkillStats() {
-  const { rows } = useSkills();
-  const bySlug = (slug: string) =>
-    rows.find((r) => r.group.slug === slug)?.skills.length ?? 0;
+export type LabelledSkillRow = SkillRow & { label: string };
 
-  return {
-    languages: bySlug("languages"),
-    frameworks: bySlug("frameworks"),
-    databases: bySlug("data"),
-    total: rows.reduce((n, r) => n + r.skills.length, 0),
-  };
+/**
+ * Carousel rows with their display label resolved.
+ *
+ * Both the carousel and the stats strip render these, so a row's count and the
+ * words next to it always come from the same object. The strip previously
+ * derived its numbers from the data but kept fixed labels, which is how it came
+ * to claim "8 Languages" for a row containing HTML, CSS and Vite.
+ *
+ * The bundled fallback stores English group names and defers to i18n; rows from
+ * the database arrive already localized, so renaming a group in /manage takes
+ * effect rather than being overridden by a translation key.
+ */
+export function useSkillRows(): LabelledSkillRow[] {
+  const { rows, isFallback } = useSkills();
+  const { t } = useTranslation();
+
+  return rows.map((row) => {
+    const key = staticGroupLabelKeys[row.group.slug];
+    return { ...row, label: isFallback && key ? t(key) : row.group.name };
+  });
 }

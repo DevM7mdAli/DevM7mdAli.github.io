@@ -31,9 +31,6 @@
     "title2": "Built Over Time",
     "desc": "I care about getting the details right, from clean interfaces to APIs that hold up once real people are using them.",
     "stat": {
-      "languages": "Languages",
-      "frameworks": "Frameworks",
-      "databases": "Tools & Data",
       "curiosity": "Curiosity"
     },
     "row": {

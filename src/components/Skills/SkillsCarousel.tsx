@@ -1,7 +1,5 @@
-import { useTranslation } from "react-i18next";
-import type { Skill, SkillRow } from "../../lib/supabase";
-import { staticGroupLabelKeys } from "../../data/skills";
-import { useSkills } from "../../hooks/useSkills";
+import type { Skill } from "../../lib/supabase";
+import { useSkillRows, type LabelledSkillRow } from "../../hooks/useSkills";
 import SkillIcon from "./SkillIcon";
 
 function Badge({ skill }: { skill: Skill }) {
@@ -56,7 +54,7 @@ function Badge({ skill }: { skill: Skill }) {
   );
 }
 
-function CarouselRow({ row, label }: { row: SkillRow; label: string }) {
+function CarouselRow({ row }: { row: LabelledSkillRow }) {
   const doubled = [...row.skills, ...row.skills];
   const trackClass =
     row.group.direction === "left" ? "carousel-track" : "carousel-track-r";
@@ -64,7 +62,7 @@ function CarouselRow({ row, label }: { row: SkillRow; label: string }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="px-8 lg:px-16">
-        <span className="section-label">{label}</span>
+        <span className="section-label">{row.label}</span>
       </div>
       {/* dir="ltr" forces physical LTR layout so the animation works in RTL locales */}
       <div className="carousel-wrap" dir="ltr">
@@ -82,22 +80,15 @@ function CarouselRow({ row, label }: { row: SkillRow; label: string }) {
 }
 
 export default function SkillsCarousel() {
-  const { t } = useTranslation();
-  const { rows, isFallback } = useSkills();
+  // Same rows the stats strip counts — label resolution lives in one place so
+  // the two can't disagree about what a row is called.
+  const rows = useSkillRows();
 
   return (
     <div className="full-bleed flex flex-col gap-6 py-6 select-none">
-      {rows.map((row) => {
-        // The bundled list stores English group names and defers to i18n.
-        // Rows from the database arrive already localized by the query, so
-        // renaming a group in /manage takes effect rather than being
-        // overridden by a translation key.
-        const fallbackKey = staticGroupLabelKeys[row.group.slug];
-        const label =
-          isFallback && fallbackKey ? t(fallbackKey) : row.group.name;
-
-        return <CarouselRow key={row.group.slug} row={row} label={label} />;
-      })}
+      {rows.map((row) => (
+        <CarouselRow key={row.group.slug} row={row} />
+      ))}
     </div>
   );
 }

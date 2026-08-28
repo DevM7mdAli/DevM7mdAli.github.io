@@ -1,19 +1,18 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import SkillsCarousel from "./SkillsCarousel";
-import { useSkillStats } from "../../hooks/useSkills";
+import { useSkillRows } from "../../hooks/useSkills";
 
 export default function Skills() {
   const { t } = useTranslation();
-  const stats = useSkillStats();
+  const rows = useSkillRows();
 
-  // Derived from the same data the carousel renders, so these can't drift out
-  // of step with it once skills are editable in /manage.
+  // One figure per carousel row, labelled with that row's own name — so each
+  // number is exactly the count of the thing beside it, and adding or renaming
+  // a group in /manage flows through here without a code change.
   const STATS = [
-    { value: `${stats.languages}`, labelKey: "skills.stat.languages" },
-    { value: `${stats.frameworks}`, labelKey: "skills.stat.frameworks" },
-    { value: `${stats.databases}`, labelKey: "skills.stat.databases" },
-    { value: "∞", labelKey: "skills.stat.curiosity" },
+    ...rows.map((row) => ({ value: String(row.skills.length), label: row.label })),
+    { value: "∞", label: t("skills.stat.curiosity") },
   ];
 
   return (
@@ -59,10 +58,13 @@ export default function Skills() {
             borderBottom: "1px solid var(--color-border)",
           }}
         >
-          <div className="grid grid-cols-2 sm:grid-cols-4">
-            {STATS.map(({ value, labelKey }, i) => (
+          <div
+            className="grid"
+            style={{ gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}
+          >
+            {STATS.map(({ value, label }, i) => (
               <motion.div
-                key={labelKey}
+                key={label}
                 className="flex flex-col gap-1 py-5 px-6"
                 style={{
                   borderRight:
@@ -88,7 +90,7 @@ export default function Skills() {
                     color: "var(--color-muted)",
                   }}
                 >
-                  {t(labelKey)}
+                  {label}
                 </span>
               </motion.div>
             ))}
