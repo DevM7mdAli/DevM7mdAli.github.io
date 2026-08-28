@@ -276,7 +276,7 @@ export default function AboutCard({
               transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
             >
               <span style={{ color: "var(--color-accent)" }}>{"</>"}</span>
-              <span className="ml-2 text-app font-medium">{t("about.tags.seniorDev")}</span>
+              <span className="ms-2 text-app font-medium whitespace-nowrap">{t("about.tags.seniorDev")}</span>
             </motion.div>
 
             {/* Floating tag: Full Stack */}
@@ -287,7 +287,7 @@ export default function AboutCard({
               transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
             >
               <span style={{ color: "var(--color-accent)" }}>★</span>
-              <span className="ml-2 text-app font-medium">{t("about.tags.fullStack")}</span>
+              <span className="ms-2 text-app font-medium whitespace-nowrap">{t("about.tags.fullStack")}</span>
             </motion.div>
 
             {/* Floating tag: Available */}
