@@ -1,9 +1,10 @@
-import InfoPart from "./InfoPart";
+import ProjectGrid from "./ProjectGrid";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaArrowRight } from "react-icons/fa";
 import { fetchProjects, type Locale, type Project } from "../../lib/supabase";
 
 const PAGE_SIZE = 6;
@@ -13,18 +14,16 @@ export default function ProjectCard() {
   const { t, i18n } = useTranslation();
   const locale = (i18n.language === "ar" ? "ar" : "en") as Locale;
 
-  const [selectedTag, setSelectedTag] = useState<string>(t("projects.all"));
+  // Filter on category id rather than the translated name: two categories can
+  // share a localized label, and a name-based filter resets on every language
+  // switch because the label itself changes.
+  const [categoryId, setCategoryId] = useState<number | null>(null);
   const [visible, setVisible] = useState(PAGE_SIZE);
-
-  // Reset filter label when language changes
-  useEffect(() => {
-    setSelectedTag(t("projects.all"));
-  }, [i18n.language]);
 
   // Reset pagination when filter changes
   useEffect(() => {
     setVisible(PAGE_SIZE);
-  }, [selectedTag]);
+  }, [categoryId]);
 
   const { data: projects = [], isLoading } = useQuery<Project[]>({
     queryKey: ["projects", locale],
@@ -32,23 +31,17 @@ export default function ProjectCard() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const ALL_LABEL = t("projects.all");
-
-  const tags: string[] = [
-    ALL_LABEL,
-    ...Array.from(
-      new Set(
-        projects
-          .map((p) => p.category?.name ?? "")
-          .filter(Boolean),
-      ),
-    ),
-  ];
+  const categories = Array.from(
+    new Map(
+      projects.filter((p) => p.category).map((p) => [p.category!.id, p.category!]),
+    ).values(),
+  );
+  const filterTabs = [{ id: null as number | null, name: t("projects.all") }, ...categories];
 
   const allFiltered =
-    selectedTag === ALL_LABEL
+    categoryId === null
       ? projects
-      : projects.filter((p) => p.category?.name === selectedTag);
+      : projects.filter((p) => p.category?.id === categoryId);
 
   const shown = allFiltered.slice(0, visible);
   const remaining = Math.max(0, allFiltered.length - visible);
@@ -82,12 +75,12 @@ export default function ProjectCard() {
 
       {/* Filter tabs */}
       <div className="flex flex-wrap gap-2 justify-center">
-        {tags.map((tag) => {
-          const active = selectedTag === tag;
+        {filterTabs.map((cat) => {
+          const active = categoryId === cat.id;
           return (
             <button
-              key={tag}
-              onClick={() => setSelectedTag(tag)}
+              key={cat.id ?? "all"}
+              onClick={() => setCategoryId(cat.id)}
               className="px-4 py-1.5 rounded-full text-sm font-medium transition-all"
               style={{
                 background: active
@@ -97,7 +90,7 @@ export default function ProjectCard() {
                 border: `1px solid ${active ? "var(--color-primary)" : "var(--color-border)"}`,
               }}
             >
-              {tag}
+              {cat.name}
             </button>
           );
         })}
@@ -114,40 +107,12 @@ export default function ProjectCard() {
       ) : (
         <div className="flex flex-col gap-10">
           <motion.div
-            key={selectedTag}
+            key={categoryId ?? "all"}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.32 }}
-            className="flex flex-row flex-wrap justify-center gap-6"
           >
-            <AnimatePresence mode="popLayout">
-              {shown.map((project, i) => (
-                <motion.div
-                  key={project.id}
-                  className="flex"
-                  initial={{ opacity: 0, scale: 0.96, y: 12 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{
-                    duration: 0.3,
-                    delay:
-                      i >= visible - LOAD_STEP
-                        ? (i - (visible - LOAD_STEP)) * 0.08
-                        : 0,
-                  }}
-                >
-                  <InfoPart
-                    title={project.title}
-                    description={project.description}
-                    image_url={project.image_url}
-                    github_url={project.github_url}
-                    live_url={project.live_url}
-                    categoryName={project.category?.name ?? ""}
-                    tags={project.tags.map((t) => t.tag.name)}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
+            <ProjectGrid projects={shown} staggerFrom={visible - LOAD_STEP} />
           </motion.div>
 
           {/* Load More */}
@@ -210,7 +175,32 @@ export default function ProjectCard() {
             )}
           </AnimatePresence>
 
-          {/* All loaded */}
+          {!hasMore && allFiltered.length > 0 && (
+            <div className="flex justify-center">
+              <Link
+                to="/projects"
+                className="flex items-center gap-2.5 px-7 py-3 rounded-full text-sm font-semibold transition-all"
+                style={{
+                  background: "var(--color-surface)",
+                  border: "1px solid var(--color-border)",
+                  color: "var(--color-text)",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)";
+                  (e.currentTarget as HTMLElement).style.background = "var(--color-surface-2)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)";
+                  (e.currentTarget as HTMLElement).style.background = "var(--color-surface)";
+                }}
+              >
+                {t("projects.viewAll")}
+                <FaArrowRight size={11} style={{ color: "var(--color-muted)" }} />
+              </Link>
+            </div>
+          )}
+
+          {/* All loaded — hand off to the full index */}
           {!hasMore && allFiltered.length > PAGE_SIZE && (
             <motion.p
               className="text-center text-xs"

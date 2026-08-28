@@ -1,51 +1,72 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FaExternalLinkAlt, FaGithub } from "react-icons/fa";
+import { FaExternalLinkAlt, FaGithub, FaBriefcase, FaArrowRight } from "react-icons/fa";
 import { MdImageNotSupported } from "react-icons/md";
+import type { Project } from "../../lib/supabase";
 
-type InfoPartProps = {
-  title: string;
-  description: string;
-  image_url: string | null;
-  github_url: string | null;
-  live_url: string | null;
-  categoryName: string;
-  tags: string[];
-};
+type InfoPartProps = { project: Project };
 
 type ImgState = "loading" | "loaded" | "error";
 
-export default function InfoPart({
-  title,
-  description,
-  image_url,
-  github_url,
-  live_url,
-  categoryName,
-  tags,
-}: InfoPartProps) {
+/**
+ * A project card.
+ *
+ * The whole card is one press target leading to the project's detail page.
+ * That's done with the `.card-press` / `.card-stretch` pattern rather than an
+ * <a> around the card, because the card also links to the company and to the
+ * live site — and anchors can't nest. The title's stretched pseudo-element
+ * covers the card; every other action is raised above it with `.card-action`.
+ *
+ * The external links are deliberately demoted to icon buttons. The card used
+ * to offer four destinations at equal weight with nothing indicating any of
+ * them existed; now there's one obvious primary ("View details →") and two
+ * small, clearly secondary escapes.
+ */
+export default function InfoPart({ project }: InfoPartProps) {
+  const {
+    slug,
+    title,
+    description,
+    image_url,
+    github_url,
+    live_url,
+    associated_work,
+  } = project;
+  const categoryName = project.category?.name ?? "";
+  const tags = project.tags.map((t) => t.tag?.name).filter(Boolean) as string[];
   const [imgState, setImgState] = useState<ImgState>(
     image_url ? "loading" : "error",
   );
   const { t } = useTranslation();
 
+  const iconAction = {
+    border: "1px solid var(--color-border)",
+    color: "var(--color-muted)",
+    background: "var(--color-surface-2)",
+  } as const;
+
+  const hoverIn = (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.borderColor = "var(--color-primary)";
+    e.currentTarget.style.color = "var(--color-text)";
+  };
+  const hoverOut = (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.borderColor = "var(--color-border)";
+    e.currentTarget.style.color = "var(--color-muted)";
+  };
+
   return (
     <motion.div
       whileHover={{ y: -8 }}
       transition={{ type: "spring", stiffness: 280, damping: 22 }}
-      className="project-card flex flex-col w-72 flex-shrink-0 h-full"
-      style={{
-        background: "var(--color-surface)",
-        border: "1px solid var(--color-border)",
-      }}
+      className="project-card card-press flex flex-col w-72 flex-shrink-0 h-full"
     >
-      {/* Image area — 16:9 aspect ratio (professional standard) */}
+      {/* Cover — 16:9 */}
       <div
         className="relative overflow-hidden aspect-video flex items-center justify-center"
         style={{ background: "var(--color-surface-2)" }}
       >
-        {/* Category badge */}
         {categoryName && (
           <span
             className="absolute top-3 left-3 z-10 text-xs font-semibold px-2.5 py-1 rounded-full"
@@ -61,7 +82,6 @@ export default function InfoPart({
           </span>
         )}
 
-        {/* Loading spinner */}
         {imgState === "loading" && (
           <div
             className="w-7 h-7 rounded-full border-2 border-t-transparent animate-spin"
@@ -69,22 +89,18 @@ export default function InfoPart({
           />
         )}
 
-        {/* Image — object-contain preserves aspect, no cropping */}
         {image_url && (
           <img
             src={image_url}
-            alt={title}
-            className={`w-full h-full object-contain transition-all duration-500 ${
-              imgState === "loaded"
-                ? "opacity-100"
-                : "opacity-0 absolute"
+            alt=""
+            className={`card-zoom w-full h-full object-contain ${
+              imgState === "loaded" ? "opacity-100" : "opacity-0 absolute"
             }`}
             onLoad={() => setImgState("loaded")}
             onError={() => setImgState("error")}
           />
         )}
 
-        {/* Error state — network or file not found */}
         {imgState === "error" && (
           <div className="flex flex-col items-center justify-center gap-2.5 px-4">
             <MdImageNotSupported
@@ -109,12 +125,30 @@ export default function InfoPart({
 
       {/* Content */}
       <div className="flex flex-col flex-1 p-5 gap-3">
-        <h3
-          className="text-base font-semibold leading-snug"
-          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+        {/* The card's one semantic link. `.card-stretch` extends its hit area
+            over the entire card. */}
+        <Link
+          to={`/projects/${slug}`}
+          className="card-stretch text-base font-semibold leading-snug"
+          style={{ fontFamily: "'Space Grotesk', sans-serif", color: "var(--color-text)" }}
         >
           {title}
-        </h3>
+        </Link>
+
+        {/* Where it was built. Personal projects have no associated_work and
+            simply omit this — the relationship is optional by design. */}
+        {associated_work && (
+          <Link
+            to={`/experience/${associated_work.slug}`}
+            className="card-action flex items-center gap-1.5 text-xs w-fit transition-colors"
+            style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace" }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--color-accent)")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--color-muted)")}
+          >
+            <FaBriefcase size={9} />
+            <span>{associated_work.company_name}</span>
+          </Link>
+        )}
 
         <p
           className="text-sm leading-relaxed line-clamp-3 flex-1"
@@ -123,12 +157,11 @@ export default function InfoPart({
           {description}
         </p>
 
-        {/* Tag pills */}
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 pt-1">
-            {tags.map((tag, i) => (
+            {tags.map((tag) => (
               <span
-                key={i}
+                key={tag}
                 className="text-xs px-2 py-0.5 rounded-full"
                 style={{
                   background: "var(--color-surface-2)",
@@ -143,59 +176,64 @@ export default function InfoPart({
           </div>
         )}
 
-        {/* CTAs */}
-        <div className="flex gap-2 mt-2">
-          {live_url && (
-            <a
-              href={live_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
-            >
-              {t("projects.view")}
-              <FaExternalLinkAlt size={11} />
-            </a>
-          )}
-          {github_url && (
-            <a
-              href={github_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-              className="flex items-center justify-center px-3 py-2.5 rounded-xl text-sm transition-all"
-              style={{
-                border: "1px solid var(--color-border)",
-                color: "var(--color-muted)",
-                background: "var(--color-surface-2)",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor =
-                  "var(--color-primary)";
-                (e.currentTarget as HTMLElement).style.color =
-                  "var(--color-text)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor =
-                  "var(--color-border)";
-                (e.currentTarget as HTMLElement).style.color =
-                  "var(--color-muted)";
-              }}
-            >
-              <FaGithub size={16} />
-            </a>
-          )}
-          {!live_url && !github_url && (
-            <span
-              className="text-xs px-4 py-2.5 rounded-xl"
-              style={{
-                color: "var(--color-muted)",
-                border: "1px solid var(--color-border)",
-                fontFamily: "'JetBrains Mono', monospace",
-              }}
-            >
-              {t("projects.private")}
-            </span>
-          )}
+        {/* Affordance row: the cue on the left says the card is pressable; the
+            icons on the right are the secondary escapes. */}
+        <div
+          className="flex items-center justify-between gap-2 mt-2 pt-3"
+          style={{ borderTop: "1px solid var(--color-border)" }}
+        >
+          <span
+            className="card-cue flex items-center gap-1.5 text-xs font-semibold"
+            style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace" }}
+          >
+            {t("projects.viewDetails")}
+            <FaArrowRight className="card-cue-arrow" size={10} />
+          </span>
+
+          <div className="flex items-center gap-1.5">
+            {live_url && (
+              <a
+                href={live_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={t("projects.openLive", { title })}
+                title={t("projects.view")}
+                className="card-action flex items-center justify-center w-8 h-8 rounded-lg transition-all"
+                style={iconAction}
+                onMouseEnter={hoverIn}
+                onMouseLeave={hoverOut}
+              >
+                <FaExternalLinkAlt size={11} />
+              </a>
+            )}
+            {github_url && (
+              <a
+                href={github_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={t("projects.openRepo", { title })}
+                title={t("projects.sourceCode")}
+                className="card-action flex items-center justify-center w-8 h-8 rounded-lg transition-all"
+                style={iconAction}
+                onMouseEnter={hoverIn}
+                onMouseLeave={hoverOut}
+              >
+                <FaGithub size={13} />
+              </a>
+            )}
+            {!live_url && !github_url && (
+              <span
+                className="text-xs px-2.5 py-1 rounded-lg"
+                style={{
+                  color: "var(--color-muted)",
+                  border: "1px solid var(--color-border)",
+                  fontFamily: "'JetBrains Mono', monospace",
+                }}
+              >
+                {t("projects.private")}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>

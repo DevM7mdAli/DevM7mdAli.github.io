@@ -25,7 +25,7 @@ export default function CategoriesManager() {
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<ProjectCategory | null>(null);
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
   // Form State
   const [nameEn, setNameEn] = useState("");
@@ -48,7 +48,7 @@ export default function CategoriesManager() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, en, ar }: { id: string; en: string; ar: string }) =>
+    mutationFn: ({ id, en, ar }: { id: number; en: string; ar: string }) =>
       updateCategory(id, en, ar),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });

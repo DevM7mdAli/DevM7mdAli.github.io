@@ -7,15 +7,16 @@ import ProjectsManager from "../../components/admin/ProjectsManager";
 import ExperiencesManager from "../../components/admin/ExperiencesManager";
 import CategoriesManager from "../../components/admin/CategoriesManager";
 import TagsManager from "../../components/admin/TagsManager";
+import SkillsManager from "../../components/admin/SkillsManager";
 import ProfileManager from "../../components/admin/ProfileManager";
-import { FaFolderOpen, FaBriefcase, FaUserCog, FaSpinner, FaFolder, FaTag } from "react-icons/fa";
+import { FaFolderOpen, FaBriefcase, FaUserCog, FaSpinner, FaFolder, FaTag, FaLayerGroup } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 export default function AdminDashboard() {
   const { user, loading, isAuthenticated } = useAdminAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<"projects" | "experiences" | "categories" | "tags" | "profile">("projects");
+  const [activeTab, setActiveTab] = useState<"projects" | "experiences" | "skills" | "categories" | "tags" | "profile">("projects");
 
   useEffect(() => {
     if (!loading && !user) {
@@ -39,6 +40,7 @@ export default function AdminDashboard() {
   const navTabs = [
     { id: "projects", label: t("manage.tabs.projects"), Icon: FaFolderOpen },
     { id: "experiences", label: t("manage.tabs.experiences"), Icon: FaBriefcase },
+    { id: "skills", label: t("manage.tabs.skills"), Icon: FaLayerGroup },
     { id: "categories", label: t("manage.tabs.categories"), Icon: FaFolder },
     { id: "tags", label: t("manage.tabs.tags"), Icon: FaTag },
     { id: "profile", label: t("manage.tabs.profile"), Icon: FaUserCog },
@@ -91,6 +93,7 @@ export default function AdminDashboard() {
         >
           {activeTab === "projects" && <ProjectsManager />}
           {activeTab === "experiences" && <ExperiencesManager />}
+          {activeTab === "skills" && <SkillsManager />}
           {activeTab === "categories" && <CategoriesManager />}
           {activeTab === "tags" && <TagsManager />}
           {activeTab === "profile" && <ProfileManager />}

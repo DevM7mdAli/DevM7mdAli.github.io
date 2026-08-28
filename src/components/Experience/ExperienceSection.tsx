@@ -1,59 +1,14 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaArrowRight } from "react-icons/fa";
 import { fetchExperiences, type Locale, type Experience } from "../../lib/supabase";
+import { formatMonthYear } from "../../utils/date";
+import CompanyLogo from "./CompanyLogo";
 
 const PAGE_SIZE = 3;
-
-function formatDate(dateStr: string, locale: string): string {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString(locale === "ar" ? "ar-SA" : "en-US", {
-    year: "numeric",
-    month: "short",
-  });
-}
-
-function CompanyLogo({ name, logo_url }: { name: string; logo_url: string | null }) {
-  const initials = name
-    .split(" ")
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-
-  if (logo_url) {
-    return (
-      <img
-        src={logo_url}
-        alt={name}
-        className="w-12 h-12 rounded-xl object-contain flex-shrink-0"
-        style={{ background: "var(--color-surface-2)", padding: "6px" }}
-        onError={(e) => {
-          const img = e.currentTarget as HTMLImageElement;
-          img.style.display = "none";
-          const fallback = img.nextElementSibling as HTMLElement | null;
-          if (fallback) fallback.style.display = "flex";
-        }}
-      />
-    );
-  }
-
-  return (
-    <div
-      className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-sm"
-      style={{
-        background: "var(--color-surface-2)",
-        border: "1px solid var(--color-border)",
-        color: "var(--color-accent)",
-        fontFamily: "'Space Grotesk', sans-serif",
-      }}
-    >
-      {initials}
-    </div>
-  );
-}
 
 function ExperienceCard({ exp, index, locale }: { exp: Experience; index: number; locale: string }) {
   const { t } = useTranslation();
@@ -75,20 +30,21 @@ function ExperienceCard({ exp, index, locale }: { exp: Experience; index: number
         />
       </div>
 
-      {/* Card */}
+      {/* Card — the whole surface leads to the role's page. */}
       <div
-        className="flex-1 pb-10 rounded-2xl p-5 mb-2"
+        className="exp-card card-press flex-1 rounded-2xl p-5 mb-2 flex flex-col"
         style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
       >
         <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h3
-                className="text-base font-semibold"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              <Link
+                to={`/experience/${exp.slug}`}
+                className="card-stretch text-base font-semibold"
+                style={{ fontFamily: "'Space Grotesk', sans-serif", color: "var(--color-text)" }}
               >
                 {exp.role}
-              </h3>
+              </Link>
               {exp.is_current && (
                 <span
                   className="text-xs px-2.5 py-0.5 rounded-full font-semibold"
@@ -119,8 +75,8 @@ function ExperienceCard({ exp, index, locale }: { exp: Experience; index: number
             }}
           >
             <span>
-              {formatDate(exp.start_date, locale)} —{" "}
-              {exp.end_date ? formatDate(exp.end_date, locale) : t("experience.present")}
+              {formatMonthYear(exp.start_date, locale)} —{" "}
+              {exp.end_date ? formatMonthYear(exp.end_date, locale) : t("experience.present")}
             </span>
             {exp.location && <span>{exp.location}</span>}
           </div>
@@ -131,6 +87,20 @@ function ExperienceCard({ exp, index, locale }: { exp: Experience; index: number
             {exp.description}
           </p>
         )}
+
+        {/* Tells the reader the card is pressable — it previously lifted on
+            hover while only the role text was actually a link. */}
+        <span
+          className="card-cue flex items-center gap-1.5 text-xs font-semibold mt-4 pt-3"
+          style={{
+            color: "var(--color-muted)",
+            fontFamily: "'JetBrains Mono', monospace",
+            borderTop: "1px solid var(--color-border)",
+          }}
+        >
+          {t("experience.viewRole")}
+          <FaArrowRight className="card-cue-arrow" size={10} />
+        </span>
       </div>
     </motion.div>
   );
@@ -249,20 +219,34 @@ export default function ExperienceSection() {
             )}
           </AnimatePresence>
 
-          {/* All loaded */}
-          {!hasMore && experiences.length > PAGE_SIZE && (
-            <motion.p
-              className="text-center text-xs pt-2"
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                color: "var(--color-muted)",
-                letterSpacing: "0.12em",
-              }}
+          {/* All loaded — hand off to the full timeline page */}
+          {!hasMore && experiences.length > 0 && (
+            <motion.div
+              className="flex justify-center pt-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              {t("experience.allLoaded", { count: experiences.length })}
-            </motion.p>
+              <Link
+                to="/experience"
+                className="flex items-center gap-2.5 px-7 py-3 rounded-full text-sm font-semibold transition-all"
+                style={{
+                  background: "var(--color-surface)",
+                  border: "1px solid var(--color-border)",
+                  color: "var(--color-text)",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)";
+                  (e.currentTarget as HTMLElement).style.background = "var(--color-surface-2)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)";
+                  (e.currentTarget as HTMLElement).style.background = "var(--color-surface)";
+                }}
+              >
+                {t("experience.viewFullTimeline")}
+                <FaArrowRight size={11} style={{ color: "var(--color-muted)" }} />
+              </Link>
+            </motion.div>
           )}
         </div>
       )}

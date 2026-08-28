@@ -198,6 +198,20 @@ html:not(.dark) .hero-grid {
   background: var(--color-surface-2);
 }
 
+/* ── Skill icons uploaded as SVG ───────────────────────── */
+/* Drawn as a mask, not an <img>: a raw brand SVG is solid black and would be
+   invisible on the dark theme, whereas a mask takes its colour from
+   background-color — so the stored brand colour works identically whether the
+   icon came from the bundled registry or from an upload. A masked SVG also
+   cannot execute script, which keeps uploaded files inert. */
+.skill-icon-remote {
+  display: inline-block;
+  flex-shrink: 0;
+  background-color: var(--brand, var(--color-muted));
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
+}
+
 /* ── Infinite carousel ─────────────────────────────────── */
 .carousel-wrap {
   overflow: hidden;
@@ -260,18 +274,90 @@ html:not(.dark) .hero-grid {
 
 /* ── Project card ──────────────────────────────────────── */
 .project-card {
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+  /* Framer Motion owns `transform` via whileHover — declaring translateY here
+     too made the card lift twice and the two transitions fight. */
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 14px;
   overflow: hidden;
+  transition:
+    box-shadow 0.3s ease,
+    border-color 0.25s ease;
 }
 .project-card:hover {
-  transform: translateY(-8px);
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  border-color: var(--color-primary);
 }
 html:not(.dark) .project-card:hover {
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.12);
+}
+
+/* ── Card as a single press target ─────────────────────── */
+/* A card carries one primary destination plus a few secondary actions.
+   Wrapping the whole card in an <a> would nest anchors, which is invalid and
+   breaks keyboard navigation — so the primary link stretches a transparent
+   pseudo-element over the card instead, and the secondary actions are lifted
+   above it. One semantic link, whole-card hit area, nested links intact. */
+.card-press {
+  position: relative;
+  cursor: pointer;
+}
+.card-press .card-stretch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.card-press .card-action {
+  position: relative;
+  z-index: 1;
+}
+/* The stretched link is the card's focus target, so ring the whole card
+   rather than just the title text. */
+.card-press:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+.card-press .card-stretch:focus-visible {
+  outline: none;
+}
+
+/* Hover cues: the affordance row brightens and its arrow leans forward. */
+.card-cue {
+  transition: color 0.25s ease;
+}
+.card-press:hover .card-cue {
+  color: var(--color-text);
+}
+.card-cue-arrow {
+  transition: transform 0.25s ease;
+}
+.card-press:hover .card-cue-arrow {
+  transform: translateX(3px);
+}
+[dir="rtl"] .card-cue-arrow {
+  transform: scaleX(-1);
+}
+[dir="rtl"] .card-press:hover .card-cue-arrow {
+  transform: scaleX(-1) translateX(3px);
+}
+
+/* Experience cards get the same press affordance as project cards. */
+.exp-card {
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.exp-card:hover {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 12px 40px var(--color-glow);
+}
+
+/* Slow zoom on the cover reinforces that the card is one object. */
+.card-zoom {
+  transition: transform 0.5s ease;
+}
+.card-press:hover .card-zoom {
+  transform: scale(1.045);
 }
 
 /* ── Contact form inputs ───────────────────────────────── */
@@ -355,6 +441,14 @@ html:not(.dark) ::-webkit-scrollbar-thumb:hover {
 
 /* ── Reduced motion ────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
+  .card-press:hover .card-zoom,
+  .card-press:hover .card-cue-arrow,
+  [dir="rtl"] .card-press:hover .card-cue-arrow {
+    transform: none;
+  }
+  [dir="rtl"] .card-cue-arrow {
+    transform: scaleX(-1);
+  }
   .carousel-track,
   .carousel-track-r {
     animation: none;

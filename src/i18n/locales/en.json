@@ -39,7 +39,7 @@
     "stat": {
       "languages": "Languages",
       "frameworks": "Frameworks",
-      "databases": "Databases",
+      "databases": "Tools & Data",
       "curiosity": "Curiosity"
     },
     "row": {
@@ -59,7 +59,15 @@
     "allLoaded": "All {{count}} projects loaded",
     "private": "Private",
     "imageError": "Couldn't load image",
-    "noImage": "No image"
+    "noImage": "No image",
+    "pageTitle": "All Projects",
+    "backToList": "All projects",
+    "viewAll": "View all projects",
+    "sourceCode": "Source code",
+    "builtAt": "{{role}} at {{company}}",
+    "viewDetails": "View details",
+    "openLive": "Open {{title}} live site (new tab)",
+    "openRepo": "Open {{title}} on GitHub (new tab)"
   },
   "experience": {
     "label": "Career",
@@ -69,7 +77,13 @@
     "present": "Present",
     "empty": "No experience entries yet",
     "loadMore": "Load more",
-    "allLoaded": "All {{count}} entries loaded"
+    "allLoaded": "All {{count}} entries loaded",
+    "pageTitle": "Work Experience",
+    "backToList": "All experience",
+    "viewFullTimeline": "View full timeline",
+    "projectsLabel": "What I built",
+    "projectsHeading": "Projects at {{company}}",
+    "viewRole": "View role"
   },
   "contact": {
     "label": "Get in Touch",
@@ -107,7 +121,8 @@
       "experiences": "Experience",
       "categories": "Categories",
       "tags": "Tags",
-      "profile": "Profile & Links"
+      "profile": "Profile & Links",
+      "skills": "Skills"
     },
     "projects": {
       "searchPlaceholder": "Search projects by title, description or category...",
@@ -132,7 +147,12 @@
       "noProjects": "No projects found matching your criteria.",
       "createFirst": "+ Create your first project",
       "deleteTitle": "Delete Project?",
-      "deleteMessage": "Are you sure you want to delete this project? This action cannot be undone."
+      "deleteMessage": "Are you sure you want to delete this project? This action cannot be undone.",
+      "slug": "URL Slug",
+      "slugHint": "Derived from the English title. Don't change it once the link is public.",
+      "experience": "Associated Experience",
+      "noExperience": "Personal project — no company",
+      "experienceHint": "Optional. Leave unset for personal projects."
     },
     "experience": {
       "title": "Work Experiences",
@@ -156,7 +176,9 @@
       "save": "Create Experience",
       "update": "Update Experience",
       "deleteTitle": "Delete Experience?",
-      "deleteMessage": "Are you sure you want to delete this work experience entry?"
+      "deleteMessage": "Are you sure you want to delete this work experience entry?",
+      "slug": "URL Slug",
+      "slugHint": "Derived from the company and role. Don't change it once the link is public."
     },
     "categories": {
       "title": "Categories",
@@ -211,6 +233,41 @@
       "password": "Password",
       "submit": "Sign In to Management",
       "back": "Back to Portfolio"
+    },
+    "skills": {
+      "title": "Skills & Stack",
+      "subtitle": "Manage the technologies shown in the carousel.",
+      "addNew": "Add Skill",
+      "name": "Name",
+      "group": "Carousel Row",
+      "ungrouped": "No row",
+      "iconKey": "Icon Key (bundled library)",
+      "iconKeyHint": "Pick from the list — these ship with the site and render instantly.",
+      "iconUpload": "Or upload an SVG",
+      "iconUploadHint": "Used when there's no icon key. Grab the file from simpleicons.org — it's tinted with the colour below.",
+      "uploadSvg": "Upload SVG",
+      "color": "Colour",
+      "sortOrder": "Order",
+      "visible": "Visible",
+      "save": "Create Skill",
+      "update": "Update Skill",
+      "createTitle": "Add Skill",
+      "editTitle": "Edit Skill",
+      "deleteTitle": "Delete Skill?",
+      "deleteMessage": "Are you sure you want to remove this skill from the carousel?",
+      "empty": "No skills yet.",
+      "createFirst": "+ Add your first skill",
+      "uploadedIcon": "uploaded icon",
+      "missingIcon": "no icon",
+      "sourceRegistry": "Bundled icon — instant, no network",
+      "sourceUpload": "Uploaded SVG — tinted with the colour below",
+      "sourceNone": "No icon set yet",
+      "errNameRequired": "Skill name is required.",
+      "errIconRequired": "Add an icon key or upload an SVG.",
+      "errUnknownKey": "\"{{key}}\" isn't in the bundled library. Pick one from the list, or upload an SVG instead."
     }
+  },
+  "common": {
+    "backHome": "Back to home"
   }
 }

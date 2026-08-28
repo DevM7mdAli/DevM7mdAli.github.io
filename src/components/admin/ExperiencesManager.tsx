@@ -7,6 +7,7 @@ import {
   updateExperience,
   deleteExperience,
   uploadAssetFile,
+  slugify,
   type Experience,
   type ExperiencePayload,
 } from "../../lib/supabase";
@@ -23,6 +24,11 @@ import {
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
+/* `date` columns need a full ISO date; <input type="month"> gives YYYY-MM.
+   Existing rows are all stored on the 1st, so that's the convention. */
+const toMonthInput = (iso: string | null | undefined) => (iso ? iso.slice(0, 7) : "");
+const toIsoDate = (month: string) => (month ? `${month}-01` : "");
+
 export default function ExperiencesManager() {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
@@ -33,6 +39,8 @@ export default function ExperiencesManager() {
   // Form State
   const [activeTab, setActiveTab] = useState<"en" | "ar">("en");
   const [companyName, setCompanyName] = useState("");
+  const [slug, setSlug] = useState("");
+  const [slugTouched, setSlugTouched] = useState(false);
   const [logoUrl, setLogoUrl] = useState("");
   const [roleEn, setRoleEn] = useState("");
   const [roleAr, setRoleAr] = useState("");
@@ -94,9 +102,11 @@ export default function ExperiencesManager() {
       setDescAr(exp.description_ar || exp.description || "");
       setLocationEn(exp.location_en || exp.location || "");
       setLocationAr(exp.location_ar || exp.location || "");
-      setStartDate(exp.start_date || "");
-      setEndDate(exp.end_date || "");
+      setStartDate(toMonthInput(exp.start_date));
+      setEndDate(toMonthInput(exp.end_date));
       setIsCurrent(exp.is_current || false);
+      setSlug(exp.slug || "");
+      setSlugTouched(true);
     } else {
       setEditingExperience(null);
       setCompanyName("");
@@ -110,6 +120,8 @@ export default function ExperiencesManager() {
       setStartDate("");
       setEndDate("");
       setIsCurrent(false);
+      setSlug("");
+      setSlugTouched(false);
     }
     setIsModalOpen(true);
   };
@@ -128,7 +140,7 @@ export default function ExperiencesManager() {
       const url = await uploadAssetFile(file, "companies");
       setLogoUrl(url);
     } catch (err: any) {
-      alert(`Logo upload failed: ${err.message}`);
+      setFormError(err.message);
     } finally {
       setUploadingLogo(false);
     }
@@ -149,7 +161,16 @@ export default function ExperiencesManager() {
       return;
     }
 
+    const finalSlug =
+      (slugTouched ? slugify(slug) : "") ||
+      slugify(`${companyName} ${roleEn || roleAr}`);
+    if (!finalSlug) {
+      setFormError("Could not build a URL slug. Add a company name or set one manually.");
+      return;
+    }
+
     const payload: ExperiencePayload = {
+      slug: finalSlug,
       company_name: companyName.trim(),
       company_logo_url: logoUrl.trim() || null,
       role_en: roleEn.trim() || roleAr.trim(),
@@ -158,8 +179,8 @@ export default function ExperiencesManager() {
       description_ar: descAr.trim() || descEn.trim() || null,
       location_en: locationEn.trim() || locationAr.trim() || null,
       location_ar: locationAr.trim() || locationEn.trim() || null,
-      start_date: startDate.trim(),
-      end_date: isCurrent ? null : endDate.trim() || null,
+      start_date: toIsoDate(startDate.trim()),
+      end_date: isCurrent ? null : toIsoDate(endDate.trim()) || null,
       is_current: isCurrent,
     };
 
@@ -362,6 +383,28 @@ export default function ExperiencesManager() {
 
                   <div>
                     <label className="text-xs font-medium mb-1 block" style={{ color: "var(--color-muted)" }}>
+                      {t("manage.experience.slug")}
+                    </label>
+                    <input
+                      type="text"
+                      value={slug}
+                      onChange={(e) => {
+                        setSlug(e.target.value);
+                        setSlugTouched(true);
+                      }}
+                      placeholder={
+                        slugify(`${companyName} ${roleEn || roleAr}`) || "acme-corp-engineer"
+                      }
+                      className="form-input"
+                      dir="ltr"
+                    />
+                    <p className="text-[11px] mt-1" style={{ color: "var(--color-muted)" }}>
+                      {t("manage.experience.slugHint")}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-medium mb-1 block" style={{ color: "var(--color-muted)" }}>
                       {t("manage.experience.companyLogo")}
                     </label>
                     <div className="flex items-center gap-2">
@@ -394,11 +437,10 @@ export default function ExperiencesManager() {
                       {t("manage.experience.startDate")} *
                     </label>
                     <input
-                      type="text"
+                      type="month"
                       required
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      placeholder="e.g. 2022-01 or Jan 2022"
                       className="form-input"
                     />
                   </div>
@@ -408,11 +450,10 @@ export default function ExperiencesManager() {
                       {t("manage.experience.endDate")}
                     </label>
                     <input
-                      type="text"
+                      type="month"
                       disabled={isCurrent}
-                      value={isCurrent ? "Present" : endDate}
+                      value={isCurrent ? "" : endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      placeholder="e.g. 2024-05 or Present"
                       className="form-input"
                     />
                     <label className="flex items-center gap-2 mt-2 cursor-pointer text-xs" style={{ color: "var(--color-muted)" }}>

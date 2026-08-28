@@ -25,7 +25,7 @@ export default function TagsManager() {
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTag, setEditingTag] = useState<Tag | null>(null);
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
   // Form State
   const [nameEn, setNameEn] = useState("");
@@ -48,7 +48,7 @@ export default function TagsManager() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, en, ar }: { id: string; en: string; ar: string }) =>
+    mutationFn: ({ id, en, ar }: { id: number; en: string; ar: string }) =>
       updateTag(id, en, ar),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tags"] });

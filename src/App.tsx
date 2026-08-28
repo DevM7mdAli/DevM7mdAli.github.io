@@ -14,6 +14,10 @@ import Footer from "./components/Footer";
 import ContactForm from "./components/ContactMe/ContactForm";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
+import ExperienceIndex from "./pages/ExperienceIndex";
+import ExperienceDetail from "./pages/ExperienceDetail";
+import ProjectIndex from "./pages/ProjectIndex";
+import ProjectDetail from "./pages/ProjectDetail";
 import { useProfile } from "./hooks/useProfile";
 
 function SectionDivider() {
@@ -30,6 +34,10 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route errorElement={<Error404 />}>
       <Route index element={<HolderElement />} />
+      <Route path="experience" element={<ExperienceIndex />} />
+      <Route path="experience/:slug" element={<ExperienceDetail />} />
+      <Route path="projects" element={<ProjectIndex />} />
+      <Route path="projects/:slug" element={<ProjectDetail />} />
       <Route path="manage" element={<AdminDashboard />} />
       <Route path="manage/login" element={<AdminLogin />} />
     </Route>,

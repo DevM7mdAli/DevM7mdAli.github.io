@@ -11,6 +11,8 @@ import {
   createCategory,
   createTag,
   uploadAssetFile,
+  fetchAdminExperiences,
+  slugify,
   type Project,
   type CreateProjectPayload,
 } from "../../lib/supabase";
@@ -46,7 +48,10 @@ export default function ProjectsManager() {
   const [githubUrl, setGithubUrl] = useState("");
   const [liveUrl, setLiveUrl] = useState("");
   const [categoryId, setCategoryId] = useState<string>("");
-  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+  const [experienceId, setExperienceId] = useState<string>("");
+  const [slug, setSlug] = useState("");
+  const [slugTouched, setSlugTouched] = useState(false);
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const [uploadingImage, setUploadingImage] = useState(false);
 
   // Inline Category / Tag Creation State
@@ -74,6 +79,11 @@ export default function ProjectsManager() {
   const { data: tags = [] } = useQuery({
     queryKey: ["tags"],
     queryFn: fetchTags,
+  });
+
+  const { data: experiences = [] } = useQuery({
+    queryKey: ["admin-experiences"],
+    queryFn: fetchAdminExperiences,
   });
 
   // Mutations
@@ -111,7 +121,7 @@ export default function ProjectsManager() {
     mutationFn: ({ en, ar }: { en: string; ar: string }) => createCategory(en, ar),
     onSuccess: (newCat) => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
-      setCategoryId(newCat.id);
+      setCategoryId(String(newCat.id));
       setNewCatEn("");
       setNewCatAr("");
       setShowAddCat(false);
@@ -122,7 +132,7 @@ export default function ProjectsManager() {
     mutationFn: ({ en, ar }: { en: string; ar: string }) => createTag(en, ar),
     onSuccess: (newTag) => {
       queryClient.invalidateQueries({ queryKey: ["tags"] });
-      setSelectedTagIds((prev) => [...prev, newTag.id]);
+      setSelectedTagIds((prev) => [...prev, Number(newTag.id)]);
       setNewTagEn("");
       setNewTagAr("");
       setShowAddTag(false);
@@ -140,11 +150,15 @@ export default function ProjectsManager() {
       setImageUrl(project.image_url || "");
       setGithubUrl(project.github_url || "");
       setLiveUrl(project.live_url || "");
-      setCategoryId(project.category?.id || project.category_id || "");
-      const existingTagIds = project.tags
-        ? project.tags.map((t) => t.tag_id || t.tag?.id).filter(Boolean) as string[]
-        : [];
-      setSelectedTagIds(existingTagIds);
+      setCategoryId(String(project.category?.id ?? project.category_id ?? ""));
+      setExperienceId(project.experience_id ?? "");
+      setSlug(project.slug || "");
+      setSlugTouched(true);
+      setSelectedTagIds(
+        (project.tags ?? [])
+          .map((t) => t.tag_id ?? t.tag?.id)
+          .filter((id): id is number => id != null),
+      );
     } else {
       setEditingProject(null);
       setTitleEn("");
@@ -155,6 +169,9 @@ export default function ProjectsManager() {
       setGithubUrl("");
       setLiveUrl("");
       setCategoryId("");
+      setExperienceId("");
+      setSlug("");
+      setSlugTouched(false);
       setSelectedTagIds([]);
     }
     setIsModalOpen(true);
@@ -174,7 +191,7 @@ export default function ProjectsManager() {
       const url = await uploadAssetFile(file, "projects");
       setImageUrl(url);
     } catch (err: any) {
-      alert(`Upload failed: ${err.message}`);
+      setFormError(err.message);
     } finally {
       setUploadingImage(false);
     }
@@ -187,7 +204,15 @@ export default function ProjectsManager() {
       return;
     }
 
+    const finalSlug =
+      (slugTouched ? slugify(slug) : "") || slugify(titleEn || titleAr);
+    if (!finalSlug) {
+      setFormError("Could not build a URL slug. Add an English title or set one manually.");
+      return;
+    }
+
     const payload: CreateProjectPayload = {
+      slug: finalSlug,
       title_en: titleEn.trim() || titleAr.trim(),
       title_ar: titleAr.trim() || titleEn.trim(),
       description_en: descEn.trim() || descAr.trim(),
@@ -195,7 +220,8 @@ export default function ProjectsManager() {
       image_url: imageUrl.trim() || null,
       github_url: githubUrl.trim() || null,
       live_url: liveUrl.trim() || null,
-      category_id: categoryId || null,
+      category_id: categoryId ? Number(categoryId) : null,
+      experience_id: experienceId || null,
       tag_ids: selectedTagIds,
     };
 
@@ -576,6 +602,49 @@ export default function ProjectsManager() {
                       className="form-input"
                     />
                   </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="text-xs font-medium mb-1 block" style={{ color: "var(--color-muted)" }}>
+                      {t("manage.projects.slug")}
+                    </label>
+                    <input
+                      type="text"
+                      value={slug}
+                      onChange={(e) => {
+                        setSlug(e.target.value);
+                        setSlugTouched(true);
+                      }}
+                      placeholder={slugify(titleEn || titleAr) || "my-project"}
+                      className="form-input"
+                      dir="ltr"
+                    />
+                    <p className="text-[11px] mt-1" style={{ color: "var(--color-muted)" }}>
+                      {t("manage.projects.slugHint")}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Associated Experience — optional by design: personal
+                    projects leave this unset. */}
+                <div>
+                  <label className="text-xs font-medium mb-1 block" style={{ color: "var(--color-muted)" }}>
+                    {t("manage.projects.experience")}
+                  </label>
+                  <select
+                    value={experienceId}
+                    onChange={(e) => setExperienceId(e.target.value)}
+                    className="form-input"
+                  >
+                    <option value="">{t("manage.projects.noExperience")}</option>
+                    {experiences.map((exp) => (
+                      <option key={exp.id} value={exp.id}>
+                        {exp.company_name} — {exp.role_en || exp.role_ar || exp.role}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-[11px] mt-1" style={{ color: "var(--color-muted)" }}>
+                    {t("manage.projects.experienceHint")}
+                  </p>
                 </div>
 
                 {/* Category Selection */}

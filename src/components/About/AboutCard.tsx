@@ -28,7 +28,7 @@ const letterVariants = {
     opacity: 1,
     filter: "blur(0px)",
     y: 0,
-    transition: { delay: i * 0.045, duration: 0.4, ease: "easeOut" },
+    transition: { delay: i * 0.045, duration: 0.4, ease: "easeOut" as const },
   }),
 };
 

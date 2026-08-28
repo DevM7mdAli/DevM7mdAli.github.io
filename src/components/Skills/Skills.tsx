@@ -1,14 +1,18 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import SkillsCarousel from "./SkillsCarousel";
+import { useSkillStats } from "../../hooks/useSkills";
 
 export default function Skills() {
   const { t } = useTranslation();
+  const stats = useSkillStats();
 
+  // Derived from the same data the carousel renders, so these can't drift out
+  // of step with it once skills are editable in /manage.
   const STATS = [
-    { value: "8+", labelKey: "skills.stat.languages" },
-    { value: "10+", labelKey: "skills.stat.frameworks" },
-    { value: "5+", labelKey: "skills.stat.databases" },
+    { value: `${stats.languages}`, labelKey: "skills.stat.languages" },
+    { value: `${stats.frameworks}`, labelKey: "skills.stat.frameworks" },
+    { value: `${stats.databases}`, labelKey: "skills.stat.databases" },
     { value: "∞", labelKey: "skills.stat.curiosity" },
   ];
 

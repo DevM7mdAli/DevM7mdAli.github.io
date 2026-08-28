@@ -20,9 +20,12 @@ function RootProviders() {
   }, [theme]);
 
   React.useEffect(() => {
-    // set language for i18n and document direction from persisted store
+    // set language for i18n, plus document direction and lang from the
+    // persisted store. `lang` matters for screen-reader pronunciation and
+    // browser translation prompts — index.html hard-codes lang="en".
     i18n.changeLanguage(lang);
     document.dir = lang === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = lang;
   }, [lang]);
 
   return (
