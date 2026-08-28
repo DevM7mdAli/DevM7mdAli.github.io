@@ -128,7 +128,7 @@ export default function Footer({
             className="text-xs"
             style={{
               color: "var(--color-muted)",
-              fontFamily: "'JetBrains Mono', monospace",
+              fontFamily: "var(--font-mono)",
             }}
           >
             {t("footer.copyright", { year: new Date().getFullYear() })}
@@ -138,7 +138,7 @@ export default function Footer({
               className="text-xs"
               style={{
                 color: "var(--color-muted)",
-                fontFamily: "'JetBrains Mono', monospace",
+                fontFamily: "var(--font-mono)",
               }}
             >
               {t("footer.built")}

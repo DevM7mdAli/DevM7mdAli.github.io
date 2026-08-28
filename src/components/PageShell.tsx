@@ -23,7 +23,7 @@ export default function PageShell({ children, backTo, backLabel }: Props) {
     <div
       className="flex flex-col min-h-screen"
       style={{
-        fontFamily: "'Inter', sans-serif",
+        fontFamily: "var(--font-body)",
         background: "var(--color-bg)",
         color: "var(--color-text)",
       }}

@@ -74,8 +74,8 @@ export default function InfoPart({ project }: InfoPartProps) {
               background: "rgba(255,255,255,0.08)",
               color: "var(--color-accent)",
               border: "1px solid var(--color-border)",
-              fontFamily: "'JetBrains Mono', monospace",
-              letterSpacing: "0.05em",
+              fontFamily: "var(--font-mono)",
+              letterSpacing: "calc(0.05em * var(--tracking-scale))",
             }}
           >
             {categoryName}
@@ -109,9 +109,9 @@ export default function InfoPart({ project }: InfoPartProps) {
             />
             <span
               style={{
-                fontFamily: "'JetBrains Mono', monospace",
+                fontFamily: "var(--font-mono)",
                 fontSize: "0.65rem",
-                letterSpacing: "0.1em",
+                letterSpacing: "calc(0.1em * var(--tracking-scale))",
                 color: "var(--color-muted)",
                 opacity: 0.4,
                 textAlign: "center",
@@ -130,7 +130,7 @@ export default function InfoPart({ project }: InfoPartProps) {
         <Link
           to={`/projects/${slug}`}
           className="card-stretch text-base font-semibold leading-snug"
-          style={{ fontFamily: "'Space Grotesk', sans-serif", color: "var(--color-text)" }}
+          style={{ fontFamily: "var(--font-display)", color: "var(--color-text)" }}
         >
           {title}
         </Link>
@@ -141,7 +141,7 @@ export default function InfoPart({ project }: InfoPartProps) {
           <Link
             to={`/experience/${associated_work.slug}`}
             className="card-action flex items-center gap-1.5 text-xs w-fit transition-colors"
-            style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace" }}
+            style={{ color: "var(--color-muted)", fontFamily: "var(--font-mono)" }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--color-accent)")}
             onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--color-muted)")}
           >
@@ -172,7 +172,7 @@ export default function InfoPart({ project }: InfoPartProps) {
         >
           <span
             className="card-cue flex items-center gap-1.5 text-xs font-semibold"
-            style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace" }}
+            style={{ color: "var(--color-muted)", fontFamily: "var(--font-mono)" }}
           >
             {t("projects.viewDetails")}
             <FaArrowRight className="card-cue-arrow" size={10} />
@@ -215,7 +215,7 @@ export default function InfoPart({ project }: InfoPartProps) {
                 style={{
                   color: "var(--color-muted)",
                   border: "1px solid var(--color-border)",
-                  fontFamily: "'JetBrains Mono', monospace",
+                  fontFamily: "var(--font-mono)",
                 }}
               >
                 {t("projects.private")}

@@ -317,7 +317,7 @@ export default function ProjectsManager() {
 
                   {/* Content */}
                   <div className="p-5 flex flex-col gap-2">
-                    <h3 className="font-bold text-base leading-snug" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                    <h3 className="font-bold text-base leading-snug" style={{ fontFamily: "var(--font-display)" }}>
                       {project.title}
                     </h3>
                     <p className="text-xs line-clamp-2 leading-relaxed" style={{ color: "var(--color-muted)" }}>
@@ -410,7 +410,7 @@ export default function ProjectsManager() {
               style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
             >
               <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--color-border)" }}>
-                <h3 className="font-bold text-lg" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                <h3 className="font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>
                   {editingProject ? t("manage.projects.editTitle") : t("manage.projects.createTitle")}
                 </h3>
                 <button onClick={closeModal} className="p-2 rounded-lg text-xs" style={{ color: "var(--color-muted)" }}>

@@ -111,7 +111,7 @@ export default function ProfileManager() {
   return (
     <div className="flex flex-col gap-6 max-w-3xl">
       <div>
-        <h2 className="font-bold text-lg" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+        <h2 className="font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>
           {t("manage.profile.title")}
         </h2>
         <p className="text-xs" style={{ color: "var(--color-muted)" }}>

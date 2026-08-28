@@ -36,7 +36,7 @@ function Badge({ skill }: { skill: Skill }) {
       <SkillIcon skill={skill} size={42} />
       <span
         style={{
-          fontFamily: "'Inter', sans-serif",
+          fontFamily: "var(--font-body)",
           fontSize: "0.68rem",
           fontWeight: 500,
           color: "var(--color-muted)",

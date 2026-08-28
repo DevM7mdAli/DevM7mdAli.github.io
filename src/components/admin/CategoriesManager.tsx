@@ -231,7 +231,7 @@ export default function CategoriesManager() {
               style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
             >
               <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--color-border)" }}>
-                <h3 className="font-bold text-lg" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                <h3 className="font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>
                   {editingCategory ? t("manage.categories.editTitle") : t("manage.categories.createTitle")}
                 </h3>
                 <button onClick={closeModal} className="p-2 rounded-lg text-xs" style={{ color: "var(--color-muted)" }}>

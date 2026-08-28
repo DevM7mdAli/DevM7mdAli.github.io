@@ -72,7 +72,7 @@ export default function NavBar() {
         style={{
           border: "1px solid var(--color-border)",
           color: "var(--color-muted)",
-          fontFamily: "'JetBrains Mono', monospace",
+          fontFamily: "var(--font-mono)",
         }}
         onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)"; }}
         onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)"; }}

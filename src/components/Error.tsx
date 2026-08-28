@@ -28,7 +28,7 @@ export default function Error404() {
           transition={{ duration: 0.8, delay: 0.1, type: "spring", stiffness: 60 }}
           className="glow-primary select-none leading-none"
           style={{
-            fontFamily: "'Space Grotesk', sans-serif",
+            fontFamily: "var(--font-display)",
             fontSize: "clamp(5rem, 18vw, 9rem)",
             fontWeight: 700,
             color: "var(--color-primary)",
@@ -40,7 +40,7 @@ export default function Error404() {
         <div>
           <h2
             className="text-2xl sm:text-3xl font-semibold"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            style={{ fontFamily: "var(--font-display)" }}
           >
             {t("error.title")}
           </h2>
@@ -58,7 +58,7 @@ export default function Error404() {
           style={{
             background: "var(--color-surface)",
             border: "1px solid var(--color-border)",
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: "var(--font-mono)",
             fontSize: "0.78rem",
           }}
         >

@@ -47,7 +47,7 @@ export default function AdminDashboard() {
   return (
     <div
       className="min-h-screen w-full flex flex-col"
-      style={{ background: "var(--color-bg)", color: "var(--color-text)", fontFamily: "'Inter', sans-serif" }}
+      style={{ background: "var(--color-bg)", color: "var(--color-text)", fontFamily: "var(--font-body)" }}
     >
       <AdminHeader userEmail={user?.email} />
 

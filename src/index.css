@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Reddit+Mono:wght@200..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Reddit+Mono:wght@200..900&family=Vazirmatn:wght@300;400;500;600;700&display=swap");
 
 html {
   scroll-behavior: smooth;
@@ -7,6 +7,32 @@ html {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Type stacks ───────────────────────────────────────── */
+/* Vazirmatn sits behind each Latin face rather than replacing it under
+   [dir="rtl"]. Space Grotesk, Inter and JetBrains Mono all ship without Arabic
+   coverage, so the browser resolves per glyph: Latin keeps its own face and
+   Arabic falls through to Vazirmatn. That keeps Latin identical across both
+   locales and renders mixed strings — "React JS" inside an Arabic sentence —
+   correctly in each script. Google Fonts gates the Arabic subset behind
+   unicode-range, so English visitors never download it. */
+:root {
+  --font-display: "Space Grotesk", Vazirmatn, ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", Vazirmatn, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Vazirmatn, ui-monospace, SFMono-Regular, monospace;
+
+  /* Arabic is cursive: letter-spacing pulls the joins apart and shatters a
+     word into disconnected glyphs. Tracking is therefore expressed as
+     `calc(<value> * var(--tracking-scale))` so every Latin value survives
+     untouched while RTL flattens them all to zero. The multiplier is a
+     custom property specifically so it still works through inline styles,
+     which the cascade otherwise can't override. */
+  --tracking-scale: 1;
+}
+
+[dir="rtl"] {
+  --tracking-scale: 0;
+}
 
 /* ── Design tokens ─────────────────────────────────────── */
 :root {
@@ -49,7 +75,7 @@ body,
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -164,9 +190,9 @@ html:not(.dark) .hero-grid {
 
 /* ── Section label ─────────────────────────────────────── */
 .section-label {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-mono);
   font-size: 0.68rem;
-  letter-spacing: 0.25em;
+  letter-spacing: calc(0.25em * var(--tracking-scale));
   text-transform: uppercase;
   color: var(--color-muted);
 }
@@ -181,7 +207,7 @@ html:not(.dark) .hero-grid {
   border: 1px solid var(--color-border);
   border-radius: 100px;
   white-space: nowrap;
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-body);
   font-size: 0.82rem;
   font-weight: 500;
   color: var(--color-text);
@@ -368,7 +394,7 @@ html:not(.dark) .project-card:hover {
   border-radius: 10px;
   padding: 0.875rem 1rem;
   color: var(--color-text);
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-body);
   font-size: 0.9375rem;
   outline: none;
   transition:

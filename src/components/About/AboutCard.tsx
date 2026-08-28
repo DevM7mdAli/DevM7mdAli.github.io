@@ -115,7 +115,7 @@ export default function AboutCard({
           {/* Name animation */}
           <motion.h1
             className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight tracking-tight"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            style={{ fontFamily: "var(--font-display)" }}
             initial="hidden"
             animate="visible"
           >
@@ -163,7 +163,7 @@ export default function AboutCard({
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.9, duration: 0.5 }}
             className="text-2xl sm:text-3xl font-semibold"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", color: "var(--color-muted)" }}
+            style={{ fontFamily: "var(--font-display)", color: "var(--color-muted)" }}
           >
             <TypeAnimation
               key={i18n.language}
@@ -271,7 +271,7 @@ export default function AboutCard({
             {/* Floating tag: Senior Dev */}
             <motion.div
               className="glass absolute -bottom-3 -left-5 px-4 py-2 rounded-xl text-sm"
-              style={{ fontFamily: "'JetBrains Mono', monospace" }}
+              style={{ fontFamily: "var(--font-mono)" }}
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
             >
@@ -282,7 +282,7 @@ export default function AboutCard({
             {/* Floating tag: Full Stack */}
             <motion.div
               className="glass absolute -top-3 -right-5 px-4 py-2 rounded-xl text-sm"
-              style={{ fontFamily: "'JetBrains Mono', monospace" }}
+              style={{ fontFamily: "var(--font-mono)" }}
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
             >
@@ -293,7 +293,7 @@ export default function AboutCard({
             {/* Floating tag: Available */}
             <motion.div
               className="glass absolute top-1/2 -right-20 px-3 py-1.5 rounded-xl text-xs hidden lg:flex items-center gap-1.5"
-              style={{ fontFamily: "'JetBrains Mono', monospace", transform: "translateY(-50%)" }}
+              style={{ fontFamily: "var(--font-mono)", transform: "translateY(-50%)" }}
               animate={{ x: [0, 6, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
             >

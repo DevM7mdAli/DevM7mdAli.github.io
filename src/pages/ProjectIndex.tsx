@@ -45,7 +45,7 @@ export default function ProjectIndex() {
         <span className="section-label">{t("projects.label")}</span>
         <h1
           className="text-4xl sm:text-5xl font-bold tracking-tight"
-          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          style={{ fontFamily: "var(--font-display)" }}
         >
           {t("projects.pageTitle")}
         </h1>

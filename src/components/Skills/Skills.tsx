@@ -31,7 +31,7 @@ export default function Skills() {
             <span className="section-label">{t("skills.label")}</span>
             <h2
               className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-none tracking-tight"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              style={{ fontFamily: "var(--font-display)" }}
             >
               {t("skills.title1")}
               <br />
@@ -79,14 +79,14 @@ export default function Skills() {
               >
                 <span
                   className="text-3xl sm:text-4xl font-bold leading-none"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                  style={{ fontFamily: "var(--font-display)" }}
                 >
                   {value}
                 </span>
                 <span
                   className="text-xs tracking-widest uppercase"
                   style={{
-                    fontFamily: "'JetBrains Mono', monospace",
+                    fontFamily: "var(--font-mono)",
                     color: "var(--color-muted)",
                   }}
                 >

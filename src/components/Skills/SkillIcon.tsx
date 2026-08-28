@@ -52,7 +52,7 @@ export default function SkillIcon({ skill, size = 42 }: Props) {
         borderRadius: "8px",
         border: "1px solid var(--color-border)",
         color: skill.color,
-        fontFamily: "'Space Grotesk', sans-serif",
+        fontFamily: "var(--font-display)",
         fontWeight: 700,
         fontSize: size * 0.42,
       }}

@@ -63,7 +63,7 @@ export default function ExperienceDetail() {
             <div className="flex items-center gap-2 flex-wrap">
               <h1
                 className="text-3xl sm:text-4xl font-bold tracking-tight"
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                style={{ fontFamily: "var(--font-display)" }}
               >
                 {exp.role}
               </h1>
@@ -74,8 +74,8 @@ export default function ExperienceDetail() {
                     background: "rgba(255,255,255,0.06)",
                     border: "1px solid var(--color-border)",
                     color: "var(--color-text)",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    letterSpacing: "0.06em",
+                    fontFamily: "var(--font-mono)",
+                    letterSpacing: "calc(0.06em * var(--tracking-scale))",
                   }}
                 >
                   {t("experience.current")}
@@ -91,10 +91,10 @@ export default function ExperienceDetail() {
         <div
           className="flex flex-wrap gap-x-5 gap-y-1 pb-6"
           style={{
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: "var(--font-mono)",
             fontSize: "0.72rem",
             color: "var(--color-muted)",
-            letterSpacing: "0.04em",
+            letterSpacing: "calc(0.04em * var(--tracking-scale))",
             borderBottom: "1px solid var(--color-border)",
           }}
         >
@@ -118,7 +118,7 @@ export default function ExperienceDetail() {
             <span className="section-label">{t("experience.projectsLabel")}</span>
             <h2
               className="text-2xl font-bold tracking-tight"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              style={{ fontFamily: "var(--font-display)" }}
             >
               {t("experience.projectsHeading", { company: exp.company_name })}
             </h2>

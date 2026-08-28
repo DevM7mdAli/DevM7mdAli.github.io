@@ -37,7 +37,7 @@ export default function ContactForm() {
         <FaCheckCircle size={52} style={{ color: "var(--color-text)" }} />
         <p
           className="text-2xl sm:text-3xl font-bold"
-          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          style={{ fontFamily: "var(--font-display)" }}
         >
           {t("contact.received")}
         </p>
@@ -60,7 +60,7 @@ export default function ContactForm() {
         <span className="section-label block">{t("contact.label")}</span>
         <h2
           className="text-4xl sm:text-5xl font-bold"
-          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          style={{ fontFamily: "var(--font-display)" }}
         >
           {t("contact.title")}
         </h2>
@@ -77,7 +77,7 @@ export default function ContactForm() {
         <div className="flex flex-col gap-5 lg:min-w-[220px]">
           <p
             className="text-sm font-semibold"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            style={{ fontFamily: "var(--font-display)" }}
           >
             {t("contact.directTitle")}
           </p>
@@ -113,8 +113,8 @@ export default function ContactForm() {
               className="text-xs font-medium"
               style={{
                 color: "var(--color-muted)",
-                fontFamily: "'JetBrains Mono', monospace",
-                letterSpacing: "0.12em",
+                fontFamily: "var(--font-mono)",
+                letterSpacing: "calc(0.12em * var(--tracking-scale))",
                 textTransform: "uppercase",
               }}
             >
@@ -136,8 +136,8 @@ export default function ContactForm() {
               className="text-xs font-medium"
               style={{
                 color: "var(--color-muted)",
-                fontFamily: "'JetBrains Mono', monospace",
-                letterSpacing: "0.12em",
+                fontFamily: "var(--font-mono)",
+                letterSpacing: "calc(0.12em * var(--tracking-scale))",
                 textTransform: "uppercase",
               }}
             >

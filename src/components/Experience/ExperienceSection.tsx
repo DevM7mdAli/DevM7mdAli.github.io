@@ -41,7 +41,7 @@ function ExperienceCard({ exp, index, locale }: { exp: Experience; index: number
               <Link
                 to={`/experience/${exp.slug}`}
                 className="card-stretch text-base font-semibold"
-                style={{ fontFamily: "'Space Grotesk', sans-serif", color: "var(--color-text)" }}
+                style={{ fontFamily: "var(--font-display)", color: "var(--color-text)" }}
               >
                 {exp.role}
               </Link>
@@ -52,8 +52,8 @@ function ExperienceCard({ exp, index, locale }: { exp: Experience; index: number
                     background: "rgba(255,255,255,0.06)",
                     border: "1px solid rgba(255,255,255,0.18)",
                     color: "var(--color-text)",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    letterSpacing: "0.06em",
+                    fontFamily: "var(--font-mono)",
+                    letterSpacing: "calc(0.06em * var(--tracking-scale))",
                   }}
                 >
                   {t("experience.current")}
@@ -68,10 +68,10 @@ function ExperienceCard({ exp, index, locale }: { exp: Experience; index: number
           <div
             className="text-right flex flex-col gap-0.5"
             style={{
-              fontFamily: "'JetBrains Mono', monospace",
+              fontFamily: "var(--font-mono)",
               fontSize: "0.7rem",
               color: "var(--color-muted)",
-              letterSpacing: "0.04em",
+              letterSpacing: "calc(0.04em * var(--tracking-scale))",
             }}
           >
             <span>
@@ -94,7 +94,7 @@ function ExperienceCard({ exp, index, locale }: { exp: Experience; index: number
           className="card-cue flex items-center gap-1.5 text-xs font-semibold mt-4 pt-3"
           style={{
             color: "var(--color-muted)",
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: "var(--font-mono)",
             borderTop: "1px solid var(--color-border)",
           }}
         >
@@ -134,7 +134,7 @@ export default function ExperienceSection() {
         <span className="section-label block">{t("experience.label")}</span>
         <h2
           className="text-4xl sm:text-5xl font-bold"
-          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          style={{ fontFamily: "var(--font-display)" }}
         >
           {t("experience.title")}
         </h2>
@@ -155,8 +155,8 @@ export default function ExperienceSection() {
           className="text-center text-sm"
           style={{
             color: "var(--color-muted)",
-            fontFamily: "'JetBrains Mono', monospace",
-            letterSpacing: "0.08em",
+            fontFamily: "var(--font-mono)",
+            letterSpacing: "calc(0.08em * var(--tracking-scale))",
           }}
         >
           {t("experience.empty")}
@@ -183,9 +183,9 @@ export default function ExperienceSection() {
                 <p
                   className="text-xs"
                   style={{
-                    fontFamily: "'JetBrains Mono', monospace",
+                    fontFamily: "var(--font-mono)",
                     color: "var(--color-muted)",
-                    letterSpacing: "0.08em",
+                    letterSpacing: "calc(0.08em * var(--tracking-scale))",
                   }}
                 >
                   {shown.length} / {experiences.length}

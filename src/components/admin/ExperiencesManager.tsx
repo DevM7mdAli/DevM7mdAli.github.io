@@ -196,7 +196,7 @@ export default function ExperiencesManager() {
       {/* Top action bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-bold text-lg" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+          <h2 className="font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>
             {t("manage.experience.title")}
           </h2>
           <p className="text-xs" style={{ color: "var(--color-muted)" }}>
@@ -257,7 +257,7 @@ export default function ExperiencesManager() {
 
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-bold text-base" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                    <h3 className="font-bold text-base" style={{ fontFamily: "var(--font-display)" }}>
                       {exp.role}
                     </h3>
                     <span
@@ -348,7 +348,7 @@ export default function ExperiencesManager() {
               style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
             >
               <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--color-border)" }}>
-                <h3 className="font-bold text-lg" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                <h3 className="font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>
                   {editingExperience ? t("manage.experience.editTitle") : t("manage.experience.createTitle")}
                 </h3>
                 <button onClick={closeModal} className="p-2 rounded-lg text-xs" style={{ color: "var(--color-muted)" }}>

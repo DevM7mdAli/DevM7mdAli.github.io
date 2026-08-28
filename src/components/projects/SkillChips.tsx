@@ -85,7 +85,7 @@ export default function SkillChips({
         >
           <span
             style={{
-              fontFamily: "'JetBrains Mono', monospace",
+              fontFamily: "var(--font-mono)",
               fontSize: size * 0.33,
               fontWeight: 700,
               letterSpacing: "-0.02em",

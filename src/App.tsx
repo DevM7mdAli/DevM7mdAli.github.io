@@ -54,7 +54,7 @@ function HolderElement() {
   return (
     <div
       className="flex flex-col min-h-screen"
-      style={{ fontFamily: "'Inter', sans-serif", background: "var(--color-bg)", color: "var(--color-text)" }}
+      style={{ fontFamily: "var(--font-body)", background: "var(--color-bg)", color: "var(--color-text)" }}
     >
       <NavBar />
 

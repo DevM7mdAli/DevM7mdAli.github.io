@@ -55,7 +55,7 @@ export default function ProjectDetail() {
           )}
           <h1
             className="text-4xl sm:text-5xl font-bold tracking-tight"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            style={{ fontFamily: "var(--font-display)" }}
           >
             {project.title}
           </h1>
@@ -99,9 +99,9 @@ export default function ProjectDetail() {
               <MdImageNotSupported size={40} style={{ color: "var(--color-muted)", opacity: 0.3 }} />
               <span
                 style={{
-                  fontFamily: "'JetBrains Mono', monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: "0.65rem",
-                  letterSpacing: "0.1em",
+                  letterSpacing: "calc(0.1em * var(--tracking-scale))",
                   color: "var(--color-muted)",
                   opacity: 0.4,
                 }}
@@ -168,7 +168,7 @@ export default function ProjectDetail() {
               style={{
                 color: "var(--color-muted)",
                 border: "1px solid var(--color-border)",
-                fontFamily: "'JetBrains Mono', monospace",
+                fontFamily: "var(--font-mono)",
               }}
             >
               {t("projects.private")}

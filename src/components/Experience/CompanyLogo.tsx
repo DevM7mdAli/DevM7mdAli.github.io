@@ -45,7 +45,7 @@ export default function CompanyLogo({ name, logo_url, size = 48 }: Props) {
         background: "var(--color-surface-2)",
         border: "1px solid var(--color-border)",
         color: "var(--color-accent)",
-        fontFamily: "'Space Grotesk', sans-serif",
+        fontFamily: "var(--font-display)",
         fontSize: size * 0.3,
       }}
     >

@@ -43,7 +43,7 @@ export default function AdminHeader({ userEmail }: { userEmail?: string | null }
           <div>
             <h1
               className="font-bold text-base tracking-tight"
-              style={{ fontFamily: "'Space Grotesk', sans-serif", color: "var(--color-text)" }}
+              style={{ fontFamily: "var(--font-display)", color: "var(--color-text)" }}
             >
               {t("manage.title")}
             </h1>

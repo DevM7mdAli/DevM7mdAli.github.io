@@ -61,7 +61,7 @@ export default function ProjectCard() {
         <span className="section-label block">{t("projects.label")}</span>
         <h2
           className="text-4xl sm:text-5xl font-bold"
-          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          style={{ fontFamily: "var(--font-display)" }}
         >
           {t("projects.title")}
         </h2>
@@ -128,9 +128,9 @@ export default function ProjectCard() {
                 <p
                   className="text-xs"
                   style={{
-                    fontFamily: "'JetBrains Mono', monospace",
+                    fontFamily: "var(--font-mono)",
                     color: "var(--color-muted)",
-                    letterSpacing: "0.08em",
+                    letterSpacing: "calc(0.08em * var(--tracking-scale))",
                   }}
                 >
                   {t("projects.showing", { shown: shown.length, total: allFiltered.length })}
@@ -205,9 +205,9 @@ export default function ProjectCard() {
             <motion.p
               className="text-center text-xs"
               style={{
-                fontFamily: "'JetBrains Mono', monospace",
+                fontFamily: "var(--font-mono)",
                 color: "var(--color-muted)",
-                letterSpacing: "0.12em",
+                letterSpacing: "calc(0.12em * var(--tracking-scale))",
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

@@ -168,7 +168,7 @@ export default function SkillsManager() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-bold text-lg" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+          <h2 className="font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>
             {t("manage.skills.title")}
           </h2>
           <p className="text-xs" style={{ color: "var(--color-muted)" }}>
@@ -213,7 +213,7 @@ export default function SkillsManager() {
                   {group && (
                     <span
                       className="text-[11px]"
-                      style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace" }}
+                      style={{ color: "var(--color-muted)", fontFamily: "var(--font-mono)" }}
                     >
                       {group.direction} · {group.speed_s}s
                     </span>
@@ -241,7 +241,7 @@ export default function SkillsManager() {
                         </div>
                         <span
                           className="text-[10px] truncate block"
-                          style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace" }}
+                          style={{ color: "var(--color-muted)", fontFamily: "var(--font-mono)" }}
                         >
                           {skill.icon_key && skill.icon_key in iconRegistry
                             ? skill.icon_key
@@ -300,7 +300,7 @@ export default function SkillsManager() {
                 className="flex items-center justify-between p-5 border-b"
                 style={{ borderColor: "var(--color-border)" }}
               >
-                <h3 className="font-bold" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                <h3 className="font-bold" style={{ fontFamily: "var(--font-display)" }}>
                   {editing ? t("manage.skills.editTitle") : t("manage.skills.createTitle")}
                 </h3>
                 <button onClick={closeModal} style={{ color: "var(--color-muted)" }}>
@@ -332,7 +332,7 @@ export default function SkillsManager() {
                     <span className="text-xs font-semibold">{form.name || "—"}</span>
                     <span
                       className="text-[10px]"
-                      style={{ color: "var(--color-muted)", fontFamily: "'JetBrains Mono', monospace" }}
+                      style={{ color: "var(--color-muted)", fontFamily: "var(--font-mono)" }}
                     >
                       {form.icon_key && form.icon_key in iconRegistry
                         ? t("manage.skills.sourceRegistry")

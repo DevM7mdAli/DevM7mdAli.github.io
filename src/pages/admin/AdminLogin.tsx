@@ -54,7 +54,7 @@ export default function AdminLogin() {
   return (
     <div
       className="min-h-screen w-full flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden"
-      style={{ background: "var(--color-bg)", color: "var(--color-text)", fontFamily: "'Inter', sans-serif" }}
+      style={{ background: "var(--color-bg)", color: "var(--color-text)", fontFamily: "var(--font-body)" }}
     >
       {/* Background grid pattern */}
       <div className="absolute inset-0 hero-grid pointer-events-none" />
@@ -104,7 +104,7 @@ export default function AdminLogin() {
           <div>
             <h1
               className="text-2xl font-bold tracking-tight"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              style={{ fontFamily: "var(--font-display)" }}
             >
               {t("manage.login.title")}
             </h1>
