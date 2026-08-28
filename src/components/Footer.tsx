@@ -1,4 +1,4 @@
-import { FaGithub, FaLinkedin, FaLock } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaLock, FaHeart } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { motion } from "framer-motion";
@@ -135,13 +135,14 @@ export default function Footer({
           </p>
           <div className="flex items-center gap-4">
             <p
-              className="text-xs"
+              className="text-xs flex items-center gap-1.5"
               style={{
                 color: "var(--color-muted)",
                 fontFamily: "var(--font-mono)",
               }}
             >
-              {t("footer.built")}
+              <span>{t("footer.built")}</span>
+              <FaHeart size={10} aria-label="love" />
             </p>
           </div>
         </div>

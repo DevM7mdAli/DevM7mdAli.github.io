@@ -318,6 +318,53 @@ html:not(.dark) .project-card:hover {
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.12);
 }
 
+/* ── Admin surface ─────────────────────────────────────── */
+/* Scoped to .admin-ui on purpose. The landing page's aesthetic — lifted
+   cards, glow shadows, big radii — is deliberate and stays exactly as it is.
+   A management tool is scanned and operated rather than admired, so inside
+   this scope the shared components drop the flourish: no hover translate, no
+   glow, tighter radii, faster transitions. */
+.admin-ui .btn-primary {
+  box-shadow: none;
+  border-radius: 8px;
+  transition: opacity 0.12s ease, background-color 0.12s ease;
+}
+.admin-ui .btn-primary:hover {
+  transform: none;
+  box-shadow: none;
+  opacity: 0.88;
+}
+.admin-ui .btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-ui .form-input {
+  border-radius: 8px;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  transition: border-color 0.12s ease;
+}
+.admin-ui .form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: none;
+}
+
+/* Keyboard focus has to stay visible even though the glow ring is gone. */
+.admin-ui .form-input:focus-visible,
+.admin-ui button:focus-visible,
+.admin-ui a:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.admin-ui .admin-tab {
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+.admin-ui .admin-tab:hover {
+  color: var(--color-text);
+}
+
 /* ── Card as a single press target ─────────────────────── */
 /* A card carries one primary destination plus a few secondary actions.
    Wrapping the whole card in an <a> would nest anchors, which is invalid and

@@ -121,7 +121,7 @@ export default function ProfileManager() {
 
       {successMsg && (
         <div
-          className="p-3.5 rounded-xl text-xs flex items-center gap-2 font-medium"
+          className="p-3.5 rounded-lg text-xs flex items-center gap-2 font-medium"
           style={{
             background: "rgba(16, 185, 129, 0.1)",
             border: "1px solid rgba(16, 185, 129, 0.2)",
@@ -135,7 +135,7 @@ export default function ProfileManager() {
 
       {errorMsg && (
         <div
-          className="p-3.5 rounded-xl text-xs font-medium"
+          className="p-3.5 rounded-lg text-xs font-medium"
           style={{
             background: "rgba(239, 68, 68, 0.1)",
             border: "1px solid rgba(239, 68, 68, 0.2)",
@@ -149,7 +149,7 @@ export default function ProfileManager() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         {/* Bio / About Me Section */}
         <div
-          className="p-5 rounded-2xl border flex flex-col gap-4"
+          className="p-5 rounded-lg border flex flex-col gap-4"
           style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
         >
           <div className="flex items-center justify-between flex-wrap gap-2">
@@ -160,7 +160,7 @@ export default function ProfileManager() {
               </h3>
             </div>
 
-            <div className="flex items-center gap-1 p-1 rounded-xl border" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}>
+            <div className="flex items-center gap-1 p-1 rounded-lg border" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}>
               <button
                 type="button"
                 onClick={() => setAboutTab("en")}
@@ -170,7 +170,7 @@ export default function ProfileManager() {
                   color: aboutTab === "en" ? "var(--color-bg)" : "var(--color-muted)",
                 }}
               >
-                English 🇬🇧
+                {t("manage.lang.en")}
               </button>
               <button
                 type="button"
@@ -181,7 +181,7 @@ export default function ProfileManager() {
                   color: aboutTab === "ar" ? "var(--color-bg)" : "var(--color-muted)",
                 }}
               >
-                العربية 🇸🇦
+                {t("manage.lang.ar")}
               </button>
             </div>
           </div>
@@ -217,7 +217,7 @@ export default function ProfileManager() {
 
         {/* Resume Link & Upload */}
         <div
-          className="p-5 rounded-2xl border flex flex-col gap-3"
+          className="p-5 rounded-lg border flex flex-col gap-3"
           style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
         >
           <div className="flex items-center gap-2">
@@ -235,7 +235,7 @@ export default function ProfileManager() {
               placeholder={t("manage.profile.resumePlaceholder")}
               className="form-input flex-1"
             />
-            <label className="cursor-pointer flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-semibold border transition-all" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)", color: "var(--color-text)" }}>
+            <label className="cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg text-xs font-semibold border transition-all" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)", color: "var(--color-text)" }}>
               {uploadingResume ? (
                 <FaSpinner size={12} className="animate-spin" />
               ) : (
@@ -255,7 +255,7 @@ export default function ProfileManager() {
 
         {/* Social Links */}
         <div
-          className="p-5 rounded-2xl border flex flex-col gap-4"
+          className="p-5 rounded-lg border flex flex-col gap-4"
           style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
         >
           <h3 className="font-bold text-xs uppercase tracking-wider font-mono" style={{ color: "var(--color-text)" }}>
@@ -318,7 +318,7 @@ export default function ProfileManager() {
         <button
           type="submit"
           disabled={saveMutation.isPending}
-          className="btn-primary self-start flex items-center gap-2 px-7 py-3 rounded-xl text-xs font-semibold shadow-lg"
+          className="btn-primary self-start flex items-center gap-2 px-7 py-3 rounded-lg text-xs font-semibold shadow-sm"
         >
           {saveMutation.isPending ? (
             <FaSpinner size={13} className="animate-spin" />

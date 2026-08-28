@@ -10,9 +10,7 @@ import {
   FaEyeSlash,
   FaSpinner,
   FaArrowLeft,
-  FaShieldAlt,
 } from "react-icons/fa";
-import { motion } from "framer-motion";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -53,21 +51,9 @@ export default function AdminLogin() {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden"
+      className="admin-ui min-h-screen w-full flex flex-col justify-center items-center px-4 py-12 relative"
       style={{ background: "var(--color-bg)", color: "var(--color-text)", fontFamily: "var(--font-body)" }}
     >
-      {/* Background grid pattern */}
-      <div className="absolute inset-0 hero-grid pointer-events-none" />
-
-      {/* Ambient background glow */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] rounded-full pointer-events-none"
-        style={{
-          background: "radial-gradient(circle, var(--color-glow) 0%, transparent 70%)",
-          filter: "blur(60px)",
-        }}
-      />
-
       <Link
         to="/"
         className="absolute top-8 left-8 flex items-center gap-2 text-xs font-semibold tracking-wide transition-colors"
@@ -79,44 +65,29 @@ export default function AdminLogin() {
         <span>{t("manage.login.back")}</span>
       </Link>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-md rounded-3xl p-8 border backdrop-blur-2xl shadow-2xl flex flex-col gap-6 relative z-10"
+      <div
+        className="w-full max-w-md rounded-lg p-8 border shadow-sm flex flex-col gap-6 relative z-10"
         style={{
           background: "var(--color-surface)",
           borderColor: "var(--color-border)",
         }}
       >
         {/* Header */}
-        <div className="text-center flex flex-col items-center gap-4">
-          <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center transition-all"
-            style={{
-              background: "var(--color-surface-2)",
-              border: "1px solid var(--color-border)",
-              color: "var(--color-text)",
-            }}
+        <div className="flex flex-col gap-1.5">
+          <h1
+            className="text-xl font-semibold tracking-tight"
+            style={{ fontFamily: "var(--font-display)" }}
           >
-            <FaShieldAlt size={24} />
-          </div>
-          <div>
-            <h1
-              className="text-2xl font-bold tracking-tight"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {t("manage.login.title")}
-            </h1>
-            <p className="text-xs mt-1 leading-relaxed" style={{ color: "var(--color-muted)" }}>
-              {t("manage.login.subtitle")}
-            </p>
-          </div>
+            {t("manage.login.title")}
+          </h1>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
+            {t("manage.login.subtitle")}
+          </p>
         </div>
 
         {errorMsg && (
           <div
-            className="p-3.5 rounded-xl text-xs leading-relaxed font-medium"
+            className="p-3.5 rounded-lg text-xs leading-relaxed font-medium"
             style={{
               background: "rgba(239, 68, 68, 0.1)",
               border: "1px solid rgba(239, 68, 68, 0.2)",
@@ -130,8 +101,8 @@ export default function AdminLogin() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <label
-              className="text-xs font-medium mb-1.5 block font-mono"
-              style={{ color: "var(--color-muted)", fontSize: "0.75rem" }}
+              className="text-xs font-medium mb-1.5 block"
+              style={{ color: "var(--color-text)" }}
             >
               {t("manage.login.email")}
             </label>
@@ -154,8 +125,8 @@ export default function AdminLogin() {
 
           <div>
             <label
-              className="text-xs font-medium mb-1.5 block font-mono"
-              style={{ color: "var(--color-muted)", fontSize: "0.75rem" }}
+              className="text-xs font-medium mb-1.5 block"
+              style={{ color: "var(--color-text)" }}
             >
               {t("manage.login.password")}
             </label>
@@ -189,7 +160,7 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="btn-primary w-full py-3 rounded-xl text-xs font-bold tracking-wide flex items-center justify-center gap-2 mt-2"
+            className="btn-primary w-full py-3 rounded-lg text-xs font-bold tracking-wide flex items-center justify-center gap-2 mt-2"
           >
             {loading ? (
               <FaSpinner size={14} className="animate-spin" />
@@ -198,7 +169,7 @@ export default function AdminLogin() {
             )}
           </button>
         </form>
-      </motion.div>
+      </div>
     </div>
   );
 }

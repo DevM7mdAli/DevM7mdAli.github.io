@@ -206,7 +206,7 @@ export default function ExperiencesManager() {
 
         <button
           onClick={() => openModal()}
-          className="btn-primary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs transition-all"
+          className="btn-primary flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-xs transition-all"
         >
           <FaPlus size={12} />
           <span>{t("manage.experience.addNew")}</span>
@@ -220,7 +220,7 @@ export default function ExperiencesManager() {
         </div>
       ) : experiences.length === 0 ? (
         <div
-          className="rounded-2xl p-12 text-center border flex flex-col items-center justify-center gap-3"
+          className="rounded-lg p-12 text-center border flex flex-col items-center justify-center gap-3"
           style={{ borderColor: "var(--color-border)", background: "var(--color-surface)" }}
         >
           <FaBriefcase size={28} style={{ color: "var(--color-muted)" }} />
@@ -240,12 +240,12 @@ export default function ExperiencesManager() {
           {experiences.map((exp) => (
             <div
               key={exp.id}
-              className="p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all"
+              className="p-5 rounded-lg border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all"
               style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
             >
               <div className="flex items-start gap-4">
                 <div
-                  className="w-12 h-12 rounded-xl border flex items-center justify-center overflow-hidden flex-shrink-0"
+                  className="w-12 h-12 rounded-lg border flex items-center justify-center overflow-hidden flex-shrink-0"
                   style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}
                 >
                   {exp.company_logo_url ? (
@@ -339,12 +339,12 @@ export default function ExperiencesManager() {
       {/* CREATE / EDIT MODAL */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 overflow-y-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-2xl rounded-2xl p-6 my-8 flex flex-col gap-5 border shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="w-full max-w-2xl rounded-lg p-6 my-8 flex flex-col gap-5 border shadow-sm max-h-[90vh] overflow-y-auto"
               style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
             >
               <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--color-border)" }}>
@@ -358,7 +358,7 @@ export default function ExperiencesManager() {
 
               {formError && (
                 <div
-                  className="p-3.5 rounded-xl text-xs"
+                  className="p-3.5 rounded-lg text-xs"
                   style={{ background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.2)", color: "#f87171" }}
                 >
                   {formError}
@@ -415,7 +415,7 @@ export default function ExperiencesManager() {
                         placeholder="https://... or upload logo"
                         className="form-input flex-1"
                       />
-                      <label className="cursor-pointer flex items-center gap-2 px-3 py-3 rounded-xl text-xs font-semibold border transition-all" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)", color: "var(--color-text)" }}>
+                      <label className="cursor-pointer flex items-center gap-2 px-3 py-3 rounded-lg text-xs font-semibold border transition-all" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)", color: "var(--color-text)" }}>
                         {uploadingLogo ? (
                           <FaSpinner size={12} className="animate-spin" />
                         ) : (
@@ -469,7 +469,7 @@ export default function ExperiencesManager() {
                 </div>
 
                 {/* Language Tabs */}
-                <div className="flex items-center gap-2 p-1 rounded-xl border" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}>
+                <div className="flex items-center gap-2 p-1 rounded-lg border" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}>
                   <button
                     type="button"
                     onClick={() => setActiveTab("en")}
@@ -479,7 +479,7 @@ export default function ExperiencesManager() {
                       color: activeTab === "en" ? "var(--color-bg)" : "var(--color-muted)",
                     }}
                   >
-                    English Details 🇬🇧
+                    {t("manage.lang.en")}
                   </button>
                   <button
                     type="button"
@@ -490,7 +490,7 @@ export default function ExperiencesManager() {
                       color: activeTab === "ar" ? "var(--color-bg)" : "var(--color-muted)",
                     }}
                   >
-                    Arabic Details (العربية) 🇸🇦
+                    {t("manage.lang.ar")}
                   </button>
                 </div>
 
@@ -579,7 +579,7 @@ export default function ExperiencesManager() {
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="px-4 py-2.5 rounded-xl text-xs font-semibold"
+                    className="px-4 py-2.5 rounded-lg text-xs font-semibold"
                     style={{ color: "var(--color-muted)" }}
                   >
                     {t("manage.projects.cancel")}
@@ -587,7 +587,7 @@ export default function ExperiencesManager() {
                   <button
                     type="submit"
                     disabled={createMutation.isPending || updateMutation.isPending}
-                    className="btn-primary flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-semibold"
+                    className="btn-primary flex items-center gap-2 px-6 py-2.5 rounded-lg text-xs font-semibold"
                   >
                     {(createMutation.isPending || updateMutation.isPending) && (
                       <FaSpinner size={12} className="animate-spin" />
@@ -604,12 +604,12 @@ export default function ExperiencesManager() {
       {/* DELETE CONFIRMATION MODAL */}
       <AnimatePresence>
         {deleteConfirmId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md rounded-2xl p-6 flex flex-col gap-4 border shadow-2xl"
+              className="w-full max-w-md rounded-lg p-6 flex flex-col gap-4 border shadow-sm"
               style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
             >
               <h3 className="font-bold text-lg text-rose-400">
@@ -621,7 +621,7 @@ export default function ExperiencesManager() {
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   onClick={() => setDeleteConfirmId(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold"
+                  className="px-4 py-2 rounded-lg text-xs font-semibold"
                   style={{ color: "var(--color-muted)" }}
                 >
                   {t("manage.projects.cancel")}
@@ -629,7 +629,7 @@ export default function ExperiencesManager() {
                 <button
                   onClick={() => deleteMutation.mutate(deleteConfirmId)}
                   disabled={deleteMutation.isPending}
-                  className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-semibold"
+                  className="flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-semibold"
                   style={{ background: "#dc2626", color: "#ffffff" }}
                 >
                   {deleteMutation.isPending && <FaSpinner size={12} className="animate-spin" />}

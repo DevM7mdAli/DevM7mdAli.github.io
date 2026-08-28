@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaGlobe, FaSignOutAlt } from "react-icons/fa";
+import { FaGlobe, FaSignOutAlt, FaSun, FaMoon, FaLanguage } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { useUIStore } from "../../stores/uiStore";
 import { signOutAdmin } from "../../lib/supabase";
@@ -95,13 +95,13 @@ export default function AdminHeader({ userEmail }: { userEmail?: string | null }
             }}
             aria-label="Toggle Theme"
           >
-            {theme === "dark" ? "☀️" : "🌙"}
+            {theme === "dark" ? <FaSun size={13} /> : <FaMoon size={13} />}
           </button>
 
           {/* Language Switcher */}
           <button
             onClick={handleLangToggle}
-            className="px-3.5 py-1.5 rounded-full border text-xs font-bold font-mono transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-bold font-mono transition-all"
             style={{
               borderColor: "var(--color-border)",
               color: "var(--color-muted)",
@@ -115,7 +115,8 @@ export default function AdminHeader({ userEmail }: { userEmail?: string | null }
             }}
             aria-label="Switch Language"
           >
-            {lang === "en" ? "AR 🇸🇦" : "EN 🇬🇧"}
+            <FaLanguage size={14} />
+            <span>{lang === "en" ? "AR" : "EN"}</span>
           </button>
 
           {/* Logout */}

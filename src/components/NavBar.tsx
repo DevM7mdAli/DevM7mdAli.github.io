@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useUIStore } from "../stores/uiStore";
+import { FaSun, FaMoon } from "react-icons/fa";
 
 export default function NavBar() {
   const [openNav, setOpenNav] = useState(false);
@@ -56,7 +57,7 @@ export default function NavBar() {
       <button
         onClick={toggleTheme}
         aria-label="Toggle theme"
-        className="w-9 h-9 flex items-center justify-center rounded-full transition-all text-base"
+        className="w-9 h-9 flex items-center justify-center rounded-full transition-all"
         style={{
           border: "1px solid var(--color-border)",
           color: "var(--color-muted)",
@@ -64,7 +65,7 @@ export default function NavBar() {
         onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--color-primary)"; }}
         onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)"; }}
       >
-        {theme === "dark" ? "☀️" : "🌙"}
+        {theme === "dark" ? <FaSun size={13} /> : <FaMoon size={13} />}
       </button>
       <button
         aria-label="Switch language"

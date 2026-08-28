@@ -127,7 +127,7 @@ export default function CategoriesManager() {
 
         <button
           onClick={() => openModal()}
-          className="btn-primary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs transition-all"
+          className="btn-primary flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-xs transition-all"
         >
           <FaPlus size={12} />
           <span>{t("manage.categories.addNew")}</span>
@@ -141,7 +141,7 @@ export default function CategoriesManager() {
         </div>
       ) : filteredCategories.length === 0 ? (
         <div
-          className="rounded-2xl p-12 text-center border flex flex-col items-center justify-center gap-3"
+          className="rounded-lg p-12 text-center border flex flex-col items-center justify-center gap-3"
           style={{ borderColor: "var(--color-border)", background: "var(--color-surface)" }}
         >
           <FaFolder size={28} style={{ color: "var(--color-muted)" }} />
@@ -158,7 +158,7 @@ export default function CategoriesManager() {
         </div>
       ) : (
         <div
-          className="rounded-2xl border overflow-hidden shadow-sm"
+          className="rounded-lg border overflow-hidden shadow-sm"
           style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
         >
           <table className="w-full text-left text-xs">
@@ -222,12 +222,12 @@ export default function CategoriesManager() {
       {/* CREATE / EDIT MODAL */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md rounded-2xl p-6 flex flex-col gap-5 border shadow-2xl"
+              className="w-full max-w-md rounded-lg p-6 flex flex-col gap-5 border shadow-sm"
               style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
             >
               <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--color-border)" }}>
@@ -241,7 +241,7 @@ export default function CategoriesManager() {
 
               {formError && (
                 <div
-                  className="p-3.5 rounded-xl text-xs"
+                  className="p-3.5 rounded-lg text-xs"
                   style={{ background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.2)", color: "#f87171" }}
                 >
                   {formError}
@@ -279,7 +279,7 @@ export default function CategoriesManager() {
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="px-4 py-2.5 rounded-xl text-xs font-semibold"
+                    className="px-4 py-2.5 rounded-lg text-xs font-semibold"
                     style={{ color: "var(--color-muted)" }}
                   >
                     {t("manage.projects.cancel")}
@@ -287,7 +287,7 @@ export default function CategoriesManager() {
                   <button
                     type="submit"
                     disabled={createMutation.isPending || updateMutation.isPending}
-                    className="btn-primary flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-semibold"
+                    className="btn-primary flex items-center gap-2 px-6 py-2.5 rounded-lg text-xs font-semibold"
                   >
                     {(createMutation.isPending || updateMutation.isPending) && (
                       <FaSpinner size={12} className="animate-spin" />
@@ -304,12 +304,12 @@ export default function CategoriesManager() {
       {/* DELETE CONFIRMATION MODAL */}
       <AnimatePresence>
         {deleteConfirmId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md rounded-2xl p-6 flex flex-col gap-4 border shadow-2xl"
+              className="w-full max-w-md rounded-lg p-6 flex flex-col gap-4 border shadow-sm"
               style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
             >
               <h3 className="font-bold text-lg text-rose-400">
@@ -321,7 +321,7 @@ export default function CategoriesManager() {
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   onClick={() => setDeleteConfirmId(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold"
+                  className="px-4 py-2 rounded-lg text-xs font-semibold"
                   style={{ color: "var(--color-muted)" }}
                 >
                   {t("manage.projects.cancel")}
@@ -329,7 +329,7 @@ export default function CategoriesManager() {
                 <button
                   onClick={() => deleteMutation.mutate(deleteConfirmId)}
                   disabled={deleteMutation.isPending}
-                  className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-semibold"
+                  className="flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-semibold"
                   style={{ background: "#dc2626", color: "#ffffff" }}
                 >
                   {deleteMutation.isPending && <FaSpinner size={12} className="animate-spin" />}

@@ -245,7 +245,7 @@ export default function ProjectsManager() {
 
         <button
           onClick={() => openModal()}
-          className="btn-primary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs transition-all"
+          className="btn-primary flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-xs transition-all"
         >
           <FaPlus size={12} />
           <span>{t("manage.projects.addNew")}</span>
@@ -259,7 +259,7 @@ export default function ProjectsManager() {
         </div>
       ) : filteredProjects.length === 0 ? (
         <div
-          className="rounded-2xl p-12 text-center border flex flex-col items-center justify-center gap-3"
+          className="rounded-lg p-12 text-center border flex flex-col items-center justify-center gap-3"
           style={{ borderColor: "var(--color-border)", background: "var(--color-surface)" }}
         >
           <p className="text-sm" style={{ color: "var(--color-muted)" }}>
@@ -280,7 +280,7 @@ export default function ProjectsManager() {
             return (
               <div
                 key={project.id}
-                className="group rounded-2xl border overflow-hidden flex flex-col justify-between transition-all"
+                className="group rounded-lg border overflow-hidden flex flex-col justify-between transition-all"
                 style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
               >
                 <div>
@@ -401,12 +401,12 @@ export default function ProjectsManager() {
       {/* CREATE / EDIT MODAL */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 overflow-y-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-2xl rounded-2xl p-6 my-8 flex flex-col gap-5 border shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="w-full max-w-2xl rounded-lg p-6 my-8 flex flex-col gap-5 border shadow-sm max-h-[90vh] overflow-y-auto"
               style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
             >
               <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: "var(--color-border)" }}>
@@ -420,7 +420,7 @@ export default function ProjectsManager() {
 
               {formError && (
                 <div
-                  className="p-3.5 rounded-xl text-xs"
+                  className="p-3.5 rounded-lg text-xs"
                   style={{ background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.2)", color: "#f87171" }}
                 >
                   {formError}
@@ -429,7 +429,7 @@ export default function ProjectsManager() {
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 {/* Language Selector Tabs */}
-                <div className="flex items-center gap-2 p-1 rounded-xl border" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}>
+                <div className="flex items-center gap-2 p-1 rounded-lg border" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}>
                   <button
                     type="button"
                     onClick={() => setActiveTab("en")}
@@ -439,7 +439,7 @@ export default function ProjectsManager() {
                       color: activeTab === "en" ? "var(--color-bg)" : "var(--color-muted)",
                     }}
                   >
-                    English Details 🇬🇧
+                    {t("manage.lang.en")}
                   </button>
                   <button
                     type="button"
@@ -450,7 +450,7 @@ export default function ProjectsManager() {
                       color: activeTab === "ar" ? "var(--color-bg)" : "var(--color-muted)",
                     }}
                   >
-                    Arabic Details (العربية) 🇸🇦
+                    {t("manage.lang.ar")}
                   </button>
                 </div>
 
@@ -524,7 +524,7 @@ export default function ProjectsManager() {
                         placeholder="https://... or upload an image"
                         className="form-input flex-1"
                       />
-                      <label className="cursor-pointer flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-semibold border transition-all" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)", color: "var(--color-text)" }}>
+                      <label className="cursor-pointer flex items-center gap-2 px-4 py-3 rounded-lg text-xs font-semibold border transition-all" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)", color: "var(--color-text)" }}>
                         {uploadingImage ? (
                           <FaSpinner size={12} className="animate-spin" />
                         ) : (
@@ -634,7 +634,7 @@ export default function ProjectsManager() {
                   </div>
 
                   {showAddCat ? (
-                    <div className="p-3 rounded-xl border flex flex-col gap-2" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}>
+                    <div className="p-3 rounded-lg border flex flex-col gap-2" style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}>
                       <div className="grid grid-cols-2 gap-2">
                         <input
                           type="text"
@@ -705,7 +705,7 @@ export default function ProjectsManager() {
                   />
 
                   <div
-                    className="flex flex-wrap gap-2 max-h-44 overflow-y-auto p-3 rounded-xl border"
+                    className="flex flex-wrap gap-2 max-h-44 overflow-y-auto p-3 rounded-lg border"
                     style={{ background: "var(--color-surface-2)", borderColor: "var(--color-border)" }}
                   >
                     {skills
@@ -749,7 +749,7 @@ export default function ProjectsManager() {
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="px-4 py-2.5 rounded-xl text-xs font-semibold"
+                    className="px-4 py-2.5 rounded-lg text-xs font-semibold"
                     style={{ color: "var(--color-muted)" }}
                   >
                     {t("manage.projects.cancel")}
@@ -757,7 +757,7 @@ export default function ProjectsManager() {
                   <button
                     type="submit"
                     disabled={createMutation.isPending || updateMutation.isPending}
-                    className="btn-primary flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-semibold"
+                    className="btn-primary flex items-center gap-2 px-6 py-2.5 rounded-lg text-xs font-semibold"
                   >
                     {(createMutation.isPending || updateMutation.isPending) && (
                       <FaSpinner size={12} className="animate-spin" />
@@ -774,12 +774,12 @@ export default function ProjectsManager() {
       {/* DELETE CONFIRMATION MODAL */}
       <AnimatePresence>
         {deleteConfirmId && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md rounded-2xl p-6 flex flex-col gap-4 border shadow-2xl"
+              className="w-full max-w-md rounded-lg p-6 flex flex-col gap-4 border shadow-sm"
               style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
             >
               <h3 className="font-bold text-lg text-rose-400">
@@ -791,7 +791,7 @@ export default function ProjectsManager() {
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   onClick={() => setDeleteConfirmId(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold"
+                  className="px-4 py-2 rounded-lg text-xs font-semibold"
                   style={{ color: "var(--color-muted)" }}
                 >
                   {t("manage.projects.cancel")}
@@ -799,7 +799,7 @@ export default function ProjectsManager() {
                 <button
                   onClick={() => deleteMutation.mutate(deleteConfirmId)}
                   disabled={deleteMutation.isPending}
-                  className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-semibold"
+                  className="flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-semibold"
                   style={{ background: "#dc2626", color: "#ffffff" }}
                 >
                   {deleteMutation.isPending && <FaSpinner size={12} className="animate-spin" />}

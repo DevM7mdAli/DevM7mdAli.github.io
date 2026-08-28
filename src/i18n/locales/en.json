@@ -96,7 +96,7 @@
   },
   "footer": {
     "copyright": "© {{year}} Mohammed Alajmi",
-    "built": "Built with ❤️"
+    "built": "Built with"
   },
   "error": {
     "eyebrow": "Error",
@@ -244,6 +244,10 @@
       "errNameRequired": "Skill name is required.",
       "errIconRequired": "Add an icon key or upload an SVG.",
       "errUnknownKey": "\"{{key}}\" isn't in the bundled library. Pick one from the list, or upload an SVG instead."
+    },
+    "lang": {
+      "en": "English",
+      "ar": "Arabic"
     }
   },
   "common": {

@@ -26,7 +26,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div
-        className="min-h-screen w-full flex items-center justify-center"
+        className="admin-ui min-h-screen w-full flex items-center justify-center"
         style={{ background: "var(--color-bg)", color: "var(--color-text)" }}
       >
         <FaSpinner size={24} className="animate-spin" style={{ color: "var(--color-muted)" }} />
@@ -46,55 +46,51 @@ export default function AdminDashboard() {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col"
+      className="admin-ui min-h-screen w-full flex flex-col"
       style={{ background: "var(--color-bg)", color: "var(--color-text)", fontFamily: "var(--font-body)" }}
     >
       <AdminHeader userEmail={user?.email} />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 lg:px-10 py-8 flex flex-col gap-8">
-        {/* Navigation Tabs */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 lg:px-10 py-8 flex flex-col gap-7">
+        {/* A tab bar, not a segmented pill control. The filled-pill version
+            read as a row of buttons rather than as navigation, and put a
+            high-contrast block on screen that outweighed the content under it.
+            An underline indicator is what the pattern actually is. */}
         <div
-          className="flex items-center gap-1.5 p-1.5 rounded-2xl border overflow-x-auto"
-          style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
+          role="tablist"
+          className="flex items-center gap-6 overflow-x-auto"
+          style={{ borderBottom: "1px solid var(--color-border)" }}
         >
           {navTabs.map(({ id, label, Icon }) => {
             const active = activeTab === id;
             return (
               <button
                 key={id}
+                role="tab"
+                aria-selected={active}
                 onClick={() => setActiveTab(id)}
-                className="flex items-center justify-center gap-2 py-2.5 px-5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all"
+                className="admin-tab flex items-center gap-2 pb-3 pt-1 text-sm whitespace-nowrap"
                 style={{
-                  background: active ? "var(--color-primary)" : "transparent",
-                  color: active ? "var(--color-bg)" : "var(--color-muted)",
-                }}
-                onMouseEnter={(e) => {
-                  if (!active) (e.currentTarget as HTMLElement).style.color = "var(--color-text)";
-                }}
-                onMouseLeave={(e) => {
-                  if (!active) (e.currentTarget as HTMLElement).style.color = "var(--color-muted)";
+                  color: active ? "var(--color-text)" : "var(--color-muted)",
+                  fontWeight: active ? 600 : 500,
+                  borderBottom: `2px solid ${active ? "var(--color-primary)" : "transparent"}`,
+                  marginBottom: "-1px",
                 }}
               >
-                <Icon size={13} />
+                <Icon size={14} />
                 <span>{label}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Tab View Content */}
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
+        <div>
           {activeTab === "projects" && <ProjectsManager />}
           {activeTab === "experiences" && <ExperiencesManager />}
           {activeTab === "skills" && <SkillsManager />}
           {activeTab === "categories" && <CategoriesManager />}
           {activeTab === "profile" && <ProfileManager />}
-        </motion.div>
+        </div>
       </main>
     </div>
   );

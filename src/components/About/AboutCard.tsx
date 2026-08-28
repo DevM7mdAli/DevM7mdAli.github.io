@@ -4,6 +4,7 @@ import {
   FaLinkedin,
   FaDownload,
   FaChevronDown,
+  FaLayerGroup,
 } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { FaSquareXTwitter } from "react-icons/fa6";
@@ -270,24 +271,24 @@ export default function AboutCard({
 
             {/* Floating tag: Senior Dev */}
             <motion.div
-              className="glass absolute -bottom-3 -left-5 px-4 py-2 rounded-xl text-sm"
+              className="glass absolute -bottom-3 -left-5 px-4 py-2 rounded-xl text-sm flex items-center gap-2"
               style={{ fontFamily: "var(--font-mono)" }}
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
             >
               <span style={{ color: "var(--color-accent)" }}>{"</>"}</span>
-              <span className="ms-2 text-app font-medium whitespace-nowrap">{t("about.tags.seniorDev")}</span>
+              <span className="text-app font-medium whitespace-nowrap">{t("about.tags.seniorDev")}</span>
             </motion.div>
 
             {/* Floating tag: Full Stack */}
             <motion.div
-              className="glass absolute -top-3 -right-5 px-4 py-2 rounded-xl text-sm"
+              className="glass absolute -top-3 -right-5 px-4 py-2 rounded-xl text-sm flex items-center gap-2"
               style={{ fontFamily: "var(--font-mono)" }}
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
             >
-              <span style={{ color: "var(--color-accent)" }}>★</span>
-              <span className="ms-2 text-app font-medium whitespace-nowrap">{t("about.tags.fullStack")}</span>
+              <FaLayerGroup size={12} style={{ color: "var(--color-accent)" }} />
+              <span className="text-app font-medium whitespace-nowrap">{t("about.tags.fullStack")}</span>
             </motion.div>
 
             {/* Floating tag: Available */}
