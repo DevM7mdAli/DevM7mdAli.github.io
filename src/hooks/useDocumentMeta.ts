@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const SITE = "https://mohammed-alajmi.me";
+const SITE = "https://mohammed.win";
 const DEFAULT_TITLE = "Mohammed Alajmi | Senior Software & Full-Stack Engineer";
 
 type Meta = {

@@ -19,7 +19,7 @@ const CONTACT_LINKS = [
   },
   { href: "https://github.com/DevM7mdAli", icon: FaGithub, label: "GitHub" },
   { href: "https://twitter.com/DevM7mdAli", icon: FaSquareXTwitter, label: "X / Twitter" },
-  { href: "mailto:Mohammed-Alajmi@outlook.sa", icon: MdEmail, label: "Email" },
+  { href: "mailto:contact@mohammed.win", icon: MdEmail, label: "Email" },
 ];
 
 export default function ContactForm() {
