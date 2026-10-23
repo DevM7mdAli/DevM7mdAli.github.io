@@ -1,8 +1,8 @@
-# mohammed-alajmi.me
+# mohammed.win
 
 Personal portfolio for **Mohammed Alajmi** ([@DevM7mdAli](https://github.com/DevM7mdAli)) — software engineer, full-stack developer, and app developer.
 
-Live at **[mohammed-alajmi.me](https://mohammed-alajmi.me)**.
+Live at **[mohammed.win](https://mohammed.win)**.
 
 ## Features
 
