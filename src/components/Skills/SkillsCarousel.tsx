@@ -55,9 +55,39 @@ function Badge({ skill }: { skill: Skill }) {
 }
 
 function CarouselRow({ row }: { row: LabelledSkillRow }) {
-  const doubled = [...row.skills, ...row.skills];
-  const trackClass =
-    row.group.direction === "left" ? "carousel-track" : "carousel-track-r";
+  // ── Repetition count ──────────────────────────────────────────────────────
+  // The animation scrolls exactly ONE set-width per cycle: from translateX(0)
+  // to translateX(-100%/reps). For the loop to be seamless and gap-free the
+  // total track must be wider than the viewport at every point in the cycle.
+  //
+  // Required: reps × setWidth  ≥  2 × viewportWidth
+  //   → reps ≥ ⌈2 × viewportWidth / setWidth⌉
+  //
+  // We target 2560 px (ultrawide) as the worst-case viewport, add 1 extra rep
+  // as a safety buffer, and enforce a minimum of 3 so the loop is visible even
+  // on tiny screens. This means a few more DOM nodes than the old "doubled"
+  // approach but badge elements are negligible in cost.
+  const BADGE_W = 128; // 112 px card + 16 px gap
+  const TARGET_W = 2 * 2560; // fill even an ultrawide at 2×
+  const setWidth = Math.max(1, row.skills.length * BADGE_W);
+  const reps = Math.max(3, Math.ceil(TARGET_W / setWidth) + 1);
+
+  // Flatten N repetitions
+  const items = Array.from({ length: reps }, () => row.skills).flat();
+
+  // The keyframe end-point is exactly one set-width so the seam is invisible.
+  // Passed as a CSS custom property so the single @keyframes definition works
+  // for every row regardless of its repetition count.
+  const scrollEnd = `${-(100 / reps).toFixed(6)}%`;
+
+  // Right-direction rows use the scaleX(-1) mirror trick: the shell is flipped
+  // so the scrollLeft animation produces a rightward visual scroll without the
+  // gap bug (translateX(-50%) fails when setWidth < viewportWidth).
+  // Each badge child is counter-mirrored so its content stays readable.
+  const isRight = row.group.direction !== "left";
+  const shellClass = isRight
+    ? "carousel-shell carousel-shell-r"
+    : "carousel-shell";
 
   return (
     <div className="flex flex-col gap-3">
@@ -65,14 +95,22 @@ function CarouselRow({ row }: { row: LabelledSkillRow }) {
         <span className="section-label">{row.label}</span>
       </div>
       {/* dir="ltr" forces physical LTR layout so the animation works in RTL locales */}
-      <div className="carousel-wrap" dir="ltr">
-        <div
-          className={trackClass}
-          style={{ animationDuration: `${row.group.speed_s}s`, gap: "1rem" }}
-        >
-          {doubled.map((s, i) => (
-            <Badge key={`${s.id}-${i}`} skill={s} />
-          ))}
+      <div className={shellClass} dir="ltr">
+        <div className="carousel-wrap">
+          <div
+            className="carousel-track"
+            style={
+              {
+                animationDuration: `${row.group.speed_s}s`,
+                gap: "1rem",
+                "--scroll-end": scrollEnd,
+              } as React.CSSProperties
+            }
+          >
+            {items.map((s, i) => (
+              <Badge key={`${s.id}-${i}`} skill={s} />
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -239,27 +239,59 @@ html:not(.dark) .hero-grid {
 }
 
 /* ── Infinite carousel ─────────────────────────────────── */
-.carousel-wrap {
-  overflow: hidden;
+
+/* The outer shell:
+   - clips horizontal overflow so the track scrolls seamlessly
+   - does NOT clip vertically: badge hover lifts 4 px upward and its glow
+     must not be cut — .carousel-wrap is overflow-visible with padding-block
+   - uses a mask-image (not a colour overlay) so the edge fade removes pixels
+     entirely — borders and backgrounds of partial cards disappear cleanly */
+.carousel-shell {
   position: relative;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0px,
+    black 140px,
+    black calc(100% - 140px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0px,
+    black 140px,
+    black calc(100% - 140px),
+    transparent 100%
+  );
 }
-.carousel-wrap::before,
-.carousel-wrap::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 140px;
-  z-index: 10;
-  pointer-events: none;
+
+/* Right-scrolling rows use the scaleX(-1) mirror trick:
+   flip the entire shell so the reliable scrollLeft animation produces a
+   rightward visual scroll WITHOUT the gap bug that plagued the old
+   scrollRight approach.
+
+   Root cause of the old bug:
+     scrollRight started at translateX(-50%), which offsets the track by
+     exactly one setWidth. If setWidth < viewportWidth (few skills), the
+     offset puts NOTHING in the left portion of the shell → empty ghost gap.
+     scrollLeft starts at translateX(0) and only needs setWidth ≥ viewportWidth/2,
+     so it works for half the content requirement. Mirroring the shell lets us
+     use scrollLeft for every row while keeping the rightward visual direction.
+
+   Each badge is counter-mirrored so icons and labels remain readable. The
+   mask gradient is symmetric, so it is unaffected by the shell flip. */
+.carousel-shell-r {
+  transform: scaleX(-1);
 }
-.carousel-wrap::before {
-  left: 0;
-  background: linear-gradient(to right, var(--color-bg), transparent);
+.carousel-shell-r .carousel-track > * {
+  transform: scaleX(-1);
 }
-.carousel-wrap::after {
-  right: 0;
-  background: linear-gradient(to left, var(--color-bg), transparent);
+
+/* The actual scrollable row */
+.carousel-wrap {
+  position: relative;
+  overflow: visible;
+  padding-block: 8px; /* breathing room for translateY(-4px) + box-shadow */
 }
 
 .carousel-track {
@@ -269,15 +301,7 @@ html:not(.dark) .hero-grid {
   animation: scrollLeft 40s linear infinite;
   width: max-content;
 }
-.carousel-track-r {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 0.75rem;
-  animation: scrollRight 40s linear infinite;
-  width: max-content;
-}
-.carousel-wrap:hover .carousel-track,
-.carousel-wrap:hover .carousel-track-r {
+.carousel-wrap:hover .carousel-track {
   animation-play-state: paused;
 }
 
@@ -286,15 +310,9 @@ html:not(.dark) .hero-grid {
     transform: translateX(0);
   }
   to {
-    transform: translateX(-50%);
-  }
-}
-@keyframes scrollRight {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
+    /* --scroll-end is set per-track in the JSX as -(100/reps)%.
+       The fallback -50% matches the legacy doubled (reps=2) layout. */
+    transform: translateX(var(--scroll-end, -50%));
   }
 }
 
